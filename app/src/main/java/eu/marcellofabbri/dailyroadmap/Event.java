@@ -11,10 +11,10 @@ public class Event {
     @PrimaryKey(autoGenerate = true)
     private int id;
     private String description;
-    private LocalDateTime startTime;
-    private LocalDateTime finishTime;
+    private String startTime;
+    private String finishTime;
 
-    public Event(String description, LocalDateTime startTime, LocalDateTime finishTime) {
+    public Event(String description, String startTime, String finishTime) {
         this.description = description;
         this.startTime = startTime;
         this.finishTime = finishTime;
@@ -28,11 +28,15 @@ public class Event {
         return description;
     }
 
-    public LocalDateTime getStartTime() {
+    public String getStartTime() {
         return startTime;
     }
 
-    public LocalDateTime getFinishTime() {
+    public String getFinishTime() {
         return finishTime;
+    }
+
+    public int getId() {
+        return id;
     }
 }

@@ -51,8 +51,8 @@ public abstract class EventDatabase extends RoomDatabase {
         @RequiresApi(api = Build.VERSION_CODES.O)
         @Override
         protected Void doInBackground(Void...voids) {
-            eventDao.insert(new Event("event description", LocalDateTime.of(2015, Month.JANUARY, 01, 8, 00, 00), LocalDateTime.of(2015, Month.JANUARY, 01, 9, 00, 00)));
-            eventDao.insert(new Event("event description", LocalDateTime.of(2015, Month.JANUARY, 01, 10, 00, 00), LocalDateTime.of(2015, Month.JANUARY, 01, 11, 00, 00)));
+            eventDao.insert(new Event("event description", LocalDateTime.of(2015, Month.JANUARY, 01, 8, 00, 00).toString(), LocalDateTime.of(2015, Month.JANUARY, 01, 9, 00, 00).toString()));
+            eventDao.insert(new Event("event description", LocalDateTime.of(2015, Month.JANUARY, 01, 10, 00, 00).toString(), LocalDateTime.of(2015, Month.JANUARY, 01, 11, 00, 00).toString()));
             return null;
         }
     }

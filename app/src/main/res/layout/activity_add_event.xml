@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.appcompat.widget.LinearLayoutCompat
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="16dp"
+    tools:context=".AddEventActivity">
+
+    <EditText
+        android:id="@+id/edit_text_description"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Task"
+        android:inputType="text" />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <EditText
+            android:id="@+id/edit_text_startDate"
+            android:layout_width="150sp"
+            android:layout_height="wrap_content"
+            android:hint="Start date"
+            android:layout_alignParentLeft="true"
+            android:clickable="true"
+            android:focusable="false"
+            android:inputType="date"
+            />
+
+        <EditText
+            android:id="@+id/edit_text_startTime"
+            android:layout_width="150dp"
+            android:layout_height="wrap_content"
+            android:gravity="end"
+            android:hint="Start time"
+            android:inputType="time"
+            android:layout_alignParentRight="true"
+            android:clickable="true"
+            android:focusable="false"/>
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <EditText
+            android:id="@+id/edit_text_finishDate"
+            android:layout_width="150sp"
+            android:layout_height="wrap_content"
+            android:hint="Finish date"
+            android:inputType="date"
+            android:layout_alignParentLeft="true"
+            android:clickable="true"
+            android:focusable="false"
+            />
+
+        <EditText
+            android:id="@+id/edit_text_finishTime"
+            android:layout_width="150dp"
+            android:layout_height="wrap_content"
+            android:gravity="end"
+            android:hint="Finish time"
+            android:inputType="time"
+            android:layout_alignParentRight="true"
+            android:clickable="true"
+            android:focusable="false"/>
+
+    </RelativeLayout>
+
+
+
+</androidx.appcompat.widget.LinearLayoutCompat>

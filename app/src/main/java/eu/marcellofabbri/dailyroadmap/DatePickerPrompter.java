@@ -6,14 +6,17 @@ import android.view.View;
 import android.widget.DatePicker;
 import android.widget.EditText;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.Locale;
 
 public class DatePickerPrompter {
 
     private EditText editText;
     private Calendar myCalendar;
+    private long minimumDate;
 
     public DatePickerPrompter(EditText editText) {
         this.editText = editText;
@@ -38,7 +41,7 @@ public class DatePickerPrompter {
     public void listenForClicks() {
 
         editText.setOnClickListener(new View.OnClickListener() {
-            DatePickerDialog.OnDateSetListener startDate = new DatePickerDialog.OnDateSetListener() {
+            DatePickerDialog.OnDateSetListener date = new DatePickerDialog.OnDateSetListener() {
                 @Override
                 public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
                     myCalendar.set(Calendar.YEAR, year);
@@ -51,9 +54,10 @@ public class DatePickerPrompter {
             @Override
             public void onClick(View v) {
                 Context context = v.getContext();
-                new DatePickerDialog(context, startDate, myCalendar
+                DatePickerDialog datePickerDialog = new DatePickerDialog(context, date, myCalendar
                         .get(Calendar.YEAR), myCalendar.get(Calendar.MONTH),
-                        myCalendar.get(Calendar.DAY_OF_MONTH)).show();
+                        myCalendar.get(Calendar.DAY_OF_MONTH));
+                datePickerDialog.show();
             }
         });
     }

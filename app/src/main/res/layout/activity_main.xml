@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.coordinatorlayout.widget.CoordinatorLayout
+    android:id="@+id/main_activity"
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -8,8 +10,9 @@
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recycler_view"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_gravity="center"
+        android:layout_width="230dp"
+        android:layout_height="300dp"
         tools:listitem="@layout/event_item" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -21,5 +24,10 @@
         android:layout_marginBottom="35dp"
         android:backgroundTint="@color/colorAddButton"
         android:src="@drawable/ic_add" />
+    
+    <com.github.mikephil.charting.charts.LineChart
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/lineChart" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

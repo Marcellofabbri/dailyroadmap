@@ -17,9 +17,9 @@
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/button_add_event"
-        android:layout_width="70dp"
-        android:layout_height="70dp"
-        android:layout_gravity="bottom|right"
+        android:layout_width="55dp"
+        android:layout_height="55dp"
+        android:layout_gravity="bottom|end"
         android:layout_marginRight="35dp"
         android:layout_marginBottom="35dp"
         android:backgroundTint="@color/colorAddButton"
@@ -28,6 +28,7 @@
     <com.github.mikephil.charting.charts.LineChart
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_marginLeft="30dp"
         android:id="@+id/lineChart" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

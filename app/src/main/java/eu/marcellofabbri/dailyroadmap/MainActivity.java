@@ -46,7 +46,6 @@ import java.util.List;
 public class MainActivity extends AppCompatActivity {
     public static final int ADD_EVENT_REQUEST_CODE = 1;
     private EventViewModel eventViewModel;
-    //private DrawView drawView;
     private LineChart lineChart;
     private MyLineChartManager myLineChartManager;
     float dpHeight = Resources.getSystem().getDisplayMetrics().heightPixels;
@@ -57,7 +56,6 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        //drawView = (DrawView) findViewById(R.id.road_drawView);
         lineChart = (LineChart) findViewById(R.id.lineChart);
         myLineChartManager = new MyLineChartManager(lineChart);
         myLineChartManager.createChart();

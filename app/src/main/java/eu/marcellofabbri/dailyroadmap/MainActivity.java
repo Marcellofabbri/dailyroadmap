@@ -20,24 +20,11 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.text.Layout;
-import android.util.AttributeSet;
-import android.util.DisplayMetrics;
-import android.view.Display;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
-
-import com.github.mikephil.charting.charts.Chart;
-import com.github.mikephil.charting.charts.LineChart;
-import com.github.mikephil.charting.components.YAxis;
-import com.github.mikephil.charting.data.Entry;
-import com.github.mikephil.charting.data.LineData;
-import com.github.mikephil.charting.data.LineDataSet;
-import com.github.mikephil.charting.interfaces.datasets.ILineDataSet;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.ArrayList;
@@ -46,19 +33,16 @@ import java.util.List;
 public class MainActivity extends AppCompatActivity {
     public static final int ADD_EVENT_REQUEST_CODE = 1;
     private EventViewModel eventViewModel;
-    private LineChart lineChart;
-    private MyLineChartManager myLineChartManager;
     float dpHeight = Resources.getSystem().getDisplayMetrics().heightPixels;
     float dpWidth = Resources.getSystem().getDisplayMetrics().widthPixels;
+    private MyVisualizer myVisualizer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        lineChart = (LineChart) findViewById(R.id.lineChart);
-        myLineChartManager = new MyLineChartManager(lineChart);
-        myLineChartManager.createChart();
+        myVisualizer = (MyVisualizer) findViewById(R.id.myVisualizer);
 
         FloatingActionButton floatingActionButton = findViewById(R.id.button_add_event);
         floatingActionButton.setOnClickListener(new View.OnClickListener() {

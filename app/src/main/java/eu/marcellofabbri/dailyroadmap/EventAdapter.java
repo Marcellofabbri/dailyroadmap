@@ -8,11 +8,14 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+
 import java.util.ArrayList;
 import java.util.List;
 
 public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventHolder> {
     private List<Event> events = new ArrayList<>();
+    private boolean isRotate = false;
 
     @NonNull
     @Override
@@ -22,11 +25,26 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventHolder>
     }
 
     @Override
-    public void onBindViewHolder(@NonNull EventHolder holder, int position) {
+    public void onBindViewHolder(@NonNull final EventHolder holder, int position) {
         Event currentEvent = events.get(position);
         holder.textViewDescription.setText(currentEvent.getDescription());
-        holder.textViewStartTime.setText(currentEvent.getStartTime().toString());
-        holder.textViewFinishTime.setText(currentEvent.getFinishTime().toString());
+        holder.textViewStartTime.setText(currentEvent.getStartTime().substring(8));
+        holder.textViewFinishTime.setText(currentEvent.getFinishTime().substring(8));
+        holder.editButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                isRotate = ViewAnimator.rotateFab(v, !isRotate);
+                if(isRotate){
+                    ViewAnimator.showIn(holder.updateButton);
+                    ViewAnimator.showIn(holder.deleteButton);
+                }else{
+                    ViewAnimator.showOut(holder.updateButton);
+                    ViewAnimator.showOut(holder.deleteButton);
+                }
+            }
+        });
+        ViewAnimator.init(holder.updateButton);
+        ViewAnimator.init(holder.deleteButton);
     }
 
     @Override
@@ -43,12 +61,18 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventHolder>
         private TextView textViewDescription;
         private TextView textViewStartTime;
         private TextView textViewFinishTime;
+        private FloatingActionButton editButton;
+        private FloatingActionButton updateButton;
+        private FloatingActionButton deleteButton;
 
         public EventHolder(@NonNull View itemView) {
             super(itemView);
             textViewDescription = itemView.findViewById(R.id.text_view_description);
             textViewStartTime = itemView.findViewById(R.id.text_view_start_time);
             textViewFinishTime = itemView.findViewById(R.id.text_view_finish_time);
+            editButton = itemView.findViewById(R.id.edit_button);
+            updateButton = itemView.findViewById(R.id.update_button);
+            deleteButton = itemView.findViewById(R.id.delete_button);
         }
     }
 }

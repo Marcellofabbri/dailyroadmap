@@ -11,6 +11,7 @@ import android.graphics.Rect;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.solver.widgets.Rectangle;
+import androidx.databinding.DataBindingUtil;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
@@ -33,8 +34,6 @@ import java.util.List;
 public class MainActivity extends AppCompatActivity {
     public static final int ADD_EVENT_REQUEST_CODE = 1;
     private EventViewModel eventViewModel;
-    float dpHeight = Resources.getSystem().getDisplayMetrics().heightPixels;
-    float dpWidth = Resources.getSystem().getDisplayMetrics().widthPixels;
     private MyVisualizer myVisualizer;
 
     @Override
@@ -68,6 +67,7 @@ public class MainActivity extends AppCompatActivity {
                 adapter.setEvents(events);
             }
         });
+
     }
 
     @Override

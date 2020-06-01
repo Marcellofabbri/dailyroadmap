@@ -10,7 +10,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".AddEventActivity"
+            android:name=".AddUpdateEventActivity"
             android:parentActivityName=".MainActivity"/>
         <activity android:name=".MainActivity"
             android:launchMode="singleTop">

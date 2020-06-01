@@ -16,7 +16,8 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 
-public class AddEventActivity extends AppCompatActivity {
+public class AddUpdateEventActivity extends AppCompatActivity {
+    public static final String EXTRA_ID = "eu.marcellofabbri.dailyroadmap.EXTRA_ID";
     public static final String EXTRA_DESCRIPTION = "eu.marcellofabbri.dailyroadmap.EXTRA_DESCRIPTION";
     public static final String EXTRA_STARTTIME = "eu.marcellofabbri.dailyroadmap.EXTRA_STARTTIME";
     public static final String EXTRA_FINISHTIME = "eu.marcellofabbri.dailyroadmap.EXTRA_FINISHTIME";
@@ -47,7 +48,18 @@ public class AddEventActivity extends AppCompatActivity {
         new TimePickerPrompter(etFinishTime).listenForClicks();
 
         getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_close);
-        setTitle("Add task");
+
+        Intent intent = getIntent();
+        if (intent.hasExtra(EXTRA_ID)) {
+            setTitle("Edit task");
+            etDescription.setText(intent.getStringExtra(EXTRA_DESCRIPTION));
+            etStartDate.setText(intent.getStringExtra(EXTRA_STARTTIME).substring(0, 8));
+            etFinishDate.setText(intent.getStringExtra(EXTRA_FINISHTIME).substring(0, 8));
+            etStartTime.setText(intent.getStringExtra(EXTRA_STARTTIME).substring(8));
+            etFinishTime.setText(intent.getStringExtra(EXTRA_FINISHTIME).substring(8));
+        } else {
+            setTitle("Add task");
+        }
     }
 
     public void saveEvent() {
@@ -65,6 +77,11 @@ public class AddEventActivity extends AppCompatActivity {
         data.putExtra(EXTRA_DESCRIPTION, description);
         data.putExtra(EXTRA_STARTTIME, startTime);
         data.putExtra(EXTRA_FINISHTIME, finishTime);
+
+        int id = getIntent().getIntExtra(EXTRA_ID, -1);
+        if (id != -1) {
+            data.putExtra(EXTRA_ID, id);
+        }
 
         setResult(RESULT_OK, data);
         finish();

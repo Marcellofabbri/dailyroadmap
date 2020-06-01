@@ -16,6 +16,7 @@ import java.util.List;
 public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventHolder> {
     private List<Event> events = new ArrayList<>();
     private boolean isRotate = false;
+    private OnDeleteButtonClickListener listener;
 
     @NonNull
     @Override
@@ -57,6 +58,10 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventHolder>
         notifyDataSetChanged();
     }
 
+    public Event getEventAt(int position) {
+        return events.get(position);
+    }
+
     class EventHolder extends RecyclerView.ViewHolder{
         private TextView textViewDescription;
         private TextView textViewStartTime;
@@ -73,6 +78,24 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventHolder>
             editButton = itemView.findViewById(R.id.edit_button);
             updateButton = itemView.findViewById(R.id.update_button);
             deleteButton = itemView.findViewById(R.id.delete_button);
+
+            deleteButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    int position = getAdapterPosition();
+                    //while executing, if click happens before the update the position might be -1
+                    if (listener != null && position != RecyclerView.NO_POSITION)
+                    listener.onDeleteButtonClick(events.get(position));
+                }
+            });
         }
+    }
+
+    public interface OnDeleteButtonClickListener {
+        void onDeleteButtonClick(Event event);
+    }
+
+    public void setOnDeleteButtonClickListener(OnDeleteButtonClickListener listener) {
+        this.listener = listener;
     }
 }

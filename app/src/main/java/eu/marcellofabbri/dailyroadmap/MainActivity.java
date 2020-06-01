@@ -43,8 +43,8 @@ public class MainActivity extends AppCompatActivity {
 
         myVisualizer = (MyVisualizer) findViewById(R.id.myVisualizer);
 
-        FloatingActionButton floatingActionButton = findViewById(R.id.button_add_event);
-        floatingActionButton.setOnClickListener(new View.OnClickListener() {
+        FloatingActionButton addEventButton = findViewById(R.id.button_add_event);
+        addEventButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(MainActivity.this, AddEventActivity.class);
@@ -52,7 +52,8 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        RecyclerView recyclerView = findViewById(R.id.recycler_view);
+
+        final RecyclerView recyclerView = findViewById(R.id.recycler_view);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setHasFixedSize(true);
 
@@ -65,6 +66,14 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onChanged(List<Event> events) {
                 adapter.setEvents(events);
+            }
+        });
+
+        adapter.setOnDeleteButtonClickListener(new EventAdapter.OnDeleteButtonClickListener() {
+            @Override
+            public void onDeleteButtonClick(Event event) {
+                eventViewModel.delete(event);
+                System.out.println(event);
             }
         });
 

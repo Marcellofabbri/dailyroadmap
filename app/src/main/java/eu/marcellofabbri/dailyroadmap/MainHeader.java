@@ -35,6 +35,10 @@ public class MainHeader extends LinearLayout {
         super(context, attrs, defStyleAttr);
     }
 
+    public TextView getCurrentDate() {
+        return currentDate;
+    }
+
     public void identifyFields() {
         currentDate = findViewById(R.id.header_date);
         calendarButton = findViewById(R.id.calendar_button);

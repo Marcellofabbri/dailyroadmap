@@ -25,4 +25,7 @@ public interface EventDao {
 
     @Query("SELECT * FROM Event_table ORDER BY startTime DESC")
     LiveData<List<Event>> getAllEvents();
+
+    @Query("SELECT * FROM Event_table WHERE instr(startTime, :selectedDate) > 0 OR instr(finishTime, :selectedDate)")
+    LiveData<List<Event>> getCertainEvents(String selectedDate);
 }

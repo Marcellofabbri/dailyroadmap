@@ -39,6 +39,10 @@ public class EventRepository {
         return allEvents;
     }
 
+    public LiveData<List<Event>> getCertainEvents(String selectedDate) {
+        return eventDao.getCertainEvents(selectedDate);
+    }
+
     private static class InsertEventAsyncTask extends AsyncTask<Event, Void, Void> {
         private EventDao eventDao;
 
@@ -90,4 +94,5 @@ public class EventRepository {
             return null;
         }
     }
+
 }

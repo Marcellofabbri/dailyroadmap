@@ -37,4 +37,8 @@ public class EventViewModel extends AndroidViewModel {
     public LiveData<List<Event>> getAllEvents() {
         return allEvents;
     }
+
+    public LiveData<List<Event>> getCertainEvents(String selectedTime) {
+        return eventRepository.getCertainEvents(selectedTime);
+    }
 }

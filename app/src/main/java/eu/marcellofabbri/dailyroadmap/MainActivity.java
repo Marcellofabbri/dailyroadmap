@@ -64,14 +64,19 @@ public class MainActivity extends AppCompatActivity {
         final EventAdapter adapter = new EventAdapter();
         recyclerView.setAdapter(adapter);
 
+
         eventViewModel = ViewModelProviders.of(this).get(EventViewModel.class);
-        eventViewModel.getAllEvents().observe(this, new Observer<List<Event>>() {
+        String displayedDate = (String) mainHeader.getCurrentDate().getText();
+        eventViewModel.getCertainEvents(displayedDate).observe(this, new Observer<List<Event>>() {
 
             @Override
             public void onChanged(List<Event> events) {
                 adapter.setEvents(events);
             }
         });
+
+        //implement textChanged listener
+
 
         adapter.setOnButtonClickListener(new EventAdapter.OnButtonClickListener() {
             @Override

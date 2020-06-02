@@ -1,29 +1,49 @@
 package eu.marcellofabbri.dailyroadmap;
 import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.app.DatePickerDialog;
+import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.DatePicker;
+import android.widget.TextView;
 import android.widget.Toast;
+
+import com.anychart.format.DateTimeLocale;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
+import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.Calendar;
 import java.util.List;
+import java.util.Locale;
 
 public class MainActivity extends AppCompatActivity {
     public static final int ADD_EVENT_REQUEST_CODE = 1;
     public static final int UPDATE_EVENT_REQUEST_CODE = 2;
     private EventViewModel eventViewModel;
     private MyVisualizer myVisualizer;
+    private Calendar myCalendar = Calendar.getInstance();
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        MainHeader mainHeader = findViewById(R.id.header);
+        mainHeader.identifyFields();
+        mainHeader.bootElements();
 
         myVisualizer = (MyVisualizer) findViewById(R.id.myVisualizer);
 
@@ -109,4 +129,5 @@ public class MainActivity extends AppCompatActivity {
             Toast.makeText(this, "Event not saved", Toast.LENGTH_SHORT).show();
         }
     }
+
 }

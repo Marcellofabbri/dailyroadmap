@@ -7,6 +7,7 @@ import android.view.View;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.annotation.Nullable;
@@ -18,11 +19,13 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Locale;
 
-public class MainHeader extends LinearLayout {
+public class MainHeader extends RelativeLayout {
     private EditText currentDate;
     private FloatingActionButton calendarButton;
+    private EditText dayOfTheWeek;
     private Calendar myCalendar = Calendar.getInstance();
-    public MutableLiveData<String> currentDateText = new MutableLiveData<>();
+    private SimpleDateFormat slashesFormat = new SimpleDateFormat("dd/MM/yy", Locale.getDefault());
+    private SimpleDateFormat weekDayFormat = new SimpleDateFormat("EEEE", Locale.getDefault());
 
     public MainHeader(Context context) {
         super(context);
@@ -43,16 +46,22 @@ public class MainHeader extends LinearLayout {
     public void identifyFields() {
         currentDate = findViewById(R.id.header_date);
         calendarButton = findViewById(R.id.calendar_button);
+        dayOfTheWeek = findViewById(R.id.day_of_the_week);
     }
 
     public void bootElements() {
         bootHeaderDate();
         bootCalendarButton();
+        bootDayOfTheWeek();
+    }
+
+    private void bootDayOfTheWeek() {
+        String weekDay = weekDayFormat.format(myCalendar.getTime());
+        dayOfTheWeek.setText(weekDay);
     }
 
     private void bootHeaderDate() {
-        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yy", Locale.getDefault());
-        String today = sdf.format(Calendar.getInstance().getTime());
+        String today = slashesFormat.format(myCalendar.getTime());
         currentDate.setText(today);
     }
 
@@ -66,11 +75,10 @@ public class MainHeader extends LinearLayout {
                     myCalendar.set(Calendar.YEAR, year);
                     myCalendar.set(Calendar.MONTH, month);
                     myCalendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
-                    String myFormat = "dd/MM/yy"; //In which you need put here
-                    SimpleDateFormat sdf = new SimpleDateFormat(myFormat, Locale.getDefault());
-                    String chosenDate = sdf.format(myCalendar.getTime());
+                    String chosenDate = slashesFormat.format(myCalendar.getTime());
                     currentDate.setText(chosenDate);
-                    currentDateText.setValue(chosenDate);
+                    String weekDay = weekDayFormat.format(myCalendar.getTime());
+                    dayOfTheWeek.setText(weekDay);
                 }
             };
 

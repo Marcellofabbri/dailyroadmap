@@ -14,26 +14,40 @@
         android:id="@+id/header"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:background="@color/colorAccent"
+        android:background="@android:color/transparent"
         app:layout_constraintHeight_percent=".15"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintTop_toTopOf="parent"
+        android:orientation="horizontal">
 
         <EditText
             android:id="@+id/header_date"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="top|start"
             android:text="TO/DA/YY"
-            android:textSize="60sp"
+            android:textSize="55sp"
             android:autofillHints=""
-            android:background="@android:color/transparent"/>
+            android:background="@android:color/transparent"
+            android:layout_alignParentTop="true"
+            android:layout_marginHorizontal="20dp"/>
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/calendar_button"
+            android:layout_width="55dp"
+            android:layout_height="55dp"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            android:layout_marginHorizontal="20dp"
+            android:src="@drawable/ic_calendar_large" />
+
+        <EditText
+            android:id="@+id/day_of_the_week"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:src="@drawable/ic_calendar_large" />
+            android:text="DAY"
+            android:background="@android:color/transparent"
+            android:layout_marginHorizontal="22dp"
+            android:layout_alignParentBottom="true" />
+
 
     </eu.marcellofabbri.dailyroadmap.MainHeader>
 

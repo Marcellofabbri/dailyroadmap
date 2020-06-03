@@ -18,13 +18,15 @@
         app:layout_constraintHeight_percent=".15"
         app:layout_constraintTop_toTopOf="parent">
 
-        <TextView
+        <EditText
             android:id="@+id/header_date"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="top|start"
             android:text="TO/DA/YY"
-            android:textSize="60sp" />
+            android:textSize="60sp"
+            android:autofillHints=""
+            android:background="@android:color/transparent"/>
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/calendar_button"

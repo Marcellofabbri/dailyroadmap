@@ -2,6 +2,7 @@ package eu.marcellofabbri.dailyroadmap;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -12,6 +13,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.DatePicker;
@@ -64,9 +67,8 @@ public class MainActivity extends AppCompatActivity {
         final EventAdapter adapter = new EventAdapter();
         recyclerView.setAdapter(adapter);
 
-
         eventViewModel = ViewModelProviders.of(this).get(EventViewModel.class);
-        String displayedDate = (String) mainHeader.getCurrentDate().getText();
+        String displayedDate = mainHeader.getCurrentDate().getText().toString();
         eventViewModel.getCertainEvents(displayedDate).observe(this, new Observer<List<Event>>() {
 
             @Override
@@ -75,6 +77,11 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        TextWatcher textWatcher = new MyMainTextWatcher(eventViewModel, adapter, MainActivity.this);
+        mainHeader.getCurrentDate().addTextChangedListener(textWatcher);
+
+
+
         //implement textChanged listener
 
 
@@ -82,7 +89,6 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onDeleteButtonClick(Event event) {
                 eventViewModel.delete(event);
-                System.out.println(event);
             }
 
             @Override

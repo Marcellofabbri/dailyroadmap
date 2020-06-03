@@ -2,15 +2,15 @@ package eu.marcellofabbri.dailyroadmap;
 
 import android.app.DatePickerDialog;
 import android.content.Context;
-import android.text.TextWatcher;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.DatePicker;
+import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.Nullable;
-import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.lifecycle.MutableLiveData;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
@@ -19,9 +19,10 @@ import java.util.Calendar;
 import java.util.Locale;
 
 public class MainHeader extends LinearLayout {
-    private TextView currentDate;
+    private EditText currentDate;
     private FloatingActionButton calendarButton;
     private Calendar myCalendar = Calendar.getInstance();
+    public MutableLiveData<String> currentDateText = new MutableLiveData<>();
 
     public MainHeader(Context context) {
         super(context);
@@ -35,7 +36,7 @@ public class MainHeader extends LinearLayout {
         super(context, attrs, defStyleAttr);
     }
 
-    public TextView getCurrentDate() {
+    public EditText getCurrentDate() {
         return currentDate;
     }
 
@@ -69,6 +70,7 @@ public class MainHeader extends LinearLayout {
                     SimpleDateFormat sdf = new SimpleDateFormat(myFormat, Locale.getDefault());
                     String chosenDate = sdf.format(myCalendar.getTime());
                     currentDate.setText(chosenDate);
+                    currentDateText.setValue(chosenDate);
                 }
             };
 

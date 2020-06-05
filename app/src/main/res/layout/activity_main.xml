@@ -6,6 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
+    android:background="@color/daytimeBackground"
     app:layout_constraintHorizontal_weight="1"
 
     tools:context=".MainActivity">
@@ -15,88 +16,111 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:background="@android:color/transparent"
-        app:layout_constraintHeight_percent=".15"
+        app:layout_constraintHeight_percent=".13"
         app:layout_constraintTop_toTopOf="parent"
         android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/left_button"
+            android:layout_width="50dp"
+            android:layout_height="75dp"
+            android:drawableLeft="@drawable/ic_chevron_left"
+            android:background="@android:color/transparent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toLeftOf="@id/header_date"/>
 
         <EditText
             android:id="@+id/header_date"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="0dp"
+            app:layout_constraintHeight_percent=".8"
             android:text="TO/DA/YY"
-            android:textSize="55sp"
+            android:textSize="50sp"
+            android:fontFamily="@font/oswald_regular"
+            android:textColor="@android:color/white"
             android:autofillHints=""
             android:background="@android:color/transparent"
-            android:layout_alignParentTop="true"
-            android:layout_marginHorizontal="20dp"/>
+            app:layout_constraintLeft_toRightOf="@id/left_button"
+            app:layout_constraintRight_toLeftOf="@id/right_button"/>
 
-        <com.google.android.material.floatingactionbutton.FloatingActionButton
-            android:id="@+id/calendar_button"
-            android:layout_width="55dp"
-            android:layout_height="55dp"
-            android:layout_alignParentEnd="true"
-            android:layout_centerVertical="true"
-            android:layout_marginHorizontal="20dp"
-            android:src="@drawable/ic_calendar_large" />
+        <Button
+            android:id="@+id/right_button"
+            android:layout_width="50dp"
+            android:layout_height="75dp"
+            android:drawableRight="@drawable/ic_chevron_right"
+            android:background="@android:color/transparent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintLeft_toRightOf="@id/header_date"/>
 
         <EditText
             android:id="@+id/day_of_the_week"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="DAY"
+            android:textColor="@android:color/white"
+            android:fontFamily="@font/oswald_light"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
             android:background="@android:color/transparent"
-            android:layout_marginHorizontal="22dp"
-            android:layout_alignParentBottom="true" />
+            app:layout_constraintBottom_toBottomOf="parent" />
 
 
     </eu.marcellofabbri.dailyroadmap.MainHeader>
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recycler_view"
+    <LinearLayout
+        android:id="@+id/central_container"
         android:layout_width="230dp"
         android:layout_height="350dp"
-        android:layout_marginBottom="32dp"
-        android:background="@color/colorPrimaryDark"
+        android:orientation="vertical"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/header"
-        tools:listitem="@layout/event_item" />
+        app:layout_constraintTop_toBottomOf="@+id/header">
 
-<!--    <eu.marcellofabbri.dailyroadmap.MyVisualizer-->
-<!--    android:id="@+id/myVisualizer"-->
-<!--    android:layout_width="wrap_content"-->
-<!--    android:layout_height="0dp"-->
-<!--    app:layout_constraintBottom_toBottomOf="parent"-->
-<!--    app:layout_constraintHeight_percent=".85"-->
-<!--    app:layout_constraintLeft_toLeftOf="parent" />-->
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recycler_view"
+            android:layout_width="230dp"
+            android:layout_height="280dp"
+            android:background="@android:color/transparent"
+            tools:listitem="@layout/event_item" />
 
-    <RelativeLayout
-        android:id="@+id/BlueprintPainterContainer"
-        android:layout_width="wrap_content"
-        android:layout_height="0dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintHeight_percent=".85"
-        app:layout_constraintLeft_toLeftOf="parent" />
+        <eu.marcellofabbri.dailyroadmap.MyButtonsCardView
+            android:id="@+id/my_buttons_cardview"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <com.google.android.material.floatingactionbutton.FloatingActionButton
+                android:id="@+id/calendar_button"
+                android:layout_width="55dp"
+                android:layout_height="55dp"
+                app:layout_constraintRight_toRightOf="parent"
+                android:layout_marginLeft="40dp"
+                android:src="@drawable/ic_calendar_large" />
+
+            <com.google.android.material.floatingactionbutton.FloatingActionButton
+                android:id="@+id/button_add_event"
+                android:layout_width="55dp"
+                android:layout_height="55dp"
+                android:layout_gravity="end"
+                android:layout_marginRight="40dp"
+                android:backgroundTint="@color/colorAddButton"
+                android:src="@drawable/ic_add"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintRight_toRightOf="parent" />
+
+        </eu.marcellofabbri.dailyroadmap.MyButtonsCardView>
+
+    </LinearLayout>
+
+
 
     <RelativeLayout
         android:id="@+id/eventPainterContainer"
         android:layout_width="wrap_content"
         android:layout_height="0dp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintHeight_percent=".84"
+        app:layout_constraintHeight_percent=".83"
         app:layout_constraintLeft_toLeftOf="parent" />
 
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/button_add_event"
-        android:layout_width="55dp"
-        android:layout_height="55dp"
-        android:layout_gravity="bottom|end"
-        android:layout_marginRight="123dp"
-        android:layout_marginBottom="2dp"
-        android:backgroundTint="@color/colorAddButton"
-        android:src="@drawable/ic_add"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintRight_toRightOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -33,7 +33,6 @@ import java.util.TimeZone;
 @RequiresApi(api = Build.VERSION_CODES.O)
 public class TrackPainter extends View {
 
-    Paint paint = new Paint();
     float screenHeight = Resources.getSystem().getDisplayMetrics().heightPixels;
     float screenWidth = Resources.getSystem().getDisplayMetrics().widthPixels;
     float hUnit = (screenWidth / (700));
@@ -41,14 +40,8 @@ public class TrackPainter extends View {
     float vUnit = ((screenHeight * (float) 0.70) / 800);
     float vMinuteUnit = ((100 * vUnit) / 60);
     float leftMargin = hUnit * 100;
-    float upperMargin = hUnit * 45;
+    float upperMargin = hUnit * 48;
     Integer[] colors = new Integer[] {Color.BLUE, Color.GREEN, Color.YELLOW};
-    String startTime;
-    String finishTime;
-//    String startHour = startTime.substring(0, 2);
-//    String finishHour = finishTime.substring(0, 2);
-//    Integer startMinute = Integer.parseInt(startTime.substring(3));
-//    Integer finishMinute = Integer.parseInt(finishTime.substring(3));
     ArrayList<MyPoint> points = new ArrayList<MyPoint>();
     HashMap<String, MyPoint> map;
     List<Event> events;
@@ -117,10 +110,18 @@ public class TrackPainter extends View {
         return paintObject;
     }
 
+    protected Paint paintObjectLines12() {
+        Paint paintObject = new Paint();
+        paintObject.setStrokeWidth(40);
+        paintObject.setColor(Color.RED);
+        paintObject.setTextSize(60);
+        return paintObject;
+    }
+
     private Paint paintObjectTest(Integer i) {
         Paint paintObject = new Paint();
         paintObject.setStrokeWidth(52);
-        paintObject.setStrokeCap(Paint.Cap.BUTT);
+        paintObject.setStrokeCap(Paint.Cap.ROUND);
         paintObject.setColor(i);
         paintObject.setTextSize(60);
         return paintObject;
@@ -152,8 +153,11 @@ public class TrackPainter extends View {
     }
 
     private void drawBlueprintTrack(Canvas canvas) {
-        for (int i = 0; i < 1440; i++) {
+        for (int i = 0; i < 1380; i++) {
             canvas.drawPoint(points.get(i).x, points.get(i).y, paintObjectLines());
+        }
+        for (int i = 1380; i < 1440; i++) {
+            canvas.drawPoint(points.get(i).x, points.get(i).y, paintObjectLines12());
         }
     }
 

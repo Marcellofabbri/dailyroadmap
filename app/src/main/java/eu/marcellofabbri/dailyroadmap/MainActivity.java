@@ -1,9 +1,11 @@
 package eu.marcellofabbri.dailyroadmap;
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
+import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -13,6 +15,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.text.TextWatcher;
 import android.view.View;
+import android.widget.Button;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
@@ -38,10 +41,6 @@ public class MainActivity extends AppCompatActivity {
         MainHeader mainHeader = findViewById(R.id.header);
         mainHeader.identifyFields();
         mainHeader.bootElements();
-
-        //myVisualizer = (MyVisualizer) findViewById(R.id.myVisualizer);
-//        RelativeLayout blueprintPainterContainer = findViewById(R.id.eventPainterContainer);
-//        blueprintPainterContainer.addView(new BlueprintPainter(this, "12:00 AM", "11:59 PM"));
 
         FloatingActionButton addEventButton = findViewById(R.id.button_add_event);
         addEventButton.setOnClickListener(new View.OnClickListener() {
@@ -81,18 +80,14 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-
         TextWatcher textWatcher = new MyMainTextWatcher(eventViewModel, adapter, MainActivity.this);
         mainHeader.getCurrentDate().addTextChangedListener(textWatcher);
 
-
-
-
-
-
-
-        //implement textChanged listener
-
+        MyButtonsCardView myButtonsCardView = findViewById(R.id.my_buttons_cardview);
+        FloatingActionButton calendarButton = findViewById(R.id.calendar_button);
+        myButtonsCardView.setCalendarButton(calendarButton);
+        myButtonsCardView.setMainHeader(mainHeader);
+        myButtonsCardView.bootCalendarButton();
 
         adapter.setOnButtonClickListener(new EventAdapter.OnButtonClickListener() {
             @Override

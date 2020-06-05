@@ -4,6 +4,7 @@ import android.app.DatePickerDialog;
 import android.content.Context;
 import android.util.AttributeSet;
 import android.view.View;
+import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.LinearLayout;
@@ -11,6 +12,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.annotation.Nullable;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.lifecycle.MutableLiveData;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -19,13 +21,15 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Locale;
 
-public class MainHeader extends RelativeLayout {
+public class MainHeader extends ConstraintLayout {
     private EditText currentDate;
     private FloatingActionButton calendarButton;
     private EditText dayOfTheWeek;
+    private Button leftButton;
+    private Button rightButton;
     private Calendar myCalendar = Calendar.getInstance();
     private SimpleDateFormat slashesFormat = new SimpleDateFormat("dd/MM/yy", Locale.getDefault());
-    private SimpleDateFormat weekDayFormat = new SimpleDateFormat("EEEE", Locale.getDefault());
+    private SimpleDateFormat weekDayFormat = new SimpleDateFormat("EEEE, dd MMMM yyyy", Locale.getDefault());
 
     public MainHeader(Context context) {
         super(context);
@@ -37,6 +41,30 @@ public class MainHeader extends RelativeLayout {
 
     public MainHeader(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
+    }
+
+    public void setLeftButton(Button leftButton) {
+        this.leftButton = leftButton;
+    }
+
+    public void setRightButton(Button rightButton) {
+        this.rightButton = rightButton;
+    }
+
+    public EditText getDayOfTheWeek() {
+        return dayOfTheWeek;
+    }
+
+    public SimpleDateFormat getSlashesFormat() {
+        return slashesFormat;
+    }
+
+    public SimpleDateFormat getWeekDayFormat() {
+        return weekDayFormat;
+    }
+
+    public Calendar getMyCalendar() {
+        return myCalendar;
     }
 
     public EditText getCurrentDate() {
@@ -51,8 +79,8 @@ public class MainHeader extends RelativeLayout {
 
     public void bootElements() {
         bootHeaderDate();
-        bootCalendarButton();
         bootDayOfTheWeek();
+        bootRightLeftButtons();
     }
 
     private void bootDayOfTheWeek() {
@@ -65,32 +93,33 @@ public class MainHeader extends RelativeLayout {
         currentDate.setText(today);
     }
 
-    private void bootCalendarButton() {
-        calendarButton.setOnClickListener(new View.OnClickListener() {
+    public void bootRightLeftButtons() {
+        rightButton = findViewById(R.id.right_button);
+        leftButton = findViewById(R.id.left_button);
 
-            DatePickerDialog.OnDateSetListener date = new DatePickerDialog.OnDateSetListener() {
-
-                @Override
-                public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
-                    myCalendar.set(Calendar.YEAR, year);
-                    myCalendar.set(Calendar.MONTH, month);
-                    myCalendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
-                    String chosenDate = slashesFormat.format(myCalendar.getTime());
-                    currentDate.setText(chosenDate);
-                    String weekDay = weekDayFormat.format(myCalendar.getTime());
-                    dayOfTheWeek.setText(weekDay);
-                }
-            };
-
-            @Override
-            public void onClick(View v) {
-                Context context = v.getContext();
-                DatePickerDialog datePickerDialog = new DatePickerDialog(context, date, myCalendar
-                        .get(Calendar.YEAR), myCalendar.get(Calendar.MONTH),
-                        myCalendar.get(Calendar.DAY_OF_MONTH));
-                datePickerDialog.show();
+        for (int i = 0; i < 2; i++) {
+            final Integer amount;
+            Button button;
+            if (i == 0) {
+                button = rightButton;
+                amount = 1;
+            } else {
+                button = leftButton;
+                amount = -1;
             }
-        });
+
+            button.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    myCalendar.add(Calendar.DAY_OF_MONTH, amount);
+                    String chosenDate = getSlashesFormat().format(myCalendar.getTime());
+                    getCurrentDate().setText(chosenDate);
+                    String weekDay = getWeekDayFormat().format(myCalendar.getTime());
+                    getDayOfTheWeek().setText(weekDay);
+                }
+            });
+        }
     }
+
 
 }

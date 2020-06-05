@@ -31,7 +31,7 @@ public class TimePickerPrompter {
     }
 
     private void updateLabel(EditText editText) {
-        String myFormat = "hh:mm"; //In which you need put here
+        String myFormat = "h:mm a"; //In which you need put here
         SimpleDateFormat sdf = new SimpleDateFormat(myFormat, Locale.getDefault());
 
         editText.setText(sdf.format(myCalendar.getTime()));

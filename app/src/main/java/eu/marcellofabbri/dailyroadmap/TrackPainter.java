@@ -61,6 +61,10 @@ public class TrackPainter extends View {
         this.events = events;
     }
 
+    public void setEvents(List<Event> events) {
+        this.events = events;
+    }
+
     @Override
     public void onDraw(Canvas canvas) {
         super.onDraw(canvas);
@@ -147,8 +151,10 @@ public class TrackPainter extends View {
         drawBlueprintTrack(canvas);
         writeHourNumbers(canvas);
         drawNotches(canvas);
-        for (int i = 0; i < events.size(); i++) {
-            drawEvent(events.get(i), canvas, i);
+        if (events != null) {
+            for (int i = 0; i < events.size(); i++) {
+                drawEvent(events.get(i), canvas, i);
+            }
         }
     }
 

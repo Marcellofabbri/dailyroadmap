@@ -28,4 +28,7 @@ public interface EventDao {
 
     @Query("SELECT * FROM Event_table WHERE instr(startTime, :selectedDate) > 0 OR instr(finishTime, :selectedDate)")
     LiveData<List<Event>> getCertainEvents(String selectedDate);
+
+    @Query("DELETE FROM Event_table WHERE instr(startTime, :startTime) > 0")
+    void deleteTodayEvents(String startTime);
 }

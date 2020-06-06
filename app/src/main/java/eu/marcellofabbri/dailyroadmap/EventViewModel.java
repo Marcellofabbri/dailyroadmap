@@ -41,4 +41,6 @@ public class EventViewModel extends AndroidViewModel {
     public LiveData<List<Event>> getCertainEvents(String selectedTime) {
         return eventRepository.getCertainEvents(selectedTime);
     }
+
+    public void deleteTodayEvents(String startTime) { eventRepository.deleteTodayEvents(startTime);}
 }

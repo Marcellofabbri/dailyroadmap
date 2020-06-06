@@ -43,6 +43,8 @@ public class EventRepository {
         return eventDao.getCertainEvents(selectedDate);
     }
 
+    public void deleteTodayEvents(String startTime) { new DeleteTodayEventsAsyncTask(eventDao).execute(startTime); };
+
     private static class InsertEventAsyncTask extends AsyncTask<Event, Void, Void> {
         private EventDao eventDao;
 
@@ -95,4 +97,17 @@ public class EventRepository {
         }
     }
 
+    private static class DeleteTodayEventsAsyncTask extends AsyncTask<String, Void, Void> {
+        private EventDao eventDao;
+
+        DeleteTodayEventsAsyncTask(EventDao eventDao) {
+            this.eventDao = eventDao;
+        }
+
+        @Override
+        protected Void doInBackground(String... strings) {
+            eventDao.deleteTodayEvents(strings[0]);
+            return null;
+        }
+    }
 }

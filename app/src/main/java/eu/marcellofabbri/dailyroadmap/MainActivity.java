@@ -17,6 +17,7 @@ import android.text.TextWatcher;
 import android.view.View;
 import android.widget.Button;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -24,6 +25,7 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import java.util.Calendar;
 import java.util.List;
 
+@RequiresApi(api = Build.VERSION_CODES.O)
 public class MainActivity extends AppCompatActivity {
     public static final int ADD_EVENT_REQUEST_CODE = 1;
     public static final int UPDATE_EVENT_REQUEST_CODE = 2;
@@ -38,7 +40,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        MainHeader mainHeader = findViewById(R.id.header);
+        final MainHeader mainHeader = findViewById(R.id.header);
         mainHeader.identifyFields();
         mainHeader.bootElements();
 
@@ -48,6 +50,16 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 Intent intent = new Intent(MainActivity.this, AddUpdateEventActivity.class);
                 startActivityForResult(intent, ADD_EVENT_REQUEST_CODE);
+            }
+        });
+
+        FloatingActionButton deleteTodayEventsButton = findViewById(R.id.button_delete_today_events);
+        deleteTodayEventsButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String currentDate = mainHeader.getCurrentDate().getText().toString();
+                System.out.println(currentDate);
+                eventViewModel.deleteTodayEvents(currentDate);
             }
         });
 
@@ -62,32 +74,38 @@ public class MainActivity extends AppCompatActivity {
         eventViewModel = ViewModelProviders.of(this).get(EventViewModel.class);
         final String displayedDate = mainHeader.getCurrentDate().getText().toString();
         eventViewModel.getCertainEvents(displayedDate).observe(this, new Observer<List<Event>>() {
-
             @Override
             public void onChanged(List<Event> events) {
                 adapter.setEvents(events);
             }
         });
 
+        final EventPainterContainer eventPainterContainer = findViewById(R.id.eventPainterContainer);
+
         eventViewModel.getCertainEvents(displayedDate).observe(this, new Observer<List<Event>>() {
             @Override
             public void onChanged(List<Event> events) {
-
-                RelativeLayout eventPainterContainer = findViewById(R.id.eventPainterContainer);
-                TrackPainter trackPainter = new TrackPainter(MainActivity.this, events);
-                System.out.println(trackPainter.map);
-                eventPainterContainer.addView(trackPainter);
+                eventPainterContainer.removeAllViews();
+                eventPainterContainer.addView(new TrackPainter(MainActivity.this, events));
             }
         });
 
-        TextWatcher textWatcher = new MyMainTextWatcher(eventViewModel, adapter, MainActivity.this);
-        mainHeader.getCurrentDate().addTextChangedListener(textWatcher);
+        TextWatcher dateTextWatcher = new MyMainTextWatcher(eventViewModel, adapter, MainActivity.this);
+        mainHeader.getCurrentDate().addTextChangedListener(dateTextWatcher);
+        TextWatcher myTrackTextWatcher = new MyTrackTextWatcher(eventPainterContainer, this, this, adapter, eventViewModel);
+        mainHeader.getCurrentDate().addTextChangedListener(myTrackTextWatcher);
 
         MyButtonsCardView myButtonsCardView = findViewById(R.id.my_buttons_cardview);
         FloatingActionButton calendarButton = findViewById(R.id.calendar_button);
+        TextView dayNumberTextView = findViewById(R.id.day_number);
+        FloatingActionButton todayButton = findViewById(R.id.today_button);
         myButtonsCardView.setCalendarButton(calendarButton);
         myButtonsCardView.setMainHeader(mainHeader);
         myButtonsCardView.bootCalendarButton();
+        myButtonsCardView.setDayNumberTextView(dayNumberTextView);
+        myButtonsCardView.writeDayNumberTextView();
+        myButtonsCardView.setTodayButton(todayButton);
+        myButtonsCardView.bootTodayButton();
 
         adapter.setOnButtonClickListener(new EventAdapter.OnButtonClickListener() {
             @Override

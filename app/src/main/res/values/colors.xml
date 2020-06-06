@@ -5,4 +5,10 @@
     <color name="colorAccent">#03DAC5</color>
     <color name="colorAddButton">#000000</color>
     <color name="daytimeBackground">#59B7FD</color>
+    <color name="calendarButton">#673AB7</color>
+    <color name="todayButton">#673AB7</color>
+    <color name="deleteAllButton">#3A9EB7</color>
+    <color name="addButton">#3A9EB7</color>
+
+
 </resources>

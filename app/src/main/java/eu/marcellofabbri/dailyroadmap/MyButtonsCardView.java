@@ -6,6 +6,7 @@ import android.util.AttributeSet;
 import android.view.View;
 import android.widget.Button;
 import android.widget.DatePicker;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -13,18 +14,35 @@ import androidx.cardview.widget.CardView;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 
 public class MyButtonsCardView extends CardView {
     private FloatingActionButton calendarButton;
     private MainHeader mainHeader;
+    private FloatingActionButton deleteButton;
+    private FloatingActionButton todayButton;
+    private TextView dayNumberTextView;
 
     public void setCalendarButton(FloatingActionButton calendarButton) {
         this.calendarButton = calendarButton;
     }
 
+    public void setDayNumberTextView(TextView textView) {
+        this.dayNumberTextView = textView;
+    }
+
+    public void setTodayButton(FloatingActionButton todayButton) {
+        this.todayButton = todayButton;
+    }
+
     public void setMainHeader(MainHeader mainHeader) {
         this.mainHeader = mainHeader;
+    }
+
+    public void setDeleteButton(FloatingActionButton deleteButton) {
+        this.deleteButton = deleteButton;
     }
 
     public MyButtonsCardView(@NonNull Context context) {
@@ -69,5 +87,26 @@ public class MyButtonsCardView extends CardView {
         });
     }
 
+    public void writeDayNumberTextView() {
+        SimpleDateFormat dayNumberFormat = new SimpleDateFormat("dd");
+        Date currentDate = new Date();
+        String dayNumberString = dayNumberFormat.format(currentDate);
+        dayNumberTextView.setText(dayNumberString);
+    }
+
+    public void bootTodayButton() {
+        todayButton.setOnClickListener(new OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                Date today = new Date();
+                String todayDate = mainHeader.getSlashesFormat().format(today);
+                mainHeader.getCurrentDate().setText(todayDate);
+                String weekDay = mainHeader.getWeekDayFormat().format(today);
+                mainHeader.getDayOfTheWeek().setText(weekDay);
+                mainHeader.getMyCalendar().setTime(today);
+            }
+        });
+    }
 
 }

@@ -62,6 +62,10 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventHolder>
         return events.get(position);
     }
 
+    public List<Event> getEvents() {
+        return events;
+    }
+
     class EventHolder extends RecyclerView.ViewHolder{
         private TextView textViewDescription;
         private TextView textViewStartTime;

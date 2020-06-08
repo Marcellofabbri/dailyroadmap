@@ -2,6 +2,7 @@ package eu.marcellofabbri.dailyroadmap;
 
 import android.app.DatePickerDialog;
 import android.content.Context;
+import android.graphics.Color;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.Button;
@@ -91,6 +92,7 @@ public class MainHeader extends ConstraintLayout {
     private void bootHeaderDate() {
         String today = slashesFormat.format(myCalendar.getTime());
         currentDate.setText(today);
+        currentDate.setShadowLayer(2, 0, 0, Color.GRAY);
     }
 
     public void bootRightLeftButtons() {

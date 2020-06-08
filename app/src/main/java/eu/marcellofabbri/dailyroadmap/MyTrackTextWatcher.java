@@ -13,7 +13,10 @@ import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.Observer;
 import androidx.recyclerview.widget.RecyclerView;
 
+import java.time.OffsetDateTime;
 import java.util.List;
+
+import eu.marcellofabbri.dailyroadmap.utils.EntityFieldConverter;
 
 public class MyTrackTextWatcher implements TextWatcher {
     private EventPainterContainer eventPainterContainer;
@@ -44,12 +47,13 @@ public class MyTrackTextWatcher implements TextWatcher {
     @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     public void afterTextChanged(Editable s) {
-        eventViewModel.getCertainEvents(s.toString()).observe(lifecycleOwner, new Observer<List<Event>>() {
+        String newString = s.toString();
+        OffsetDateTime newDateTime = new EntityFieldConverter().convertDayStringToOffsetDateTime(newString);
+        eventViewModel.getCertainEvents(newDateTime).observe(lifecycleOwner, new Observer<List<Event>>() {
             @Override
             public void onChanged(List<Event> events) {
                 eventPainterContainer.removeAllViews();
                 eventPainterContainer.addView(new TrackPainter(context, events));
-                System.out.println("changed");
             }
         });
     }

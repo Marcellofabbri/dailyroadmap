@@ -1,9 +1,11 @@
 package eu.marcellofabbri.dailyroadmap;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -11,10 +13,11 @@ import android.view.MenuItem;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.Locale;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
+
+import eu.marcellofabbri.dailyroadmap.utils.DatePickerPrompter;
+import eu.marcellofabbri.dailyroadmap.utils.TimePickerPrompter;
 
 public class AddUpdateEventActivity extends AppCompatActivity {
     public static final String EXTRA_ID = "eu.marcellofabbri.dailyroadmap.EXTRA_ID";
@@ -42,8 +45,8 @@ public class AddUpdateEventActivity extends AppCompatActivity {
         setContentView(R.layout.activity_add_event);
         assignEditTextsToFields();
 
-        new DatePickerPrompter(etStartDate).listenForClicks();
-        new DatePickerPrompter(etFinishDate).listenForClicks();
+        new DatePickerPrompter(etStartDate, etFinishDate).listenForClicks();
+        //new DatePickerPrompter(etFinishDate).listenForClicks();
         new TimePickerPrompter(etStartTime).listenForClicks();
         new TimePickerPrompter(etFinishTime).listenForClicks();
 
@@ -59,16 +62,27 @@ public class AddUpdateEventActivity extends AppCompatActivity {
             etFinishTime.setText(intent.getStringExtra(EXTRA_FINISHTIME).substring(8));
         } else {
             setTitle("Add task");
+            etStartDate.setText(intent.getStringExtra(EXTRA_STARTTIME).substring(0, 8));
+            etFinishDate.setText(intent.getStringExtra(EXTRA_STARTTIME).substring(0, 8));
         }
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
     public void saveEvent() {
+        DateTimeFormatter dtfLong = DateTimeFormatter.ofPattern("hh:mm a");
+        DateTimeFormatter dtfShort = DateTimeFormatter.ofPattern("h:mm a");
         String description = etDescription.getText().toString();
         String startTime = etStartDate.getText().toString() + etStartTime.getText().toString();
+        LocalTime start = startTime.length() == 16 ? LocalTime.parse(startTime.substring(8), dtfLong) : LocalTime.parse(startTime.substring(8), dtfShort);
         String finishTime = etFinishDate.getText().toString() + etFinishTime.getText().toString();
+        LocalTime finish = finishTime.length() == 16 ? LocalTime.parse(finishTime.substring(8), dtfLong).minusMinutes(1) : LocalTime.parse(finishTime.substring(8), dtfShort).minusMinutes(1);
 
         if (startTime.trim().isEmpty() || finishTime.trim().isEmpty() || description.trim().isEmpty()) {
             Toast.makeText(this, "Insert a valid description or input times", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        if (start.isAfter(finish)) {
+            Toast.makeText(this, "Finish time must be after start time", Toast.LENGTH_SHORT).show();
             return;
         }
 
@@ -95,6 +109,7 @@ public class AddUpdateEventActivity extends AppCompatActivity {
     }
 
     //to handle clicks on the Menu
+    @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         switch(item.getItemId()) {

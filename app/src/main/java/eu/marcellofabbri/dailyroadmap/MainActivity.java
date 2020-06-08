@@ -22,8 +22,15 @@ import android.widget.Toast;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.time.OffsetDateTime;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
+
+import eu.marcellofabbri.dailyroadmap.utils.EntityFieldConverter;
+import eu.marcellofabbri.dailyroadmap.utils.MyDateTimeFormatter;
 
 @RequiresApi(api = Build.VERSION_CODES.O)
 public class MainActivity extends AppCompatActivity {
@@ -33,6 +40,7 @@ public class MainActivity extends AppCompatActivity {
     private MyVisualizer myVisualizer;
     private Calendar myCalendar = Calendar.getInstance();
     private List<Event> displayedEvents;
+    private EntityFieldConverter converter = new EntityFieldConverter();
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
@@ -49,6 +57,8 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(MainActivity.this, AddUpdateEventActivity.class);
+                SimpleDateFormat dateFormat = mainHeader.getSlashesFormat();
+                intent.putExtra(AddUpdateEventActivity.EXTRA_STARTTIME, dateFormat.format(myCalendar.getTime()));
                 startActivityForResult(intent, ADD_EVENT_REQUEST_CODE);
             }
         });
@@ -57,8 +67,8 @@ public class MainActivity extends AppCompatActivity {
         deleteTodayEventsButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String currentDate = mainHeader.getCurrentDate().getText().toString();
-                System.out.println(currentDate);
+                String currentDateString = mainHeader.getCurrentDate().getText().toString();
+                OffsetDateTime currentDate = new EntityFieldConverter().convertDayStringToOffsetDateTime(currentDateString);
                 eventViewModel.deleteTodayEvents(currentDate);
             }
         });
@@ -72,7 +82,9 @@ public class MainActivity extends AppCompatActivity {
         recyclerView.setAdapter(adapter);
 
         eventViewModel = ViewModelProviders.of(this).get(EventViewModel.class);
-        final String displayedDate = mainHeader.getCurrentDate().getText().toString();
+        final String displayedDateString = mainHeader.getCurrentDate().getText().toString();
+        final OffsetDateTime displayedDate = converter.convertDayStringToOffsetDateTime(displayedDateString);
+
         eventViewModel.getCertainEvents(displayedDate).observe(this, new Observer<List<Event>>() {
             @Override
             public void onChanged(List<Event> events) {
@@ -118,8 +130,8 @@ public class MainActivity extends AppCompatActivity {
                 Intent intent = new Intent(MainActivity.this, AddUpdateEventActivity.class);
                 intent.putExtra(AddUpdateEventActivity.EXTRA_ID, event.getId());
                 intent.putExtra(AddUpdateEventActivity.EXTRA_DESCRIPTION, event.getDescription());
-                intent.putExtra(AddUpdateEventActivity.EXTRA_FINISHTIME, event.getFinishTime());
-                intent.putExtra(AddUpdateEventActivity.EXTRA_STARTTIME, event.getStartTime());
+                intent.putExtra(AddUpdateEventActivity.EXTRA_FINISHTIME, converter.extractDate(event.getFinishTime())+converter.extractTime(event.getFinishTime()));
+                intent.putExtra(AddUpdateEventActivity.EXTRA_STARTTIME, converter.extractDate(event.getStartTime())+converter.extractTime(event.getStartTime()));
                 startActivityForResult(intent, UPDATE_EVENT_REQUEST_CODE);
             }
         });
@@ -129,13 +141,19 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+        String start = data.getStringExtra(AddUpdateEventActivity.EXTRA_STARTTIME);
+
 
         if (requestCode == ADD_EVENT_REQUEST_CODE && resultCode == RESULT_OK) {
             String description = data.getStringExtra(AddUpdateEventActivity.EXTRA_DESCRIPTION);
-            String startTime = data.getStringExtra(AddUpdateEventActivity.EXTRA_STARTTIME);
-            String finishTime = data.getStringExtra(AddUpdateEventActivity.EXTRA_FINISHTIME);
+            String startTimeString = data.getStringExtra(AddUpdateEventActivity.EXTRA_STARTTIME);
+            OffsetDateTime startTime = converter.convertMashedDateToString(startTimeString);
+            String finishTimeString = data.getStringExtra(AddUpdateEventActivity.EXTRA_FINISHTIME);
+            OffsetDateTime finishTime = converter.convertMashedDateToString(finishTimeString);
+            long unixStart = 0;
 
-            Event newEvent = new Event(description, startTime, finishTime);
+
+            Event newEvent = new Event(description, startTime, finishTime, unixStart);
             eventViewModel.insert(newEvent);
 
             Toast.makeText(this, "Event saved", Toast.LENGTH_SHORT).show();
@@ -149,10 +167,12 @@ public class MainActivity extends AppCompatActivity {
             }
 
             String description = data.getStringExtra(AddUpdateEventActivity.EXTRA_DESCRIPTION);
-            String startTime = data.getStringExtra(AddUpdateEventActivity.EXTRA_STARTTIME);
-            String finishTime = data.getStringExtra(AddUpdateEventActivity.EXTRA_FINISHTIME);
+            String startTimeString = data.getStringExtra(AddUpdateEventActivity.EXTRA_STARTTIME);
+            OffsetDateTime startTime = converter.convertMashedDateToString(startTimeString);
+            String finishTimeString = data.getStringExtra(AddUpdateEventActivity.EXTRA_FINISHTIME);
+            OffsetDateTime finishTime = converter.convertMashedDateToString(finishTimeString);
 
-            Event event = new Event(description, startTime, finishTime);
+            Event event = new Event(description, startTime, finishTime, 0);
             event.setId(id);
             eventViewModel.update(event);
 

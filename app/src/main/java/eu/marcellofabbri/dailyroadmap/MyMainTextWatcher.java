@@ -9,7 +9,11 @@ import androidx.annotation.RequiresApi;
 import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.Observer;
 
+import java.text.ParseException;
+import java.time.OffsetDateTime;
 import java.util.List;
+
+import eu.marcellofabbri.dailyroadmap.utils.EntityFieldConverter;
 
 public class MyMainTextWatcher implements TextWatcher {
     private EventViewModel eventViewModel;
@@ -31,10 +35,12 @@ public class MyMainTextWatcher implements TextWatcher {
     @Override
     public void onTextChanged(CharSequence s, int start, int before, int count) {}
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     public void afterTextChanged(Editable s) {
         String newString = s.toString();
-        eventViewModel.getCertainEvents(newString).observe(lifecycleOwner, new Observer<List<Event>>() {
+        OffsetDateTime newDateTime = new EntityFieldConverter().convertDayStringToOffsetDateTime(newString);
+        eventViewModel.getCertainEvents(newDateTime).observe(lifecycleOwner, new Observer<List<Event>>() {
             @RequiresApi(api = Build.VERSION_CODES.O)
             @Override
             public void onChanged(List<Event> events) {

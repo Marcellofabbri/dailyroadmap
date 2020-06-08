@@ -14,8 +14,11 @@ import androidx.sqlite.db.SupportSQLiteDatabase;
 
 import java.time.LocalDateTime;
 import java.time.Month;
+import java.time.OffsetDateTime;
+import java.time.ZoneId;
+import java.time.ZoneOffset;
 
-@Database(entities = Event.class, version = 1)
+@Database(entities = Event.class, version = 2)
 public abstract class EventDatabase extends RoomDatabase {
 
     private static EventDatabase instance;
@@ -51,8 +54,7 @@ public abstract class EventDatabase extends RoomDatabase {
         @RequiresApi(api = Build.VERSION_CODES.O)
         @Override
         protected Void doInBackground(Void...voids) {
-            eventDao.insert(new Event("event description", LocalDateTime.of(2015, Month.JANUARY, 01, 8, 00, 00).toString(), LocalDateTime.of(2015, Month.JANUARY, 01, 9, 00, 00).toString()));
-            eventDao.insert(new Event("event description", LocalDateTime.of(2015, Month.JANUARY, 01, 10, 00, 00).toString(), LocalDateTime.of(2015, Month.JANUARY, 01, 11, 00, 00).toString()));
+            eventDao.insert(new Event("event description", OffsetDateTime.of(LocalDateTime.of(2015, Month.JANUARY, 01, 8, 00, 00), ZoneOffset.ofHours(0)), OffsetDateTime.of(LocalDateTime.of(2015, Month.JANUARY, 01, 9, 00, 00), ZoneOffset.ofHours(0)), 0));
             return null;
         }
     }

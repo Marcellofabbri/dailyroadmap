@@ -1,4 +1,4 @@
-package eu.marcellofabbri.dailyroadmap;
+package eu.marcellofabbri.dailyroadmap.utils;
 
 import android.app.DatePickerDialog;
 import android.content.Context;
@@ -15,11 +15,18 @@ import java.util.Locale;
 public class DatePickerPrompter {
 
     private EditText editText;
+    private EditText secondaryEditText;
     private Calendar myCalendar;
     private long minimumDate;
 
     public DatePickerPrompter(EditText editText) {
         this.editText = editText;
+        this.myCalendar = calendarInstance();
+    }
+
+    public DatePickerPrompter(EditText editText, EditText secondaryEditText) {
+        this.editText = editText;
+        this.secondaryEditText = secondaryEditText;
         this.myCalendar = calendarInstance();
     }
 
@@ -32,10 +39,10 @@ public class DatePickerPrompter {
     }
 
     private void updateLabel(EditText editText) {
-        String myFormat = "dd/MM/yy"; //In which you need put here
+        String myFormat = "dd/MM/yy";
         SimpleDateFormat sdf = new SimpleDateFormat(myFormat, Locale.getDefault());
-
         editText.setText(sdf.format(myCalendar.getTime()));
+        secondaryEditText.setText(sdf.format(myCalendar.getTime()));
     }
 
     public void listenForClicks() {

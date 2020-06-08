@@ -12,27 +12,22 @@ import android.view.View;
 
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
+import androidx.core.content.ContextCompat;
 
-import com.anychart.scales.DateTime;
-
-import java.sql.Time;
 import java.text.SimpleDateFormat;
-import java.time.Instant;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
-import java.util.Objects;
 import java.util.TimeZone;
+
+import eu.marcellofabbri.dailyroadmap.utils.EntityFieldConverter;
 
 @RequiresApi(api = Build.VERSION_CODES.O)
 public class TrackPainter extends View {
 
+    EntityFieldConverter converter = new EntityFieldConverter();
     float screenHeight = Resources.getSystem().getDisplayMetrics().heightPixels;
     float screenWidth = Resources.getSystem().getDisplayMetrics().widthPixels;
     float hUnit = (screenWidth / (700));
@@ -41,7 +36,16 @@ public class TrackPainter extends View {
     float vMinuteUnit = ((100 * vUnit) / 60);
     float leftMargin = hUnit * 100;
     float upperMargin = hUnit * 48;
-    Integer[] colors = new Integer[] {Color.BLUE, Color.GREEN, Color.YELLOW};
+    int trackDefaultColor = ContextCompat.getColor(getContext(), R.color.trackDefaultColor);
+    CustomColors myColors = new CustomColors();
+    Integer[] colors = new Integer[] {
+            ContextCompat.getColor(getContext(), myColors.getRed()),
+            ContextCompat.getColor(getContext(), myColors.getAmber()),
+            ContextCompat.getColor(getContext(), myColors.getBlue()),
+            ContextCompat.getColor(getContext(), myColors.getGreen()),
+            ContextCompat.getColor(getContext(), myColors.getOrange()),
+            ContextCompat.getColor(getContext(), myColors.getBlack())
+    };
     ArrayList<MyPoint> points = new ArrayList<MyPoint>();
     HashMap<String, MyPoint> map;
     List<Event> events;
@@ -109,7 +113,7 @@ public class TrackPainter extends View {
     protected Paint paintObjectLines() {
         Paint paintObject = new Paint();
         paintObject.setStrokeWidth(52);
-        paintObject.setColor(Color.RED);
+        paintObject.setColor(trackDefaultColor);
         paintObject.setTextSize(60);
         return paintObject;
     }
@@ -117,7 +121,7 @@ public class TrackPainter extends View {
     protected Paint paintObjectLines12() {
         Paint paintObject = new Paint();
         paintObject.setStrokeWidth(40);
-        paintObject.setColor(Color.RED);
+        paintObject.setColor(trackDefaultColor);
         paintObject.setTextSize(60);
         return paintObject;
     }
@@ -134,14 +138,14 @@ public class TrackPainter extends View {
     private Paint paintObjectHourNumbers() {
         Paint paintObject = new Paint();
         paintObject.setTextSize(60);
-        paintObject.setColor(Color.BLACK);
+        paintObject.setColor(Color.WHITE);
         return paintObject;
     }
 
     private Paint paintObjectNotches() {
         Paint paintObject = new Paint();
         paintObject.setStrokeWidth(25);
-        paintObject.setColor(Color.RED);
+        paintObject.setColor(trackDefaultColor);
         return paintObject;
     }
 
@@ -219,7 +223,7 @@ public class TrackPainter extends View {
     @RequiresApi(api = Build.VERSION_CODES.O)
     protected void timesToPointsMapper() {
         HashMap<String, MyPoint> myMap = new HashMap<String, MyPoint>();
-        String myFormat = "h:mm a";
+        String myFormat = "hh:mm a";
         SimpleDateFormat sdf = new SimpleDateFormat(myFormat, Locale.getDefault());
         sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
         for (int i = 0; i < 1440; i++) {
@@ -230,13 +234,14 @@ public class TrackPainter extends View {
     }
 
     private void drawEvent(Event event, Canvas canvas, int color) {
-        String startTime = event.getStartTime().substring(8);
-        String finishTime = event.getFinishTime().substring(8);
+        String startTime = converter.extractTime(event.getStartTime());
+        String finishTime = converter.extractTime(event.getFinishTime());
         int startTimeIndex = (map.get(startTime)).index;
         int finishTimeIndex = (map.get(finishTime)).index;
+        int colorNumber = color > 6 ? color - 5 : color;
 
         for (int i = startTimeIndex; i < finishTimeIndex; i++) {
-            canvas.drawPoint(points.get(i).x, points.get(i).y, paintObjectTest(colors[color]));
+            canvas.drawPoint(points.get(i).x, points.get(i).y, paintObjectTest(colors[colorNumber]));
         }
     }
 

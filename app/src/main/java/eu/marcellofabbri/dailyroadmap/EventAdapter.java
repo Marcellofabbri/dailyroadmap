@@ -1,23 +1,35 @@
 package eu.marcellofabbri.dailyroadmap;
 
+import android.graphics.Color;
+import android.os.Build;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+
+import eu.marcellofabbri.dailyroadmap.utils.EntityFieldConverter;
+import eu.marcellofabbri.dailyroadmap.utils.MapUtil;
 
 public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventHolder> {
     private List<Event> events = new ArrayList<>();
     private boolean isRotate = false;
     private OnButtonClickListener listener;
+    private EntityFieldConverter converter = new EntityFieldConverter();
 
+    @RequiresApi(api = Build.VERSION_CODES.P)
     @NonNull
     @Override
     public EventHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -25,12 +37,16 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventHolder>
         return new EventHolder(itemView);
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     public void onBindViewHolder(@NonNull final EventHolder holder, int position) {
         Event currentEvent = events.get(position);
+        holder.iv.setBackgroundColor(Color.parseColor(holder.colors[position > 5 ? position - 6 : position]));
         holder.textViewDescription.setText(currentEvent.getDescription());
-        holder.textViewStartTime.setText(currentEvent.getStartTime().substring(8));
-        holder.textViewFinishTime.setText(currentEvent.getFinishTime().substring(8));
+        holder.textViewStartTime.setText(converter.extractTime(currentEvent.getStartTime()));
+        System.out.println("ADAPTER INVESTIGATION");
+        System.out.println(currentEvent.getStartTime());
+        holder.textViewFinishTime.setText(converter.extractTime(currentEvent.getFinishTime()));
         holder.editButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -53,6 +69,7 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventHolder>
         return events.size();
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.N)
     public void setEvents(List<Event> events) {
         this.events = events;
         notifyDataSetChanged();
@@ -67,13 +84,17 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventHolder>
     }
 
     class EventHolder extends RecyclerView.ViewHolder{
+        private View iv;
         private TextView textViewDescription;
         private TextView textViewStartTime;
         private TextView textViewFinishTime;
         private FloatingActionButton editButton;
         private FloatingActionButton updateButton;
         private FloatingActionButton deleteButton;
+        private CustomColors myColors = new CustomColors();
+        String[] colors = new String[] { "#A8DD1515", "#A8FFD128", "#A82E42B5", "#A8128E1D", "#B1FF6600", "#A8000000"};
 
+        @RequiresApi(api = Build.VERSION_CODES.P)
         public EventHolder(@NonNull View itemView) {
             super(itemView);
             textViewDescription = itemView.findViewById(R.id.text_view_description);
@@ -82,6 +103,9 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventHolder>
             editButton = itemView.findViewById(R.id.edit_button);
             updateButton = itemView.findViewById(R.id.update_button);
             deleteButton = itemView.findViewById(R.id.delete_button);
+            iv = itemView;
+
+
 
             deleteButton.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -114,4 +138,5 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventHolder>
     public void setOnButtonClickListener(OnButtonClickListener listener) {
         this.listener = listener;
     }
+
 }

@@ -7,6 +7,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:padding="16dp"
+    android:background="@color/daytimeBackground"
     tools:context=".AddUpdateEventActivity">
 
     <EditText
@@ -14,6 +15,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="Task"
+        android:textColor="@android:color/white"
+        android:textColorHint="@android:color/white"
         android:inputType="text" />
 
     <RelativeLayout
@@ -29,6 +32,8 @@
             android:clickable="true"
             android:focusable="false"
             android:inputType="date"
+            android:textColor="@android:color/white"
+            android:textColorHint="@android:color/white"
             />
 
         <EditText
@@ -40,7 +45,9 @@
             android:inputType="time"
             android:layout_alignParentRight="true"
             android:clickable="true"
-            android:focusable="false"/>
+            android:focusable="false"
+            android:textColor="@android:color/white"
+            android:textColorHint="@android:color/white"/>
 
     </RelativeLayout>
 
@@ -53,10 +60,12 @@
             android:layout_width="150sp"
             android:layout_height="wrap_content"
             android:hint="Finish date"
-            android:inputType="date"
+            android:inputType="none"
             android:layout_alignParentLeft="true"
-            android:clickable="true"
+            android:clickable="false"
             android:focusable="false"
+            android:textColor="@android:color/white"
+            android:textColorHint="@android:color/white"
             />
 
         <EditText
@@ -68,7 +77,9 @@
             android:inputType="time"
             android:layout_alignParentRight="true"
             android:clickable="true"
-            android:focusable="false"/>
+            android:focusable="false"
+            android:textColor="@android:color/white"
+            android:textColorHint="@android:color/white"/>
 
     </RelativeLayout>
 

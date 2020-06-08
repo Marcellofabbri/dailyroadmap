@@ -1,4 +1,4 @@
-package eu.marcellofabbri.dailyroadmap;
+package eu.marcellofabbri.dailyroadmap.utils;
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 import android.content.Context;
@@ -31,7 +31,7 @@ public class TimePickerPrompter {
     }
 
     private void updateLabel(EditText editText) {
-        String myFormat = "h:mm a"; //In which you need put here
+        String myFormat = "h:mm a";
         SimpleDateFormat sdf = new SimpleDateFormat(myFormat, Locale.getDefault());
 
         editText.setText(sdf.format(myCalendar.getTime()));

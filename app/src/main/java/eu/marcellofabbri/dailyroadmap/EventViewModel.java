@@ -6,6 +6,7 @@ import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 
+import java.time.OffsetDateTime;
 import java.util.List;
 
 public class EventViewModel extends AndroidViewModel {
@@ -38,9 +39,9 @@ public class EventViewModel extends AndroidViewModel {
         return allEvents;
     }
 
-    public LiveData<List<Event>> getCertainEvents(String selectedTime) {
+    public LiveData<List<Event>> getCertainEvents(OffsetDateTime selectedTime) {
         return eventRepository.getCertainEvents(selectedTime);
     }
 
-    public void deleteTodayEvents(String startTime) { eventRepository.deleteTodayEvents(startTime);}
+    public void deleteTodayEvents(OffsetDateTime startTime) { eventRepository.deleteTodayEvents(startTime);}
 }

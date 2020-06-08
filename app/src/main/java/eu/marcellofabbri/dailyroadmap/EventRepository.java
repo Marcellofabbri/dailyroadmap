@@ -5,7 +5,10 @@ import android.os.AsyncTask;
 
 import androidx.lifecycle.LiveData;
 
+import java.time.OffsetDateTime;
 import java.util.List;
+
+import eu.marcellofabbri.dailyroadmap.utils.EntityFieldConverter;
 
 public class EventRepository {
     private EventDao eventDao;
@@ -20,6 +23,8 @@ public class EventRepository {
     //database operations
 
     public void insert(Event event) {
+        System.out.println("INSERTING");
+        System.out.println(event.getStartTime());
         new InsertEventAsyncTask(eventDao).execute(event);
     }
 
@@ -39,11 +44,15 @@ public class EventRepository {
         return allEvents;
     }
 
-    public LiveData<List<Event>> getCertainEvents(String selectedDate) {
-        return eventDao.getCertainEvents(selectedDate);
+    public LiveData<List<Event>> getCertainEvents(OffsetDateTime selectedDate) {
+        String selectedDateString = new EntityFieldConverter().convertToString(selectedDate).substring(0, 10);
+        return eventDao.getCertainEvents(selectedDateString);
     }
 
-    public void deleteTodayEvents(String startTime) { new DeleteTodayEventsAsyncTask(eventDao).execute(startTime); };
+    public void deleteTodayEvents(OffsetDateTime startTime) {
+        String startTimeString = new EntityFieldConverter().convertToString(startTime);
+        new DeleteTodayEventsAsyncTask(eventDao).execute(startTimeString);
+    };
 
     private static class InsertEventAsyncTask extends AsyncTask<Event, Void, Void> {
         private EventDao eventDao;

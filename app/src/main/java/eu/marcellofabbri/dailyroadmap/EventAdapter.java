@@ -1,5 +1,6 @@
 package eu.marcellofabbri.dailyroadmap;
 
+import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.os.Build;
 import android.view.LayoutInflater;
@@ -41,11 +42,11 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventHolder>
     @Override
     public void onBindViewHolder(@NonNull final EventHolder holder, int position) {
         Event currentEvent = events.get(position);
-        holder.iv.setBackgroundColor(Color.parseColor(holder.colors[position > 5 ? position - 6 : position]));
+        holder.editButton.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor(holder.colors[position > 5 ? position - 6 : position])));
+        holder.updateButton.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor(holder.fadedColors[position > 5 ? position - 6 : position])));
+        holder.deleteButton.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor(holder.fadedColors[position > 5 ? position - 6 : position])));
         holder.textViewDescription.setText(currentEvent.getDescription());
         holder.textViewStartTime.setText(converter.extractTime(currentEvent.getStartTime()));
-        System.out.println("ADAPTER INVESTIGATION");
-        System.out.println(currentEvent.getStartTime());
         holder.textViewFinishTime.setText(converter.extractTime(currentEvent.getFinishTime()));
         holder.editButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -92,7 +93,8 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventHolder>
         private FloatingActionButton updateButton;
         private FloatingActionButton deleteButton;
         private CustomColors myColors = new CustomColors();
-        String[] colors = new String[] { "#A8DD1515", "#A8FFD128", "#A82E42B5", "#A8128E1D", "#B1FF6600", "#A8000000"};
+        String[] colors = new String[] { "#DD1515", "#FFD128", "#2E42B5", "#128E1D", "#FF6600", "#000000"};
+        String[] fadedColors = new String[] { "#A8DD1515", "#A8FFD128", "#A82E42B5", "#A8128E1D", "#B1FF6600", "#A8000000"};
 
         @RequiresApi(api = Build.VERSION_CODES.P)
         public EventHolder(@NonNull View itemView) {

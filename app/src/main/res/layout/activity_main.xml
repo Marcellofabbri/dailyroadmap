@@ -92,14 +92,15 @@
             android:id="@+id/my_buttons_cardview"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:cardCornerRadius="10dp">
+            app:cardBackgroundColor="@color/semiTrasparent"
+            app:cardCornerRadius="33dp">
 
             <com.google.android.material.floatingactionbutton.FloatingActionButton
                 android:id="@+id/calendar_button"
                 android:layout_width="55dp"
                 android:layout_height="55dp"
                 android:layout_marginLeft="0dp"
-                android:backgroundTint="@color/calendarButton"
+                android:backgroundTint="@color/trackDefaultColor"
                 android:src="@drawable/ic_calendar_large" />
 
             <FrameLayout
@@ -117,7 +118,7 @@
                     android:fontFamily="@font/oswald_regular"
                     android:textSize="30dp"
                     android:layout_gravity="center"
-                    android:textColor="@android:color/white"
+                    android:textColor="#0116FF"
                     android:elevation="16dp"
                     android:layout_marginBottom="7dp"/>
 
@@ -125,17 +126,17 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="TODAY"
-                    android:textSize="9dp"
+                    android:textSize="9sp"
                     android:layout_marginBottom="7dp"
                     android:layout_gravity="center|bottom"
-                    android:textColor="@android:color/white"
+                    android:textColor="#0033FF"
                     android:elevation="16dp"/>
 
                 <com.google.android.material.floatingactionbutton.FloatingActionButton
                     android:id="@+id/today_button"
                     android:layout_width="55dp"
                     android:layout_height="55dp"
-                    android:backgroundTint="@color/calendarButton" />
+                    android:backgroundTint="@color/trackDefaultColor" />
 
             </FrameLayout>
 
@@ -151,19 +152,20 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="ALL"
-                    android:textSize="9dp"
-                    android:layout_marginBottom="4dp"
+                    android:textSize="8sp"
+                    android:layout_gravity="center"
                     android:layout_marginLeft="1dp"
-                    android:layout_gravity="center|bottom"
-                    android:textColor="@android:color/white"
+                    android:textColor="@android:color/black"
                     android:elevation="16dp"/>
 
                 <com.google.android.material.floatingactionbutton.FloatingActionButton
                     android:id="@+id/button_delete_today_events"
                     android:layout_width="55dp"
                     android:layout_height="55dp"
-                    android:backgroundTint="@color/deleteAllButton"
-                    android:src="@drawable/ic_delete_black_24dp" />
+                    android:backgroundTint="@color/trackDefaultColor"
+                    android:src="@drawable/ic_big_trash"
+
+                    android:scaleType="centerInside"/>
 
             </FrameLayout>
 
@@ -173,7 +175,7 @@
                 android:layout_height="55dp"
                 android:layout_gravity="end"
                 android:layout_marginRight="0dp"
-                android:backgroundTint="@color/addButton"
+                android:backgroundTint="@color/trackDefaultColor"
                 android:src="@drawable/ic_add"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintRight_toRightOf="parent" />

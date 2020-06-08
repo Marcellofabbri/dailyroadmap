@@ -37,7 +37,6 @@ public class MainActivity extends AppCompatActivity {
     public static final int ADD_EVENT_REQUEST_CODE = 1;
     public static final int UPDATE_EVENT_REQUEST_CODE = 2;
     private EventViewModel eventViewModel;
-    private MyVisualizer myVisualizer;
     private Calendar myCalendar = Calendar.getInstance();
     private List<Event> displayedEvents;
     private EntityFieldConverter converter = new EntityFieldConverter();

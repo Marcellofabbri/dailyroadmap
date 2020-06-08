@@ -75,7 +75,7 @@
                 android:layout_height="30dp"
                 android:id="@+id/update_button"
                 app:fabCustomSize="27dp"
-                android:src="@drawable/ic_note"
+                android:src="@drawable/ic_small_calendar"
                 android:layout_marginRight="10dp"
                 android:layout_gravity="center|left"/>
 
@@ -84,7 +84,7 @@
                 android:layout_height="30dp"
                 android:id="@+id/delete_button"
                 app:fabCustomSize="27dp"
-                android:src="@drawable/ic_delete"
+                android:src="@drawable/ic_small_trash"
                 android:layout_gravity="center"/>
 
         </androidx.coordinatorlayout.widget.CoordinatorLayout>

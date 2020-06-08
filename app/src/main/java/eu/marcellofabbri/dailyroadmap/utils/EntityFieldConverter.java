@@ -11,6 +11,7 @@ import java.text.SimpleDateFormat;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.OffsetDateTime;
 import java.time.ZoneId;
 import java.time.ZoneOffset;
@@ -42,9 +43,9 @@ public class EntityFieldConverter {
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     public String extractTime(OffsetDateTime offsetDateTime) {
-        Instant instant = offsetDateTime.toInstant();
-        SimpleDateFormat formatter = new SimpleDateFormat("hh:mm a");
-        return formatter.format(Date.from(instant));
+        LocalTime lt = offsetDateTime.toLocalTime();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("hh:mm a");
+        return lt.format(formatter);
     }
 
     @RequiresApi(api = Build.VERSION_CODES.O)

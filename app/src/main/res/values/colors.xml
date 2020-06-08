@@ -3,12 +3,14 @@
     <color name="colorPrimary">#6200EE</color>
     <color name="colorPrimaryDark">#3700B3</color>
     <color name="colorAccent">#03DAC5</color>
-    <color name="daytimeBackground">#5E8CA8</color>
+    <color name="daytimeBackground">#85ABFD</color>
     <color name="calendarButton">#673AB7</color>
     <color name="todayButton">#673AB7</color>
     <color name="deleteAllButton">#3A9EB7</color>
     <color name="addButton">#3A9EB7</color>
-    <color name="trackDefaultColor">#C6D6EF</color>
+    <color name="trackDefaultColor">#E6E7EF</color>
+    <color name="semiTrasparent">#3A0097FF</color>
+    <color name="bigDate">#5696FD</color>
 
     <color name="black">#000000</color>
     <color name="orange">#FF6600</color>

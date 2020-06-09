@@ -142,6 +142,13 @@ public class TrackPainter extends View {
         return paintObject;
     }
 
+    private Paint paintObjectCircles() {
+        Paint paintObject = new Paint();
+        paintObject.setColor(Color.WHITE);
+        paintObject.setStyle(Paint.Style.FILL);
+        return paintObject;
+    }
+
     private Paint paintObjectNotches() {
         Paint paintObject = new Paint();
         paintObject.setStrokeWidth(25);
@@ -242,6 +249,8 @@ public class TrackPainter extends View {
 
         for (int i = startTimeIndex; i < finishTimeIndex; i++) {
             canvas.drawPoint(points.get(i).x, points.get(i).y, paintObjectTest(colors[colorNumber]));
+            canvas.drawCircle(points.get(startTimeIndex).x, points.get(startTimeIndex).y, 10, paintObjectCircles());
+            canvas.drawCircle(points.get(finishTimeIndex).x, points.get(finishTimeIndex).y, 10, paintObjectCircles());
         }
     }
 

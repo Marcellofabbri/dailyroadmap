@@ -5,68 +5,82 @@
     android:id="@+id/main_activity"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
     android:background="@color/daytimeBackground"
+    android:orientation="vertical"
     app:layout_constraintHorizontal_weight="1"
 
     tools:context=".MainActivity">
+
+    <TextView
+        android:id="@+id/no_events"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/oswald_regular"
+        android:text="NO EVENTS \nTO DISPLAY"
+        android:textSize="40dp"
+        android:textAlignment="center"
+        android:textColor="@color/semiTrasparent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"/>
 
     <eu.marcellofabbri.dailyroadmap.MainHeader
         android:id="@+id/header"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:background="@android:color/transparent"
+        android:orientation="horizontal"
         app:layout_constraintHeight_percent=".13"
-        app:layout_constraintTop_toTopOf="parent"
-        android:orientation="horizontal">
+        app:layout_constraintTop_toTopOf="parent">
 
         <Button
             android:id="@+id/left_button"
             android:layout_width="50dp"
             android:layout_height="75dp"
-            android:drawableLeft="@drawable/ic_chevron_left"
             android:background="@android:color/transparent"
+            android:drawableLeft="@drawable/ic_chevron_left"
             app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toLeftOf="@id/header_date"/>
+            app:layout_constraintRight_toLeftOf="@id/header_date" />
 
         <EditText
             android:id="@+id/header_date"
             android:layout_width="wrap_content"
             android:layout_height="0dp"
-            app:layout_constraintHeight_percent=".8"
-            android:text="TO/DA/YY"
-            android:inputType="none"
-            android:focusable="false"
-            android:textSize="50sp"
-            android:fontFamily="@font/oswald_regular"
-            android:textColor="@android:color/white"
             android:autofillHints=""
             android:background="@android:color/transparent"
+            android:focusable="false"
+            android:fontFamily="@font/oswald_regular"
+            android:inputType="none"
+            android:text="TO/DA/YY"
+            android:textColor="@android:color/white"
+            android:textSize="50sp"
+            app:layout_constraintHeight_percent=".8"
             app:layout_constraintLeft_toRightOf="@id/left_button"
-            app:layout_constraintRight_toLeftOf="@id/right_button"/>
+            app:layout_constraintRight_toLeftOf="@id/right_button" />
 
         <Button
             android:id="@+id/right_button"
             android:layout_width="50dp"
             android:layout_height="75dp"
-            android:drawableRight="@drawable/ic_chevron_right"
             android:background="@android:color/transparent"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintLeft_toRightOf="@id/header_date"/>
+            android:drawableRight="@drawable/ic_chevron_right"
+            app:layout_constraintLeft_toRightOf="@id/header_date"
+            app:layout_constraintRight_toRightOf="parent" />
 
         <EditText
             android:id="@+id/day_of_the_week"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="DAY"
-            android:inputType="none"
-            android:focusable="false"
-            android:textColor="@android:color/white"
-            android:fontFamily="@font/oswald_light"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintLeft_toLeftOf="parent"
             android:background="@android:color/transparent"
-            app:layout_constraintBottom_toBottomOf="parent" />
+            android:focusable="false"
+            android:fontFamily="@font/oswald_light"
+            android:inputType="none"
+            android:text="DAY"
+            android:textColor="@android:color/white"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent" />
 
 
     </eu.marcellofabbri.dailyroadmap.MainHeader>
@@ -95,13 +109,31 @@
             app:cardBackgroundColor="@color/semiTrasparent"
             app:cardCornerRadius="33dp">
 
-            <com.google.android.material.floatingactionbutton.FloatingActionButton
-                android:id="@+id/calendar_button"
-                android:layout_width="55dp"
-                android:layout_height="55dp"
+            <FrameLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:layout_marginLeft="0dp"
-                android:backgroundTint="@color/trackDefaultColor"
-                android:src="@drawable/ic_calendar_large" />
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintRight_toRightOf="parent">
+
+                <com.google.android.material.floatingactionbutton.FloatingActionButton
+                    android:id="@+id/calendar_button"
+                    android:layout_width="55dp"
+                    android:layout_height="55dp"
+                    android:layout_marginLeft="0dp"
+                    android:backgroundTint="@color/trackDefaultColor"
+                    android:src="@drawable/ic_calendar_large" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center|bottom"
+                    android:elevation="16dp"
+                    android:text="CALENDAR"
+                    android:textColor="#0033FF"
+                    android:textSize="8sp" />
+
+            </FrameLayout>
 
             <FrameLayout
                 android:layout_width="wrap_content"
@@ -114,23 +146,23 @@
                     android:id="@+id/day_number"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="05"
-                    android:fontFamily="@font/oswald_regular"
-                    android:textSize="30dp"
                     android:layout_gravity="center"
-                    android:textColor="#0116FF"
+                    android:layout_marginBottom="7dp"
                     android:elevation="16dp"
-                    android:layout_marginBottom="7dp"/>
+                    android:fontFamily="@font/oswald_regular"
+                    android:text="05"
+                    android:textColor="#0116FF"
+                    android:textSize="30dp" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="TODAY"
-                    android:textSize="9sp"
-                    android:layout_marginBottom="7dp"
                     android:layout_gravity="center|bottom"
+                    android:layout_marginBottom="7dp"
+                    android:elevation="16dp"
+                    android:text="TODAY"
                     android:textColor="#0033FF"
-                    android:elevation="16dp"/>
+                    android:textSize="9sp" />
 
                 <com.google.android.material.floatingactionbutton.FloatingActionButton
                     android:id="@+id/today_button"
@@ -151,21 +183,21 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="ALL"
-                    android:textSize="8sp"
                     android:layout_gravity="center"
                     android:layout_marginLeft="1dp"
+                    android:elevation="16dp"
+                    android:text="ALL"
                     android:textColor="@android:color/black"
-                    android:elevation="16dp"/>
+                    android:textSize="8sp" />
 
                 <com.google.android.material.floatingactionbutton.FloatingActionButton
                     android:id="@+id/button_delete_today_events"
                     android:layout_width="55dp"
                     android:layout_height="55dp"
                     android:backgroundTint="@color/trackDefaultColor"
-                    android:src="@drawable/ic_big_trash"
+                    android:scaleType="centerInside"
 
-                    android:scaleType="centerInside"/>
+                    android:src="@drawable/ic_big_trash" />
 
             </FrameLayout>
 
@@ -185,7 +217,6 @@
     </LinearLayout>
 
 
-
     <eu.marcellofabbri.dailyroadmap.EventPainterContainer
         android:id="@+id/eventPainterContainer"
         android:layout_width="wrap_content"
@@ -193,7 +224,6 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintHeight_percent=".83"
         app:layout_constraintLeft_toLeftOf="parent" />
-
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

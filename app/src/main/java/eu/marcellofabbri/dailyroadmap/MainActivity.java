@@ -3,6 +3,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.ItemTouchHelper;
@@ -14,7 +15,9 @@ import android.graphics.Canvas;
 import android.os.Build;
 import android.os.Bundle;
 import android.text.TextWatcher;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewParent;
 import android.widget.Button;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -83,11 +86,17 @@ public class MainActivity extends AppCompatActivity {
         eventViewModel = ViewModelProviders.of(this).get(EventViewModel.class);
         final String displayedDateString = mainHeader.getCurrentDate().getText().toString();
         final OffsetDateTime displayedDate = converter.convertDayStringToOffsetDateTime(displayedDateString);
+        TextView noEvents = findViewById(R.id.no_events);
 
         eventViewModel.getCertainEvents(displayedDate).observe(this, new Observer<List<Event>>() {
             @Override
             public void onChanged(List<Event> events) {
                 adapter.setEvents(events);
+                if (events.size() == 0) {
+                    noEvents.setText("NO EVENTS\nTO DISPLAY");
+                } else {
+                    noEvents.setText("");
+                }
             }
         });
 
@@ -101,7 +110,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        TextWatcher dateTextWatcher = new MyMainTextWatcher(eventViewModel, adapter, MainActivity.this);
+        TextWatcher dateTextWatcher = new MyMainTextWatcher(eventViewModel, adapter, MainActivity.this, noEvents);
         mainHeader.getCurrentDate().addTextChangedListener(dateTextWatcher);
         TextWatcher myTrackTextWatcher = new MyTrackTextWatcher(eventPainterContainer, this, this, adapter, eventViewModel);
         mainHeader.getCurrentDate().addTextChangedListener(myTrackTextWatcher);

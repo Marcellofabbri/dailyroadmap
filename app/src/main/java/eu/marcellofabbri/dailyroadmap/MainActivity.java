@@ -71,6 +71,7 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 String currentDateString = mainHeader.getCurrentDate().getText().toString();
                 OffsetDateTime currentDate = new EntityFieldConverter().convertDayStringToOffsetDateTime(currentDateString);
+                System.out.println(currentDate);
                 eventViewModel.deleteTodayEvents(currentDate);
             }
         });
@@ -149,7 +150,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        String start = data.getStringExtra(AddUpdateEventActivity.EXTRA_STARTTIME);
+        //String start = data.getStringExtra(AddUpdateEventActivity.EXTRA_STARTTIME);
 
 
         if (requestCode == ADD_EVENT_REQUEST_CODE && resultCode == RESULT_OK) {

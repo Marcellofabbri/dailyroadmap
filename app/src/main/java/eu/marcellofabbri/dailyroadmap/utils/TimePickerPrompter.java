@@ -41,6 +41,7 @@ public class TimePickerPrompter {
 
         editText.setOnClickListener(new View.OnClickListener() {
             TimePickerDialog.OnTimeSetListener startTime = new TimePickerDialog.OnTimeSetListener() {
+
                 @Override
                 public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
                     myCalendar.set(Calendar.HOUR_OF_DAY, hourOfDay);

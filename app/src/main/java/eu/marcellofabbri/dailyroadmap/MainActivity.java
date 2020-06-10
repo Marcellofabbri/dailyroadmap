@@ -19,6 +19,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewParent;
 import android.widget.Button;
+import android.widget.FrameLayout;
+import android.widget.ImageButton;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -54,19 +56,18 @@ public class MainActivity extends AppCompatActivity {
         mainHeader.identifyFields();
         mainHeader.bootElements();
 
-        FloatingActionButton addEventButton = findViewById(R.id.button_add_event);
-        addEventButton.setOnClickListener(new View.OnClickListener() {
+        ImageButton addImageButton = findViewById(R.id.image_add);
+        addImageButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(MainActivity.this, AddUpdateEventActivity.class);
-                SimpleDateFormat dateFormat = mainHeader.getSlashesFormat();
-                intent.putExtra(AddUpdateEventActivity.EXTRA_STARTTIME, dateFormat.format(myCalendar.getTime()));
+                intent.putExtra(AddUpdateEventActivity.EXTRA_STARTTIME, mainHeader.getCurrentDate().getText().toString());
                 startActivityForResult(intent, ADD_EVENT_REQUEST_CODE);
             }
         });
 
-        FloatingActionButton deleteTodayEventsButton = findViewById(R.id.button_delete_today_events);
-        deleteTodayEventsButton.setOnClickListener(new View.OnClickListener() {
+        ImageButton deleteTodayEventsImageButton = findViewById(R.id.image_trash);
+        deleteTodayEventsImageButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 String currentDateString = mainHeader.getCurrentDate().getText().toString();
@@ -117,10 +118,10 @@ public class MainActivity extends AppCompatActivity {
         mainHeader.getCurrentDate().addTextChangedListener(myTrackTextWatcher);
 
         MyButtonsCardView myButtonsCardView = findViewById(R.id.my_buttons_cardview);
-        FloatingActionButton calendarButton = findViewById(R.id.calendar_button);
+        ImageButton calendarImageButton = findViewById(R.id.image_calendar);
         TextView dayNumberTextView = findViewById(R.id.day_number);
         FloatingActionButton todayButton = findViewById(R.id.today_button);
-        myButtonsCardView.setCalendarButton(calendarButton);
+        myButtonsCardView.setImageCalendarButton(calendarImageButton);
         myButtonsCardView.setMainHeader(mainHeader);
         myButtonsCardView.bootCalendarButton();
         myButtonsCardView.setDayNumberTextView(dayNumberTextView);

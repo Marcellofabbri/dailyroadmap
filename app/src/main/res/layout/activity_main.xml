@@ -87,7 +87,7 @@
 
     <LinearLayout
         android:id="@+id/central_container"
-        android:layout_width="230dp"
+        android:layout_width="210dp"
         android:layout_height="350dp"
         android:orientation="vertical"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -97,19 +97,23 @@
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recycler_view"
-            android:layout_width="230dp"
-            android:layout_height="280dp"
+            android:layout_width="210dp"
+            android:layout_height="270dp"
             android:background="@android:color/transparent"
-            tools:listitem="@layout/event_item" />
+            tools:listitem="@layout/event_item"
+            android:requiresFadingEdge="vertical"
+            android:outlineAmbientShadowColor="@color/daytimeBackground"/>
 
         <eu.marcellofabbri.dailyroadmap.MyButtonsCardView
             android:id="@+id/my_buttons_cardview"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:cardBackgroundColor="@color/semiTrasparent"
-            app:cardCornerRadius="33dp">
+            android:layout_height="50dp"
+            app:cardElevation="0dp"
+            app:cardBackgroundColor="@android:color/transparent"
+            app:cardCornerRadius="35dp">
 
             <FrameLayout
+                android:id="@+id/frame_calendar_button"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="0dp"
@@ -118,27 +122,40 @@
 
                 <com.google.android.material.floatingactionbutton.FloatingActionButton
                     android:id="@+id/calendar_button"
-                    android:layout_width="55dp"
-                    android:layout_height="55dp"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
                     android:layout_marginLeft="0dp"
-                    android:backgroundTint="@color/trackDefaultColor"
+                    android:outlineSpotShadowColor="@android:color/transparent"
+                    android:backgroundTint="@color/trackDefaultColor" />
+
+                <androidx.appcompat.widget.AppCompatImageButton
+                    android:id="@+id/image_calendar"
+                    android:clickable="true"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginBottom="5dp"
+                    android:background="@android:color/transparent"
+                    android:elevation="20dp"
                     android:src="@drawable/ic_calendar_large" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center|bottom"
+                    android:layout_marginBottom="7dp"
                     android:elevation="16dp"
                     android:text="CALENDAR"
                     android:textColor="#0033FF"
-                    android:textSize="8sp" />
+                    android:textSize="7sp" />
 
             </FrameLayout>
 
             <FrameLayout
+                android:id="@+id/frame_day_button"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="57dp"
+                android:layout_marginLeft="52.5dp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintRight_toRightOf="parent">
 
@@ -147,36 +164,39 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
-                    android:layout_marginBottom="7dp"
-                    android:elevation="16dp"
+                    android:layout_marginBottom="11dp"
+                    android:elevation="17dp"
                     android:fontFamily="@font/oswald_regular"
                     android:text="05"
                     android:textColor="#0116FF"
-                    android:textSize="30dp" />
+                    android:textSize="27sp" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="center|bottom"
-                    android:layout_marginBottom="7dp"
+                    android:layout_gravity="center"
+                    android:layout_marginTop="14dp"
                     android:elevation="16dp"
                     android:text="TODAY"
                     android:textColor="#0033FF"
-                    android:textSize="9sp" />
+                    android:textSize="9sp"
+                    android:background="@android:color/transparent"/>
 
                 <com.google.android.material.floatingactionbutton.FloatingActionButton
                     android:id="@+id/today_button"
-                    android:layout_width="55dp"
-                    android:layout_height="55dp"
-                    android:backgroundTint="@color/trackDefaultColor" />
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:backgroundTint="@color/trackDefaultColor"
+                    android:outlineSpotShadowColor="@android:color/transparent"/>
 
             </FrameLayout>
 
             <FrameLayout
+                android:id="@+id/frame_trash_button"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="end"
-                android:layout_marginRight="57dp"
+                android:layout_marginRight="52.5dp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintRight_toRightOf="parent">
 
@@ -184,33 +204,58 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
-                    android:layout_marginLeft="1dp"
-                    android:elevation="16dp"
+                    android:layout_marginLeft="0dp"
+                    android:elevation="18dp"
                     android:text="ALL"
-                    android:textColor="@android:color/black"
+                    android:textColor="@android:color/white"
                     android:textSize="8sp" />
+
+                <androidx.appcompat.widget.AppCompatImageButton
+                    android:id="@+id/image_trash"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:src="@drawable/ic_medium_trash"
+                    android:background="@android:color/transparent"
+                    android:elevation="17dp"
+                    android:scaleType="fitXY" />
 
                 <com.google.android.material.floatingactionbutton.FloatingActionButton
                     android:id="@+id/button_delete_today_events"
-                    android:layout_width="55dp"
-                    android:layout_height="55dp"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
                     android:backgroundTint="@color/trackDefaultColor"
-                    android:scaleType="centerInside"
-
-                    android:src="@drawable/ic_big_trash" />
+                    android:outlineSpotShadowColor="@android:color/transparent"/>
 
             </FrameLayout>
 
-            <com.google.android.material.floatingactionbutton.FloatingActionButton
-                android:id="@+id/button_add_event"
-                android:layout_width="55dp"
-                android:layout_height="55dp"
+            <FrameLayout
+                android:id="@+id/frame_add_button"
+                android:clickable="true"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:layout_gravity="end"
-                android:layout_marginRight="0dp"
-                android:backgroundTint="@color/trackDefaultColor"
-                android:src="@drawable/ic_add"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintRight_toRightOf="parent" />
+                android:elevation="20dp">
+
+                <com.google.android.material.floatingactionbutton.FloatingActionButton
+                    android:id="@+id/button_add_event"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:backgroundTint="@color/trackDefaultColor"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintRight_toRightOf="parent"
+                    android:outlineSpotShadowColor="@android:color/transparent"/>
+
+                <androidx.appcompat.widget.AppCompatImageButton
+                    android:id="@+id/image_add"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:src="@drawable/ic_add"
+                    android:background="@android:color/transparent"
+                    android:elevation="17dp"/>
+
+            </FrameLayout>
 
         </eu.marcellofabbri.dailyroadmap.MyButtonsCardView>
 

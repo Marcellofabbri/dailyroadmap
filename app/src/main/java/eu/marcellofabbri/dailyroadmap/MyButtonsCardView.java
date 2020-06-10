@@ -6,6 +6,8 @@ import android.util.AttributeSet;
 import android.view.View;
 import android.widget.Button;
 import android.widget.DatePicker;
+import android.widget.FrameLayout;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -19,14 +21,14 @@ import java.util.Calendar;
 import java.util.Date;
 
 public class MyButtonsCardView extends CardView {
-    private FloatingActionButton calendarButton;
+    private ImageButton calendarImage;
     private MainHeader mainHeader;
     private FloatingActionButton deleteButton;
     private FloatingActionButton todayButton;
     private TextView dayNumberTextView;
 
-    public void setCalendarButton(FloatingActionButton calendarButton) {
-        this.calendarButton = calendarButton;
+    public void setImageCalendarButton(ImageButton calendarImage) {
+        this.calendarImage = calendarImage;
     }
 
     public void setDayNumberTextView(TextView textView) {
@@ -58,7 +60,7 @@ public class MyButtonsCardView extends CardView {
     }
 
     public void bootCalendarButton() {
-        calendarButton.setOnClickListener(new View.OnClickListener() {
+        calendarImage.setOnClickListener(new View.OnClickListener() {
 
             DatePickerDialog.OnDateSetListener date = new DatePickerDialog.OnDateSetListener() {
 

@@ -142,6 +142,7 @@ public class MainActivity extends AppCompatActivity {
                 intent.putExtra(AddUpdateEventActivity.EXTRA_DESCRIPTION, event.getDescription());
                 intent.putExtra(AddUpdateEventActivity.EXTRA_FINISHTIME, converter.extractDate(event.getFinishTime())+converter.extractTime(event.getFinishTime()));
                 intent.putExtra(AddUpdateEventActivity.EXTRA_STARTTIME, converter.extractDate(event.getStartTime())+converter.extractTime(event.getStartTime()));
+                intent.putExtra(AddUpdateEventActivity.EXTRA_ICON, event.getIcon());
                 startActivityForResult(intent, UPDATE_EVENT_REQUEST_CODE);
             }
         });
@@ -159,11 +160,12 @@ public class MainActivity extends AppCompatActivity {
             String startTimeString = data.getStringExtra(AddUpdateEventActivity.EXTRA_STARTTIME);
             OffsetDateTime startTime = converter.convertMashedDateToString(startTimeString);
             String finishTimeString = data.getStringExtra(AddUpdateEventActivity.EXTRA_FINISHTIME);
+            String icon = data.getStringExtra(AddUpdateEventActivity.EXTRA_ICON);
             OffsetDateTime finishTime = converter.convertMashedDateToString(finishTimeString);
             long unixStart = 0;
 
 
-            Event newEvent = new Event(description, startTime, finishTime, unixStart);
+            Event newEvent = new Event(description, startTime, finishTime, unixStart, icon);
             eventViewModel.insert(newEvent);
 
             Toast.makeText(this, "Event saved", Toast.LENGTH_SHORT).show();
@@ -181,8 +183,9 @@ public class MainActivity extends AppCompatActivity {
             OffsetDateTime startTime = converter.convertMashedDateToString(startTimeString);
             String finishTimeString = data.getStringExtra(AddUpdateEventActivity.EXTRA_FINISHTIME);
             OffsetDateTime finishTime = converter.convertMashedDateToString(finishTimeString);
+            String icon = data.getStringExtra(AddUpdateEventActivity.EXTRA_ICON);
 
-            Event event = new Event(description, startTime, finishTime, 0);
+            Event event = new Event(description, startTime, finishTime, 0, icon);
             event.setId(id);
             eventViewModel.update(event);
 

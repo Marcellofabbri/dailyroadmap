@@ -2,24 +2,30 @@ package eu.marcellofabbri.dailyroadmap.utils;
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 import android.content.Context;
+import android.os.Build;
 import android.view.View;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.TimePicker;
 
+import androidx.annotation.RequiresApi;
+
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Locale;
+import java.util.Optional;
 import java.util.SimpleTimeZone;
 
 public class TimePickerPrompter {
 
     private EditText editText;
     private Calendar myCalendar;
+    private Optional<EditText> optionalEditText;
 
-    public TimePickerPrompter(EditText editText) {
+    public TimePickerPrompter(EditText editText, Optional<EditText> optionalEditText) {
         this.editText = editText;
         this.myCalendar = calendarInstance();
+        this.optionalEditText = optionalEditText;
     }
 
     public EditText getEditText() {
@@ -42,11 +48,15 @@ public class TimePickerPrompter {
         editText.setOnClickListener(new View.OnClickListener() {
             TimePickerDialog.OnTimeSetListener startTime = new TimePickerDialog.OnTimeSetListener() {
 
+                @RequiresApi(api = Build.VERSION_CODES.N)
                 @Override
                 public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
                     myCalendar.set(Calendar.HOUR_OF_DAY, hourOfDay);
                     myCalendar.set(Calendar.MINUTE, minute);
                     updateLabel(editText);
+                    if (optionalEditText.isPresent()) {
+                        pegAnotherEditText(optionalEditText.get());
+                    }
                 }
 
             };
@@ -58,6 +68,12 @@ public class TimePickerPrompter {
                         .get(Calendar.HOUR_OF_DAY), myCalendar.get(Calendar.MINUTE), false).show();
             }
         });
+    }
+
+    private void pegAnotherEditText(EditText anotherEditText) {
+        if (anotherEditText.getText().toString().isEmpty() && !editText.getText().toString().isEmpty()) {
+            anotherEditText.setText(editText.getText().toString());
+        }
     }
 }
 

@@ -20,6 +20,7 @@ import android.widget.Toast;
 
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Optional;
 
 import eu.marcellofabbri.dailyroadmap.utils.DatePickerPrompter;
 import eu.marcellofabbri.dailyroadmap.utils.MyIconsAlertFacilitator;
@@ -30,6 +31,7 @@ public class AddUpdateEventActivity extends AppCompatActivity implements Adapter
     public static final String EXTRA_DESCRIPTION = "eu.marcellofabbri.dailyroadmap.EXTRA_DESCRIPTION";
     public static final String EXTRA_STARTTIME = "eu.marcellofabbri.dailyroadmap.EXTRA_STARTTIME";
     public static final String EXTRA_FINISHTIME = "eu.marcellofabbri.dailyroadmap.EXTRA_FINISHTIME";
+    public static final String EXTRA_ICON = "eu.marcellofabbri.dailyroadmap.EXTRA_ICON";
 
     public EditText etDescription;
     public EditText etStartDate;
@@ -47,6 +49,7 @@ public class AddUpdateEventActivity extends AppCompatActivity implements Adapter
         etIcon = findViewById(R.id.edit_text_icon);
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.N)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -55,8 +58,8 @@ public class AddUpdateEventActivity extends AppCompatActivity implements Adapter
 
         new DatePickerPrompter(etStartDate, etFinishDate).listenForClicks();
         //new DatePickerPrompter(etFinishDate).listenForClicks();
-        new TimePickerPrompter(etStartTime).listenForClicks();
-        new TimePickerPrompter(etFinishTime).listenForClicks();
+        new TimePickerPrompter(etStartTime, Optional.ofNullable(etFinishTime)).listenForClicks();
+        new TimePickerPrompter(etFinishTime, Optional.empty()).listenForClicks();
 
         getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_close);
 
@@ -68,6 +71,7 @@ public class AddUpdateEventActivity extends AppCompatActivity implements Adapter
             etFinishDate.setText(intent.getStringExtra(EXTRA_FINISHTIME).substring(0, 8));
             etStartTime.setText(intent.getStringExtra(EXTRA_STARTTIME).substring(8));
             etFinishTime.setText(intent.getStringExtra(EXTRA_FINISHTIME).substring(8));
+            etIcon.setText(intent.getStringExtra(EXTRA_ICON));
         } else {
             setTitle("Add task");
             etStartDate.setText(intent.getStringExtra(EXTRA_STARTTIME).substring(0, 8));
@@ -118,11 +122,14 @@ public class AddUpdateEventActivity extends AppCompatActivity implements Adapter
             return;
         }
 
+        String icon = etIcon.getText().toString();
+
         //to send data back to the activity that started this activity
         Intent data = new Intent();
         data.putExtra(EXTRA_DESCRIPTION, description);
         data.putExtra(EXTRA_STARTTIME, startTime);
         data.putExtra(EXTRA_FINISHTIME, finishTime);
+        data.putExtra(EXTRA_ICON, icon.isEmpty() ? "\uD83C\uDFF3" : icon);
 
         int id = getIntent().getIntExtra(EXTRA_ID, -1);
         if (id != -1) {

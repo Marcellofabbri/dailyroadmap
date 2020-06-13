@@ -23,12 +23,14 @@ public class Event {
     @TypeConverters(EntityFieldConverter.class)
     private OffsetDateTime finishTime;
     private long startUnix;
+    private String icon;
 
-    public Event(String description, OffsetDateTime startTime, OffsetDateTime finishTime, long startUnix) {
+    public Event(String description, OffsetDateTime startTime, OffsetDateTime finishTime, long startUnix, String icon) {
         this.description = description;
         this.startTime = startTime;
         this.finishTime = finishTime;
         this.startUnix = startUnix;
+        this.icon = icon;
     }
 
     public void setId(int id) {
@@ -54,5 +56,7 @@ public class Event {
     public long getStartUnix() { return startUnix; }
 
     public void setStartUnix(Integer unix) { this.startUnix = unix; }
+
+    public String getIcon() { return icon; }
 
 }

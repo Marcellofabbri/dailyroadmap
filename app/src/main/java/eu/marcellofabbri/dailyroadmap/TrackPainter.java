@@ -199,7 +199,7 @@ public class TrackPainter extends View {
         canvas.drawText("6", points.get(1080).x - 30*hUnit, points.get(1080).y + 45*hUnit, paintObjectHourNumbers());
         for (int i = 1140; i < 1440; i+=60) {
             int hour = i/60 - 12;
-            String hourString = hour < 10 ? "  " + String.valueOf(hour) : String.valueOf(hour);
+            String hourString = hour < 10 ? "  " + hour : String.valueOf(hour);
             canvas.drawText(hourString, points.get(i).x - 60*vUnit, points.get(i).y + 10*hUnit, paintObjectHourNumbers());
         }
         canvas.drawText("0am", points.get(0).x - 80*vUnit, points.get(0).y + 10*hUnit, paintObjectHourNumbers());

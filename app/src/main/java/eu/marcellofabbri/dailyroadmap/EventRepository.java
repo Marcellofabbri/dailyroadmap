@@ -52,7 +52,7 @@ public class EventRepository {
     public void deleteTodayEvents(OffsetDateTime startTime) {
         String startTimeString = new EntityFieldConverter().convertToString(startTime).substring(0, 10);
         new DeleteTodayEventsAsyncTask(eventDao).execute(startTimeString);
-    };
+    }
 
     private static class InsertEventAsyncTask extends AsyncTask<Event, Void, Void> {
         private EventDao eventDao;

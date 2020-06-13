@@ -4,22 +4,28 @@ import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.EditText;
+import android.widget.GridView;
 import android.widget.Toast;
 
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 
 import eu.marcellofabbri.dailyroadmap.utils.DatePickerPrompter;
+import eu.marcellofabbri.dailyroadmap.utils.MyIconsAlertFacilitator;
 import eu.marcellofabbri.dailyroadmap.utils.TimePickerPrompter;
 
-public class AddUpdateEventActivity extends AppCompatActivity {
+public class AddUpdateEventActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener{
     public static final String EXTRA_ID = "eu.marcellofabbri.dailyroadmap.EXTRA_ID";
     public static final String EXTRA_DESCRIPTION = "eu.marcellofabbri.dailyroadmap.EXTRA_DESCRIPTION";
     public static final String EXTRA_STARTTIME = "eu.marcellofabbri.dailyroadmap.EXTRA_STARTTIME";
@@ -30,13 +36,15 @@ public class AddUpdateEventActivity extends AppCompatActivity {
     public EditText etFinishDate;
     public EditText etStartTime;
     public EditText etFinishTime;
+    public EditText etIcon;
 
     private void assignEditTextsToFields() {
-        etDescription = (EditText) findViewById(R.id.edit_text_description);
-        etStartDate = (EditText) findViewById(R.id.edit_text_startDate);
-        etFinishDate = (EditText) findViewById(R.id.edit_text_finishDate);
-        etStartTime = (EditText) findViewById(R.id.edit_text_startTime);
-        etFinishTime = (EditText) findViewById(R.id.edit_text_finishTime);
+        etDescription = findViewById(R.id.edit_text_description);
+        etStartDate = findViewById(R.id.edit_text_startDate);
+        etFinishDate = findViewById(R.id.edit_text_finishDate);
+        etStartTime = findViewById(R.id.edit_text_startTime);
+        etFinishTime = findViewById(R.id.edit_text_finishTime);
+        etIcon = findViewById(R.id.edit_text_icon);
     }
 
     @Override
@@ -65,6 +73,30 @@ public class AddUpdateEventActivity extends AppCompatActivity {
             etStartDate.setText(intent.getStringExtra(EXTRA_STARTTIME).substring(0, 8));
             etFinishDate.setText(intent.getStringExtra(EXTRA_STARTTIME).substring(0, 8));
         }
+
+
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this, R.array.icons_array, R.layout.individual_icon_textview);
+        MyIconsAlertFacilitator facilitator = new MyIconsAlertFacilitator(adapter, this);
+        GridView gridView = facilitator.getGridView();
+        AlertDialog.Builder builder = facilitator.getBuilder();
+        AlertDialog alertDialog = builder.create();
+
+        etIcon.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                alertDialog.show();
+            }
+        });
+
+        gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                String text = parent.getItemAtPosition(position).toString();
+                etIcon.setText(text);
+                alertDialog.dismiss();
+            }
+        });
+
     }
 
     @RequiresApi(api = Build.VERSION_CODES.O)
@@ -119,5 +151,17 @@ public class AddUpdateEventActivity extends AppCompatActivity {
             default:
                 return super.onOptionsItemSelected(item);
         }
+    }
+
+
+    @Override
+    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+        String text = parent.getItemAtPosition(position).toString();
+        Toast.makeText(parent.getContext(), text, Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void onNothingSelected(AdapterView<?> parent) {
+
     }
 }

@@ -1,3 +1,79 @@
 <resources>
     <string name="app_name">Daily Road Map</string>
+
+    <string-array name="icons_array">
+        <!-- food -->
+        <item>☕</item>
+        <item>🍕</item>
+        <item>🍽</item>
+        <item>🍰</item>
+        <item>🍖</item>
+        <item>🍓</item>
+        <item>🍺</item>
+        <item>🍷</item>
+        <!-- places -->
+        <item>🏡</item>
+        <item>🏭</item>
+        <item>🏖</item>
+        <item>🏞</item>
+        <item>🏥</item>
+        <item>🌲</item>
+        <item>🌆</item>
+        <item>🏙</item>
+        <!-- activities -->
+        <item>🏃</item>
+        <item>💪</item>
+        <item>🏊</item>
+        <item>🧘</item>
+        <item>🕺</item>
+        <item>⚽</item>
+        <item>🎳</item>
+        <item>⛷</item>
+        <!-- vehicles -->
+        <item>🚲</item>
+        <item>🚌</item>
+        <item>🚅</item>
+        <item>🚗</item>
+        <item>✈</item>
+        <item>🥾</item>
+        <item>⛵</item>
+        <item>🏇</item>
+        <!-- personal -->
+        <item>🎵</item>
+        <item>🎲</item>
+        <item>☎</item>
+        <item>🛍</item>
+        <item>💇</item>
+        <item>🛒</item>
+        <item>💻</item>
+        <item>🔥</item>
+        <!-- home activities -->
+        <item>📺</item>
+        <item>🚿</item>
+        <item>📖</item>
+        <item>📰</item>
+        <item>🎉</item>
+        <item>🛠</item>
+        <item>🛏</item>
+        <item>💧</item>
+        <!-- miscellaneous -->
+        <item>✨</item>
+        <item>👶</item>
+        <item>🧓</item>
+        <item>🐕</item>
+        <item>🐈</item>
+        <item>☀</item>
+        <item>🌙</item>
+        <item>⭐</item>
+        <!-- symbols -->
+        <item>💶</item>
+        <item>⚠</item>
+        <item>🚫</item>
+        <item>💤</item>
+        <item>✖</item>
+        <item>☮</item>
+        <item>👥</item>
+        <item>🏳</item>
+
+    </string-array>
 </resources>

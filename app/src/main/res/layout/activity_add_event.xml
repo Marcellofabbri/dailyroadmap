@@ -14,7 +14,7 @@
         android:id="@+id/edit_text_description"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Task"
+        android:hint="Your task here"
         android:textColor="@android:color/white"
         android:textColorHint="@android:color/white"
         android:inputType="text" />
@@ -82,6 +82,29 @@
             android:textColorHint="@android:color/white"/>
 
     </RelativeLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Assign an icon:"
+            android:textSize="19dp"
+            android:textColor="@android:color/white" />
+
+        <EditText
+            android:id="@+id/edit_text_icon"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:clickable="true"
+            android:focusable="false"
+            android:textSize="23dp"/>
+
+    </LinearLayout>
+
 
 
 

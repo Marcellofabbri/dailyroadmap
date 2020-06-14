@@ -6,6 +6,7 @@ import android.os.Build;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -13,7 +14,9 @@ import androidx.annotation.RequiresApi;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.internal.TextDrawableHelper;
 
+import java.lang.reflect.Field;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -23,6 +26,7 @@ import java.util.List;
 
 import eu.marcellofabbri.dailyroadmap.utils.EntityFieldConverter;
 import eu.marcellofabbri.dailyroadmap.utils.MapUtil;
+import eu.marcellofabbri.dailyroadmap.utils.TextDrawable;
 
 public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventHolder> {
     private List<Event> events = new ArrayList<>();
@@ -48,6 +52,8 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventHolder>
         holder.textViewDescription.setText(currentEvent.getDescription());
         holder.textViewStartTime.setText(converter.extractTime(currentEvent.getStartTime()));
         holder.textViewFinishTime.setText(converter.extractTime(currentEvent.getFinishTime()));
+        holder.editButtonTextView.setText(currentEvent.getIcon());
+
         holder.editButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -90,6 +96,7 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventHolder>
         private TextView textViewStartTime;
         private TextView textViewFinishTime;
         private FloatingActionButton editButton;
+        private TextView editButtonTextView;
         private FloatingActionButton updateButton;
         private FloatingActionButton deleteButton;
         private CustomColors myColors = new CustomColors();
@@ -103,6 +110,7 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventHolder>
             textViewStartTime = itemView.findViewById(R.id.text_view_start_time);
             textViewFinishTime = itemView.findViewById(R.id.text_view_finish_time);
             editButton = itemView.findViewById(R.id.edit_button);
+            editButtonTextView = itemView.findViewById(R.id.text_view_edit_button);
             updateButton = itemView.findViewById(R.id.update_button);
             deleteButton = itemView.findViewById(R.id.delete_button);
             iv = itemView;

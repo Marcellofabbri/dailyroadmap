@@ -12,17 +12,24 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.BaseAdapter;
 import android.widget.EditText;
 import android.widget.GridView;
 import android.widget.Toast;
 
+import com.anychart.core.Base;
+
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
 
 import eu.marcellofabbri.dailyroadmap.utils.DatePickerPrompter;
+import eu.marcellofabbri.dailyroadmap.utils.GridViewAdapter;
 import eu.marcellofabbri.dailyroadmap.utils.MyIconsAlertFacilitator;
 import eu.marcellofabbri.dailyroadmap.utils.TimePickerPrompter;
 
@@ -78,9 +85,10 @@ public class AddUpdateEventActivity extends AppCompatActivity implements Adapter
             etFinishDate.setText(intent.getStringExtra(EXTRA_STARTTIME).substring(0, 8));
         }
 
-
-        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this, R.array.icons_array, R.layout.individual_icon_textview);
-        MyIconsAlertFacilitator facilitator = new MyIconsAlertFacilitator(adapter, this);
+        List<String> iconCodes = Arrays.asList(getResources().getStringArray(R.array.icon_codes));
+        GridViewAdapter gridViewAdapter = new GridViewAdapter(iconCodes, this);
+        //ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this, R.drawable.d0001, R.layout.individual_icon_imageview);
+        MyIconsAlertFacilitator facilitator = new MyIconsAlertFacilitator(gridViewAdapter, this);
         GridView gridView = facilitator.getGridView();
         AlertDialog.Builder builder = facilitator.getBuilder();
         AlertDialog alertDialog = builder.create();
@@ -96,7 +104,7 @@ public class AddUpdateEventActivity extends AppCompatActivity implements Adapter
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 String text = parent.getItemAtPosition(position).toString();
-                etIcon.setText(text);
+                //etIcon.setCompoundDrawables(null, null, , null);
                 alertDialog.dismiss();
             }
         });

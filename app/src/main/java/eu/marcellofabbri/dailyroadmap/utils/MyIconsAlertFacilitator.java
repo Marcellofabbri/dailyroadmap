@@ -13,20 +13,20 @@ import eu.marcellofabbri.dailyroadmap.R;
 public class MyIconsAlertFacilitator {
     private GridView gridView;
     private AlertDialog.Builder builder;
-    private ArrayAdapter<CharSequence> arrayAdapter;
+    private GridViewAdapter adapter;
     private Context context;
 
-    public MyIconsAlertFacilitator(ArrayAdapter<CharSequence> arrayAdapter, Context context) {
+    public MyIconsAlertFacilitator(GridViewAdapter adapter, Context context) {
         this.gridView = new GridView(context);
         this.builder = new AlertDialog.Builder(context);
-        this.arrayAdapter = arrayAdapter;
+        this.adapter = adapter;
         this.context = context;
         createMyGrid();
         setUpAlert();
     }
 
     private void createMyGrid() {
-        gridView.setAdapter(arrayAdapter);
+        gridView.setAdapter(adapter);
         gridView.setNumColumns(8);
     }
 

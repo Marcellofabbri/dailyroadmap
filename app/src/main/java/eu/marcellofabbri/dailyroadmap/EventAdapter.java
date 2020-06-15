@@ -46,13 +46,18 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventHolder>
     @Override
     public void onBindViewHolder(@NonNull final EventHolder holder, int position) {
         Event currentEvent = events.get(position);
-        holder.editButton.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor(holder.colors[position > 5 ? position - 6 : position])));
-        holder.updateButton.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor(holder.fadedColors[position > 5 ? position - 6 : position])));
-        holder.deleteButton.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor(holder.fadedColors[position > 5 ? position - 6 : position])));
+        ColorStateList assignedColor = ColorStateList.valueOf(Color.parseColor(holder.colors[position > 5 ? position - 6 : position]));
+        //holder.editButton.setBackgroundTintList(assignedColor);
+        holder.editButton.setRippleColor(assignedColor);
+        holder.updateButton.setBackgroundTintList(assignedColor);
+        holder.deleteButton.setBackgroundTintList(assignedColor);
         holder.textViewDescription.setText(currentEvent.getDescription());
+        holder.textViewDescription.setTextColor(assignedColor);
         holder.textViewStartTime.setText(converter.extractTime(currentEvent.getStartTime()));
+        holder.textViewStartTime.setTextColor(assignedColor);
         holder.textViewFinishTime.setText(converter.extractTime(currentEvent.getFinishTime()));
-        holder.editButtonTextView.setText(currentEvent.getIcon());
+        holder.textViewFinishTime.setTextColor(assignedColor);
+        holder.editButton.setImageResource(Integer.parseInt(currentEvent.getIcon()));
 
         holder.editButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -61,9 +66,15 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventHolder>
                 if(isRotate){
                     ViewAnimator.showIn(holder.updateButton);
                     ViewAnimator.showIn(holder.deleteButton);
+                    holder.textViewStartTime.setTextColor(Color.GRAY);
+                    holder.textViewFinishTime.setTextColor(Color.GRAY);
+                    holder.textViewDescription.setTextColor(Color.GRAY);
                 }else{
                     ViewAnimator.showOut(holder.updateButton);
                     ViewAnimator.showOut(holder.deleteButton);
+                    holder.textViewStartTime.setTextColor(assignedColor);
+                    holder.textViewFinishTime.setTextColor(assignedColor);
+                    holder.textViewDescription.setTextColor(assignedColor);
                 }
             }
         });
@@ -96,11 +107,10 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventHolder>
         private TextView textViewStartTime;
         private TextView textViewFinishTime;
         private FloatingActionButton editButton;
-        private TextView editButtonTextView;
         private FloatingActionButton updateButton;
         private FloatingActionButton deleteButton;
         private CustomColors myColors = new CustomColors();
-        String[] colors = new String[] { "#DD1515", "#FFD128", "#2E42B5", "#128E1D", "#FF6600", "#000000"};
+        String[] colors = new String[] { "#DD1515", "#FFA928", "#2E42B5", "#128E1D", "#FF6600", "#000000"};
         String[] fadedColors = new String[] { "#A8DD1515", "#A8FFD128", "#A82E42B5", "#A8128E1D", "#B1FF6600", "#A8000000"};
 
         @RequiresApi(api = Build.VERSION_CODES.P)
@@ -110,12 +120,9 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventHolder>
             textViewStartTime = itemView.findViewById(R.id.text_view_start_time);
             textViewFinishTime = itemView.findViewById(R.id.text_view_finish_time);
             editButton = itemView.findViewById(R.id.edit_button);
-            editButtonTextView = itemView.findViewById(R.id.text_view_edit_button);
             updateButton = itemView.findViewById(R.id.update_button);
             deleteButton = itemView.findViewById(R.id.delete_button);
             iv = itemView;
-
-
 
             deleteButton.setOnClickListener(new View.OnClickListener() {
                 @Override

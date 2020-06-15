@@ -72,15 +72,11 @@
                     android:layout_width="30dp"
                     android:layout_height="30dp"
                     android:id="@+id/edit_button"
+                    app:backgroundTint="@android:color/white"
+                    android:outlineSpotShadowColor="@android:color/white"
+                    android:outlineAmbientShadowColor="@android:color/white"
+                    android:elevation="0dp"
                     app:fabCustomSize="30dp"/>
-
-                <TextView
-                    android:id="@+id/text_view_edit_button"
-                    android:layout_width="30dp"
-                    android:layout_height="30dp"
-                    android:textSize="21sp"
-                    android:text="🏳"
-                    android:textAlignment="center"/>
 
             </FrameLayout>
 

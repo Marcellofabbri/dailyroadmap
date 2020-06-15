@@ -1,4 +1,5 @@
 package eu.marcellofabbri.dailyroadmap.utils;
+
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 import android.content.Context;
@@ -10,8 +11,10 @@ import android.widget.TimePicker;
 
 import androidx.annotation.RequiresApi;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.Locale;
 import java.util.Optional;
 import java.util.SimpleTimeZone;
@@ -64,8 +67,18 @@ public class TimePickerPrompter {
             @Override
             public void onClick(View v) {
                 Context context = v.getContext();
-                new TimePickerDialog(context, startTime, myCalendar
-                        .get(Calendar.HOUR_OF_DAY), myCalendar.get(Calendar.MINUTE), false).show();
+                String timeString = editText.getText().toString();
+                if (timeString.isEmpty()) {
+                    new TimePickerDialog(context, startTime, myCalendar.get(Calendar.HOUR_OF_DAY), myCalendar.get(Calendar.MINUTE), false).show();
+                } else {
+                    try {
+                        Date time = new SimpleDateFormat("h:mm a").parse(timeString);
+                        myCalendar.setTime(time);
+                        new TimePickerDialog(context, startTime, myCalendar.get(Calendar.HOUR_OF_DAY), myCalendar.get(Calendar.MINUTE), false).show();
+                    } catch (ParseException e) {
+                        e.printStackTrace();
+                    }
+                }
             }
         });
     }

@@ -1,7 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<ImageView xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@android:id/icon"
-    android:layout_width="20dp"
-    android:layout_height="20dp"
-    android:contentDescription="icon" />
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="30dp"
+    android:layout_height="30dp"
+    android:paddingVertical="8dp">
+
+    <ImageView
+        android:id="@+id/individual_icon_imageview"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:contentDescription="icon" />
+
+</FrameLayout>
+

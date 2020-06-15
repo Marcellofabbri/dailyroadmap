@@ -88,20 +88,34 @@
         android:layout_height="match_parent"
         android:orientation="horizontal">
 
-        <TextView
+        <FrameLayout
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Assign an icon:"
-            android:textSize="19dp"
-            android:textColor="@android:color/white" />
+            android:layout_height="40dp">
 
-        <EditText
-            android:id="@+id/edit_text_icon"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
-            android:clickable="true"
-            android:focusable="false"
-            android:textSize="23dp"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Assign an icon:"
+                android:textSize="19dp"
+                android:layout_gravity="center_vertical"
+                android:textColor="@android:color/white" />
+
+        </FrameLayout>
+
+        <FrameLayout
+            android:id="@+id/frame_icon"
+            android:layout_width="40dp"
+            android:layout_height="40dp">
+
+            <ImageView
+                android:id="@+id/chosen_icon"
+                android:layout_width="28dp"
+                android:layout_height="30dp"
+                android:layout_gravity="center"
+                android:elevation="1dp"
+                android:background="@drawable/d0063" />
+
+        </FrameLayout>
 
     </LinearLayout>
 

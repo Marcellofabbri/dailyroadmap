@@ -6,6 +6,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.AlertDialog;
 import android.content.Intent;
+import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.Menu;
@@ -17,7 +18,9 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.GridView;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.anychart.core.Base;
@@ -38,14 +41,17 @@ public class AddUpdateEventActivity extends AppCompatActivity implements Adapter
     public static final String EXTRA_DESCRIPTION = "eu.marcellofabbri.dailyroadmap.EXTRA_DESCRIPTION";
     public static final String EXTRA_STARTTIME = "eu.marcellofabbri.dailyroadmap.EXTRA_STARTTIME";
     public static final String EXTRA_FINISHTIME = "eu.marcellofabbri.dailyroadmap.EXTRA_FINISHTIME";
-    public static final String EXTRA_ICON = "eu.marcellofabbri.dailyroadmap.EXTRA_ICON";
+    public static final String EXTRA_ICON_RESOURCEID = "eu.marcellofabbri.dailyroadmap.EXTRA_ICON_RESOURCEID";
+    public static final String DEFAULT_ICON_RESOURCEID = "2131230885";
 
     public EditText etDescription;
     public EditText etStartDate;
     public EditText etFinishDate;
     public EditText etStartTime;
     public EditText etFinishTime;
-    public EditText etIcon;
+    public FrameLayout frameIcon;
+    public ImageView ivIcon;
+    public String iconCode;
 
     private void assignEditTextsToFields() {
         etDescription = findViewById(R.id.edit_text_description);
@@ -53,7 +59,8 @@ public class AddUpdateEventActivity extends AppCompatActivity implements Adapter
         etFinishDate = findViewById(R.id.edit_text_finishDate);
         etStartTime = findViewById(R.id.edit_text_startTime);
         etFinishTime = findViewById(R.id.edit_text_finishTime);
-        etIcon = findViewById(R.id.edit_text_icon);
+        frameIcon = findViewById(R.id.frame_icon);
+        ivIcon = findViewById(R.id.chosen_icon);
     }
 
     @RequiresApi(api = Build.VERSION_CODES.N)
@@ -78,22 +85,23 @@ public class AddUpdateEventActivity extends AppCompatActivity implements Adapter
             etFinishDate.setText(intent.getStringExtra(EXTRA_FINISHTIME).substring(0, 8));
             etStartTime.setText(intent.getStringExtra(EXTRA_STARTTIME).substring(8));
             etFinishTime.setText(intent.getStringExtra(EXTRA_FINISHTIME).substring(8));
-            etIcon.setText(intent.getStringExtra(EXTRA_ICON));
+            iconCode = intent.getStringExtra(EXTRA_ICON_RESOURCEID);
+            ivIcon.setBackgroundResource(Integer.parseInt(iconCode));
         } else {
             setTitle("Add task");
             etStartDate.setText(intent.getStringExtra(EXTRA_STARTTIME).substring(0, 8));
             etFinishDate.setText(intent.getStringExtra(EXTRA_STARTTIME).substring(0, 8));
+            iconCode = DEFAULT_ICON_RESOURCEID;
         }
 
         List<String> iconCodes = Arrays.asList(getResources().getStringArray(R.array.icon_codes));
         GridViewAdapter gridViewAdapter = new GridViewAdapter(iconCodes, this);
-        //ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this, R.drawable.d0001, R.layout.individual_icon_imageview);
         MyIconsAlertFacilitator facilitator = new MyIconsAlertFacilitator(gridViewAdapter, this);
         GridView gridView = facilitator.getGridView();
         AlertDialog.Builder builder = facilitator.getBuilder();
         AlertDialog alertDialog = builder.create();
 
-        etIcon.setOnClickListener(new View.OnClickListener() {
+        frameIcon.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 alertDialog.show();
@@ -103,8 +111,9 @@ public class AddUpdateEventActivity extends AppCompatActivity implements Adapter
         gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                String text = parent.getItemAtPosition(position).toString();
-                //etIcon.setCompoundDrawables(null, null, , null);
+                Drawable chosenDrawable = gridViewAdapter.extractDrawableFromArray(position);
+                iconCode = String.valueOf(gridViewAdapter.extractResourceIdFromArray(position));
+                ivIcon.setBackground(chosenDrawable);
                 alertDialog.dismiss();
             }
         });
@@ -130,14 +139,14 @@ public class AddUpdateEventActivity extends AppCompatActivity implements Adapter
             return;
         }
 
-        String icon = etIcon.getText().toString();
 
         //to send data back to the activity that started this activity
         Intent data = new Intent();
         data.putExtra(EXTRA_DESCRIPTION, description);
         data.putExtra(EXTRA_STARTTIME, startTime);
         data.putExtra(EXTRA_FINISHTIME, finishTime);
-        data.putExtra(EXTRA_ICON, icon.isEmpty() ? "\uD83C\uDFF3" : icon);
+        data.putExtra(EXTRA_ICON_RESOURCEID, iconCode);
+
 
         int id = getIntent().getIntExtra(EXTRA_ID, -1);
         if (id != -1) {

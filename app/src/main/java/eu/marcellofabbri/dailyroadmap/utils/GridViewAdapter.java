@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 
+import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.io.File;
@@ -43,18 +44,33 @@ public class GridViewAdapter extends BaseAdapter {
     }
 
     @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
+    public View getView(int position, View grid, ViewGroup parent) {
         ImageView imageView;
-        if (convertView == null) {
-            imageView = new ImageView(context);
+
+        if (grid == null) {
+            grid = layoutInflater.inflate(R.layout.individual_icon_imageview, null);
+            imageView = (ImageView) grid.findViewById(R.id.individual_icon_imageview);
+            grid.setTag(imageView);
         } else {
-            imageView = (ImageView) convertView;
+            imageView = (ImageView) grid.getTag();
         }
 
-        Resources.Theme theme = context.getTheme();
-        Drawable drawable = context.getResources().getDrawable(R.drawable.d0001, theme);
+//        int resourceId = context.getResources().getIdentifier(listIconNames.get(position), "drawable", context.getPackageName());
+//        Drawable drawable = context.getDrawable(resourceId);
+
+        Drawable drawable = extractDrawableFromArray(position);
+        System.out.println(extractResourceIdFromArray(62));
 
         imageView.setImageDrawable(drawable);
-        return imageView;
+        return grid;
+    }
+
+    public Drawable extractDrawableFromArray(int position) {
+        int resourceId = extractResourceIdFromArray(position);
+        return context.getDrawable(resourceId);
+    }
+
+    public int extractResourceIdFromArray(int position) {
+        return context.getResources().getIdentifier(listIconNames.get(position), "drawable", context.getPackageName());
     }
 }

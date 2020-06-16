@@ -1,4 +1,5 @@
 package eu.marcellofabbri.dailyroadmap;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
@@ -10,6 +11,9 @@ import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.app.AlertDialog;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Canvas;
 import android.os.Build;
@@ -33,6 +37,8 @@ import java.time.OffsetDateTime;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import eu.marcellofabbri.dailyroadmap.utils.EntityFieldConverter;
 import eu.marcellofabbri.dailyroadmap.utils.MyDateTimeFormatter;
@@ -70,9 +76,26 @@ public class MainActivity extends AppCompatActivity {
         deleteTodayEventsImageButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String currentDateString = mainHeader.getCurrentDate().getText().toString();
-                OffsetDateTime currentDate = new EntityFieldConverter().convertDayStringToOffsetDateTime(currentDateString);
-                eventViewModel.deleteTodayEvents(currentDate);
+                AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+                builder.setTitle("DELETE ALL EVENTS FOR THE DAY?");
+                builder.setIcon(R.drawable.ic_medium_trash);
+                AlertDialog dialog = builder.create();
+                builder.setPositiveButton("DELETE", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        String currentDateString = mainHeader.getCurrentDate().getText().toString();
+                        OffsetDateTime currentDate = new EntityFieldConverter().convertDayStringToOffsetDateTime(currentDateString);
+                        eventViewModel.deleteTodayEvents(currentDate);
+                        dialog.dismiss();
+                    }
+                });
+                builder.setNegativeButton("BACK", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                });
+                builder.show();
             }
         });
 
@@ -103,7 +126,7 @@ public class MainActivity extends AppCompatActivity {
 
         final EventPainterContainer eventPainterContainer = findViewById(R.id.eventPainterContainer);
 
-        eventViewModel.getCertainEvents(displayedDate).observe(this, new Observer<List<Event>>() {
+        eventViewModel.getCertainEvents(displayedDate).observe(MainActivity.this, new Observer<List<Event>>() {
             @Override
             public void onChanged(List<Event> events) {
                 eventPainterContainer.removeAllViews();
@@ -139,8 +162,8 @@ public class MainActivity extends AppCompatActivity {
                 Intent intent = new Intent(MainActivity.this, AddUpdateEventActivity.class);
                 intent.putExtra(AddUpdateEventActivity.EXTRA_ID, event.getId());
                 intent.putExtra(AddUpdateEventActivity.EXTRA_DESCRIPTION, event.getDescription());
-                intent.putExtra(AddUpdateEventActivity.EXTRA_FINISHTIME, converter.extractDate(event.getFinishTime())+converter.extractTime(event.getFinishTime()));
-                intent.putExtra(AddUpdateEventActivity.EXTRA_STARTTIME, converter.extractDate(event.getStartTime())+converter.extractTime(event.getStartTime()));
+                intent.putExtra(AddUpdateEventActivity.EXTRA_FINISHTIME, converter.extractDate(event.getFinishTime()) + converter.extractTime(event.getFinishTime()));
+                intent.putExtra(AddUpdateEventActivity.EXTRA_STARTTIME, converter.extractDate(event.getStartTime()) + converter.extractTime(event.getStartTime()));
                 intent.putExtra(AddUpdateEventActivity.EXTRA_ICON_RESOURCEID, event.getIcon());
                 startActivityForResult(intent, UPDATE_EVENT_REQUEST_CODE);
             }

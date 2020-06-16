@@ -2,6 +2,8 @@ package eu.marcellofabbri.dailyroadmap;
 
 import android.content.Context;
 import android.content.res.Resources;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -15,6 +17,8 @@ import androidx.annotation.RequiresApi;
 import androidx.core.content.ContextCompat;
 
 import java.text.SimpleDateFormat;
+import java.time.OffsetDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -167,6 +171,7 @@ public class TrackPainter extends View {
                 drawEvent(events.get(i), canvas, i);
             }
         }
+        drawPin(canvas);
     }
 
     private void drawBlueprintTrack(Canvas canvas) {
@@ -238,6 +243,15 @@ public class TrackPainter extends View {
             myMap.put(timePoint, points.get(i));
         }
         map = myMap;
+    }
+
+    private void drawPin(Canvas canvas) {
+        OffsetDateTime now = OffsetDateTime.now();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("hh:mm a");
+        String nowString = formatter.format(now);
+        MyPoint nowPoint = map.get(nowString);
+        Bitmap pin = BitmapFactory.decodeResource(getResources(),R.drawable.pin3);
+        canvas.drawBitmap(pin, nowPoint.x, nowPoint.y - pin.getHeight(), paintObjectNotches());
     }
 
     private void drawEvent(Event event, Canvas canvas, int color) {

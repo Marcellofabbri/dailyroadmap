@@ -15,6 +15,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="Your task here"
+        android:maxLength="41"
         android:textColor="@android:color/white"
         android:textColorHint="@android:color/white"
         android:inputType="text" />

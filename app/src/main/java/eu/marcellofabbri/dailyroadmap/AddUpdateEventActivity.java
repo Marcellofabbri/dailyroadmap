@@ -9,6 +9,8 @@ import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -52,6 +54,7 @@ public class AddUpdateEventActivity extends AppCompatActivity implements Adapter
     public FrameLayout frameIcon;
     public ImageView ivIcon;
     public String iconCode;
+    private int DESCRIPTION_LENGTH = 40;
 
     private void assignEditTextsToFields() {
         etDescription = findViewById(R.id.edit_text_description);
@@ -69,6 +72,15 @@ public class AddUpdateEventActivity extends AppCompatActivity implements Adapter
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_event);
         assignEditTextsToFields();
+
+        etDescription.addTextChangedListener(createDescriptionTextWatcher());
+
+        etFinishDate.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(AddUpdateEventActivity.this, "Cross-day tasks are not supported", Toast.LENGTH_SHORT).show();
+            }
+        });
 
         new DatePickerPrompter(etStartDate, etFinishDate).listenForClicks();
         //new DatePickerPrompter(etFinishDate).listenForClicks();
@@ -187,5 +199,31 @@ public class AddUpdateEventActivity extends AppCompatActivity implements Adapter
     @Override
     public void onNothingSelected(AdapterView<?> parent) {
 
+    }
+
+    private TextWatcher createDescriptionTextWatcher() {
+        return new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                if (etDescription.isFocused() && etDescription.getText().toString().trim().length() > DESCRIPTION_LENGTH) {
+                    etDescription.setText(s.toString().substring(0, DESCRIPTION_LENGTH));
+                    etDescription.setSelection(s.length() - 1);
+                    Toast toast = Toast.makeText(AddUpdateEventActivity.this, "40 characters max. The title should be like a bullet point.", Toast.LENGTH_LONG);
+                    View toastView = toast.getView();
+                    toastView.setBackgroundColor(getColor(R.color.redToast));
+                    toast.show();
+                }
+            }
+        };
     }
 }

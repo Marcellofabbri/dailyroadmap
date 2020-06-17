@@ -10,6 +10,7 @@ import android.graphics.Paint;
 import android.graphics.Point;
 import android.os.Build;
 import android.util.AttributeSet;
+import android.util.TypedValue;
 import android.view.View;
 
 import androidx.annotation.Nullable;
@@ -36,10 +37,11 @@ public class TrackPainter extends View {
     float screenWidth = Resources.getSystem().getDisplayMetrics().widthPixels;
     float hUnit = (screenWidth / (700));
     float hMinuteUnit = ((100 * hUnit) / 60);
-    float vUnit = ((screenHeight * (float) 0.70) / 800);
+    float vUnit = ((screenHeight * (float)0.878 * (float)0.85) / 900);
     float vMinuteUnit = ((100 * vUnit) / 60);
     float leftMargin = hUnit * 100;
-    float upperMargin = hUnit * 48;
+    float upperMargin = hUnit * 56;
+    //float upperMargin = (12.2 * screenHeight) * 0.15 ;
     int trackDefaultColor = ContextCompat.getColor(getContext(), R.color.trackDefaultColor);
     CustomColors myColors = new CustomColors();
     Integer[] colors = new Integer[] {
@@ -116,7 +118,7 @@ public class TrackPainter extends View {
 
     protected Paint paintObjectLines() {
         Paint paintObject = new Paint();
-        paintObject.setStrokeWidth(52);
+        paintObject.setStrokeWidth(45);
         paintObject.setColor(trackDefaultColor);
         paintObject.setTextSize(60);
         return paintObject;
@@ -124,7 +126,7 @@ public class TrackPainter extends View {
 
     protected Paint paintObjectLines12() {
         Paint paintObject = new Paint();
-        paintObject.setStrokeWidth(40);
+        paintObject.setStrokeWidth(39);
         paintObject.setColor(trackDefaultColor);
         paintObject.setTextSize(60);
         return paintObject;
@@ -141,7 +143,7 @@ public class TrackPainter extends View {
 
     private Paint paintObjectHourNumbers() {
         Paint paintObject = new Paint();
-        paintObject.setTextSize(60);
+        paintObject.setTextSize(55);
         paintObject.setColor(Color.WHITE);
         return paintObject;
     }
@@ -187,7 +189,7 @@ public class TrackPainter extends View {
         canvas.drawText("1", points.get(60).x - 35*hUnit, points.get(60).y - 25*hUnit, paintObjectHourNumbers());
         for (int i = 120; i < 360; i+=60) {
             String hourString = String.valueOf(i/60);
-            canvas.drawText(hourString, points.get(i).x - 10*hUnit, points.get(i).y - 27*hUnit, paintObjectHourNumbers());
+            canvas.drawText(hourString, points.get(i).x - 8*hUnit, points.get(i).y - 30*hUnit, paintObjectHourNumbers());
         }
         canvas.drawText("6", points.get(360).x + 14*hUnit, points.get(360).y - 20*hUnit, paintObjectHourNumbers());
         for (int i = 420; i < 780; i+=60) {
@@ -199,7 +201,7 @@ public class TrackPainter extends View {
         for (int i = 840; i < 1080; i+=60) {
             int hour = i/60 - 12;
             String hourString = String.valueOf(hour);
-            canvas.drawText(hourString, points.get(i).x - 8*hUnit, points.get(i).y + 52*hUnit, paintObjectHourNumbers());
+            canvas.drawText(hourString, points.get(i).x - 8*hUnit, points.get(i).y + 55*hUnit, paintObjectHourNumbers());
         }
         canvas.drawText("6", points.get(1080).x - 30*hUnit, points.get(1080).y + 45*hUnit, paintObjectHourNumbers());
         for (int i = 1140; i < 1440; i+=60) {
@@ -250,7 +252,7 @@ public class TrackPainter extends View {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("hh:mm a");
         String nowString = formatter.format(now);
         MyPoint nowPoint = map.get(nowString);
-        Bitmap pin = BitmapFactory.decodeResource(getResources(),R.drawable.pin3);
+        Bitmap pin = BitmapFactory.decodeResource(getResources(),R.drawable.pin_grey);
         canvas.drawBitmap(pin, nowPoint.x, nowPoint.y - pin.getHeight(), paintObjectNotches());
     }
 

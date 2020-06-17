@@ -54,9 +54,9 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventHolder>
         holder.textViewDescription.setText(currentEvent.getDescription());
         holder.textViewDescription.setTextColor(assignedColor);
         holder.textViewStartTime.setText(converter.extractTime(currentEvent.getStartTime()));
-        holder.textViewStartTime.setTextColor(assignedColor);
+        holder.textViewStartTime.setTextColor(Color.DKGRAY);
         holder.textViewFinishTime.setText(converter.extractTime(currentEvent.getFinishTime()));
-        holder.textViewFinishTime.setTextColor(assignedColor);
+        holder.textViewFinishTime.setTextColor(Color.DKGRAY);
         holder.editButton.setImageResource(Integer.parseInt(currentEvent.getIcon()));
 
         holder.editButton.setOnClickListener(new View.OnClickListener() {
@@ -72,8 +72,8 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventHolder>
                 }else{
                     ViewAnimator.showOut(holder.updateButton);
                     ViewAnimator.showOut(holder.deleteButton);
-                    holder.textViewStartTime.setTextColor(assignedColor);
-                    holder.textViewFinishTime.setTextColor(assignedColor);
+                    holder.textViewStartTime.setTextColor(Color.DKGRAY);
+                    holder.textViewFinishTime.setTextColor(Color.DKGRAY);
                     holder.textViewDescription.setTextColor(assignedColor);
                 }
             }

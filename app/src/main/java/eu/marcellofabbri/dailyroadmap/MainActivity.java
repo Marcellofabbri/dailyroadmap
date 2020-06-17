@@ -3,7 +3,9 @@ package eu.marcellofabbri.dailyroadmap;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
@@ -11,27 +13,34 @@ import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.res.Resources;
 import android.graphics.Canvas;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.text.TextWatcher;
+import android.util.Log;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewParent;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.anychart.charts.Resource;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.text.ParseException;
@@ -55,23 +64,21 @@ public class MainActivity extends AppCompatActivity {
     private List<Event> displayedEvents;
     private EntityFieldConverter converter = new EntityFieldConverter();
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.logo, menu);
-        return true;
-    }
-
+    @SuppressLint("ClickableViewAccessibility")
     @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        ActionBar actionBar = getSupportActionBar();
+        actionBar.setBackgroundDrawable(getDrawable(R.drawable.toolbar_logo_6));
+        actionBar.setTitle("");
 
         final MainHeader mainHeader = findViewById(R.id.header);
         mainHeader.identifyFields();
         mainHeader.bootElements();
+        mainHeader.bootDateClick();
 
         ImageButton addImageButton = findViewById(R.id.image_add);
         addImageButton.setOnClickListener(new View.OnClickListener() {
@@ -89,7 +96,7 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
                 builder.setTitle("DELETE ALL EVENTS FOR THE DAY?");
-                builder.setIcon(R.drawable.ic_medium_trash);
+                builder.setIcon(R.drawable.ic_big_trash);
                 AlertDialog dialog = builder.create();
                 builder.setPositiveButton("DELETE", new DialogInterface.OnClickListener() {
                     @Override
@@ -114,6 +121,49 @@ public class MainActivity extends AppCompatActivity {
         final RecyclerView recyclerView = findViewById(R.id.recycler_view);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setHasFixedSize(true);
+        //SWIPE GESTURES TO BE IMPLEMENTED
+
+//        recyclerView.setOnTouchListener(new View.OnTouchListener() {
+//            int downX, upX;
+//            int YESTERDAY = -1;
+//            int TOMORROW = 1;
+//
+//            @Override
+//            public boolean onTouch(View v, MotionEvent event) {
+//
+//                if (event.getAction() == MotionEvent.ACTION_DOWN) {
+//                    downX = (int) event.getX();
+//                    Log.i("event.getX()", " downX " + downX);
+//                    return true;
+//                }
+//
+//                else if (event.getAction() == MotionEvent.ACTION_UP) {
+//                    upX = (int) event.getX();
+//                    Log.i("event.getX()", " upX " + upX);
+//                    if (upX - downX > 350) {
+//
+//                        mainHeader.getMyCalendar().add(Calendar.DAY_OF_MONTH, YESTERDAY);
+//                        String chosenDate = mainHeader.getSlashesFormat().format(myCalendar.getTime());
+//                        mainHeader.getCurrentDate().setText(chosenDate);
+//                        String weekDay = mainHeader.getWeekDayFormat().format(myCalendar.getTime());
+//                        mainHeader.getDayOfTheWeek().setText(weekDay);
+//                    }
+//
+//                    else if (downX - upX > 350) {
+//
+//                        mainHeader.getMyCalendar().add(Calendar.DAY_OF_MONTH, TOMORROW);
+//                        String chosenDate = mainHeader.getSlashesFormat().format(myCalendar.getTime());
+//                        mainHeader.getCurrentDate().setText(chosenDate);
+//                        String weekDay = mainHeader.getWeekDayFormat().format(myCalendar.getTime());
+//                        mainHeader.getDayOfTheWeek().setText(weekDay);
+//                    }
+//                    return true;
+//
+//                }
+//                return false;
+//            }
+//        });
+
 
         final EventAdapter adapter = new EventAdapter();
         recyclerView.setAdapter(adapter);
@@ -149,18 +199,6 @@ public class MainActivity extends AppCompatActivity {
         mainHeader.getCurrentDate().addTextChangedListener(dateTextWatcher);
         TextWatcher myTrackTextWatcher = new MyTrackTextWatcher(eventPainterContainer, this, this, adapter, eventViewModel);
         mainHeader.getCurrentDate().addTextChangedListener(myTrackTextWatcher);
-
-        MyButtonsCardView myButtonsCardView = findViewById(R.id.my_buttons_cardview);
-        ImageButton calendarImageButton = findViewById(R.id.image_calendar);
-        TextView dayNumberTextView = findViewById(R.id.day_number);
-        FloatingActionButton todayButton = findViewById(R.id.today_button);
-        myButtonsCardView.setImageCalendarButton(calendarImageButton);
-        myButtonsCardView.setMainHeader(mainHeader);
-        myButtonsCardView.bootCalendarButton();
-        myButtonsCardView.setDayNumberTextView(dayNumberTextView);
-        myButtonsCardView.writeDayNumberTextView();
-        myButtonsCardView.setTodayButton(todayButton);
-        myButtonsCardView.bootTodayButton();
 
         adapter.setOnButtonClickListener(new EventAdapter.OnButtonClickListener() {
             @Override

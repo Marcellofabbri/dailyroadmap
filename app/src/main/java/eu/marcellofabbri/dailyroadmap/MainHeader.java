@@ -20,14 +20,17 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.Locale;
 
 public class MainHeader extends ConstraintLayout {
     private EditText currentDate;
-    private FloatingActionButton calendarButton;
     private EditText dayOfTheWeek;
     private Button leftButton;
     private Button rightButton;
+    private FloatingActionButton todayButton;
+    private TextView dayNumberTextView;
+    private FloatingActionButton addButton;
     private Calendar myCalendar = Calendar.getInstance();
     private SimpleDateFormat slashesFormat = new SimpleDateFormat("dd/MM/yy", Locale.getDefault());
     private SimpleDateFormat weekDayFormat = new SimpleDateFormat("EEEE, dd MMMM yyyy", Locale.getDefault());
@@ -42,14 +45,6 @@ public class MainHeader extends ConstraintLayout {
 
     public MainHeader(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-    }
-
-    public void setLeftButton(Button leftButton) {
-        this.leftButton = leftButton;
-    }
-
-    public void setRightButton(Button rightButton) {
-        this.rightButton = rightButton;
     }
 
     public EditText getDayOfTheWeek() {
@@ -74,14 +69,18 @@ public class MainHeader extends ConstraintLayout {
 
     public void identifyFields() {
         currentDate = findViewById(R.id.header_date);
-        calendarButton = findViewById(R.id.calendar_button);
         dayOfTheWeek = findViewById(R.id.day_of_the_week);
+        todayButton = findViewById(R.id.today_button);
+        addButton = findViewById(R.id.button_add_event);
+        dayNumberTextView = findViewById(R.id.day_number);
     }
 
     public void bootElements() {
         bootHeaderDate();
         bootDayOfTheWeek();
         bootRightLeftButtons();
+        writeDayNumberTextView();
+        bootTodayButton();
     }
 
     private void bootDayOfTheWeek() {
@@ -121,6 +120,58 @@ public class MainHeader extends ConstraintLayout {
                 }
             });
         }
+    }
+
+    public void bootDateClick() {
+        currentDate.setOnClickListener(new View.OnClickListener() {
+
+            DatePickerDialog.OnDateSetListener date = new DatePickerDialog.OnDateSetListener() {
+
+                @Override
+                public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
+                    Calendar myCalendar = getMyCalendar();
+                    myCalendar.set(Calendar.YEAR, year);
+                    myCalendar.set(Calendar.MONTH, month);
+                    myCalendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+                    String chosenDate = getSlashesFormat().format(myCalendar.getTime());
+                    getCurrentDate().setText(chosenDate);
+                    String weekDay = getWeekDayFormat().format(myCalendar.getTime());
+                    getDayOfTheWeek().setText(weekDay);
+                }
+            };
+
+            @Override
+            public void onClick(View v) {
+                Context context = v.getContext();
+                Calendar myCalendar = getMyCalendar();
+                DatePickerDialog datePickerDialog = new DatePickerDialog(context, date, myCalendar
+                        .get(Calendar.YEAR), myCalendar.get(Calendar.MONTH),
+                        myCalendar.get(Calendar.DAY_OF_MONTH));
+                datePickerDialog.show();
+            }
+        });
+    }
+
+    private void writeDayNumberTextView() {
+        SimpleDateFormat dayNumberFormat = new SimpleDateFormat("dd");
+        Date currentDate = new Date();
+        String dayNumberString = dayNumberFormat.format(currentDate);
+        dayNumberTextView.setText(dayNumberString);
+    }
+
+    private void bootTodayButton() {
+        todayButton.setOnClickListener(new OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                Date today = new Date();
+                String todayDate = getSlashesFormat().format(today);
+                getCurrentDate().setText(todayDate);
+                String weekDay = getWeekDayFormat().format(today);
+                getDayOfTheWeek().setText(weekDay);
+                getMyCalendar().setTime(today);
+            }
+        });
     }
 
 

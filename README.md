@@ -3,8 +3,6 @@
   <img width="900" height="129" src="https://github.com/Marcellofabbri/dailyroadmap/blob/master/app/src/main/res/screenshots/toolbar_logo_6.png">
 </p>
 
-![logo](https://github.com/Marcellofabbri/dailyroadmap/blob/master/app/src/main/res/screenshots/toolbar_logo_6_sml.png)
-
 A daily task visualizer for Android. Written in Java.
 The app is meant to help users have a clear uncluttered visual representation of their daily plan in the form of a subway map fashion, which gives them an idea of what the day is meant to progress like and where they are at in their plan.
 
@@ -61,8 +59,7 @@ dependencies {
 - A **RecyclerView** class holds a list of the SQLite database entries according to the date.
 - The **Adapter** is what makes the ```RecyclerView``` work. Each database line is wrapped in a ```Holder``` subclass of Adapter.
 
-<details>
-<summary>### Features (v.1.0.0)</summary>
+### Features (v.1.0.0)
 #### Date
 Show's today's date according to the device's current date and time. It's clickable and yields a calendar dialog that lets the user go to the main page of the selected date. To each side there's a button that lets the user go to the previous or following day.
 #### Today's button
@@ -84,4 +81,3 @@ The delete button shows a trash bin with the word "ALL" on it. It opens a dialog
 The actual track is made up of 1440 points (instances of a custom made class that extends from [Point](https://developer.android.com/reference/android/graphics/Point)). A custom made class paints points that look like a line. Notches and hour numbers are added similarly. Each even is drawn in the same way but only coloring the points that map to those moments in time. Each event is colored to match it's relative task's color. Different shapes of the track might be implemented in future releases.
 #### Pin
 The pin points to where on the track the current moment in time is.
-</details>

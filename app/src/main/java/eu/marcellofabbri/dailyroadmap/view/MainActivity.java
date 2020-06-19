@@ -1,59 +1,36 @@
-package eu.marcellofabbri.dailyroadmap;
+package eu.marcellofabbri.dailyroadmap.view;
 
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
-import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
-import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.res.Resources;
-import android.graphics.Canvas;
-import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.text.TextWatcher;
-import android.util.Log;
-import android.util.TypedValue;
-import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MotionEvent;
 import android.view.View;
-import android.view.ViewParent;
-import android.widget.Button;
-import android.widget.FrameLayout;
 import android.widget.ImageButton;
-import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.anychart.charts.Resource;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
-
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.time.OffsetDateTime;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
-import java.util.Timer;
-import java.util.TimerTask;
 
+import eu.marcellofabbri.dailyroadmap.model.Event;
+import eu.marcellofabbri.dailyroadmap.viewModel.EventViewModel;
+import eu.marcellofabbri.dailyroadmap.utils.MyMainTextWatcher;
+import eu.marcellofabbri.dailyroadmap.utils.MyTrackTextWatcher;
+import eu.marcellofabbri.dailyroadmap.R;
 import eu.marcellofabbri.dailyroadmap.utils.EntityFieldConverter;
-import eu.marcellofabbri.dailyroadmap.utils.MyDateTimeFormatter;
 
 @RequiresApi(api = Build.VERSION_CODES.O)
 public class MainActivity extends AppCompatActivity {
@@ -63,6 +40,10 @@ public class MainActivity extends AppCompatActivity {
     private Calendar myCalendar = Calendar.getInstance();
     private List<Event> displayedEvents;
     private EntityFieldConverter converter = new EntityFieldConverter();
+
+    public Calendar getMyCalendar() {
+        return myCalendar;
+    }
 
     @SuppressLint("ClickableViewAccessibility")
     @RequiresApi(api = Build.VERSION_CODES.O)

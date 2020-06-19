@@ -1,4 +1,4 @@
-package eu.marcellofabbri.dailyroadmap;
+package eu.marcellofabbri.dailyroadmap.view;
 
 import android.app.DatePickerDialog;
 import android.content.Context;
@@ -22,6 +22,8 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
+
+import eu.marcellofabbri.dailyroadmap.R;
 
 public class MainHeader extends ConstraintLayout {
     private EditText currentDate;

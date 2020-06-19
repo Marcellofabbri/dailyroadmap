@@ -1,4 +1,4 @@
-package eu.marcellofabbri.dailyroadmap;
+package eu.marcellofabbri.dailyroadmap.model;
 
 import android.app.Application;
 import android.os.AsyncTask;

@@ -49,7 +49,7 @@ public class GridViewAdapter extends BaseAdapter {
 
         if (grid == null) {
             grid = layoutInflater.inflate(R.layout.individual_icon_imageview, null);
-            imageView = (ImageView) grid.findViewById(R.id.individual_icon_imageview);
+            imageView = grid.findViewById(R.id.individual_icon_imageview);
             grid.setTag(imageView);
         } else {
             imageView = (ImageView) grid.getTag();

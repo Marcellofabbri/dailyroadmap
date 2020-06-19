@@ -1,4 +1,4 @@
-package eu.marcellofabbri.dailyroadmap;
+package eu.marcellofabbri.dailyroadmap.viewModel;
 
 import android.app.Application;
 
@@ -8,6 +8,9 @@ import androidx.lifecycle.LiveData;
 
 import java.time.OffsetDateTime;
 import java.util.List;
+
+import eu.marcellofabbri.dailyroadmap.model.Event;
+import eu.marcellofabbri.dailyroadmap.model.EventRepository;
 
 public class EventViewModel extends AndroidViewModel {
     private EventRepository eventRepository;

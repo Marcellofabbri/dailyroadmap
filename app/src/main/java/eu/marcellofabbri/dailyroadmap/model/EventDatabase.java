@@ -1,4 +1,4 @@
-package eu.marcellofabbri.dailyroadmap;
+package eu.marcellofabbri.dailyroadmap.model;
 
 import android.content.Context;
 import android.os.AsyncTask;
@@ -6,7 +6,6 @@ import android.os.Build;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
-import androidx.room.Dao;
 import androidx.room.Database;
 import androidx.room.Room;
 import androidx.room.RoomDatabase;
@@ -15,7 +14,6 @@ import androidx.sqlite.db.SupportSQLiteDatabase;
 import java.time.LocalDateTime;
 import java.time.Month;
 import java.time.OffsetDateTime;
-import java.time.ZoneId;
 import java.time.ZoneOffset;
 
 @Database(entities = Event.class, version = 3)

@@ -1,4 +1,4 @@
-package eu.marcellofabbri.dailyroadmap;
+package eu.marcellofabbri.dailyroadmap.model;
 
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;

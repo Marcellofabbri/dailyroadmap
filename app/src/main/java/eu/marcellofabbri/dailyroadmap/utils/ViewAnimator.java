@@ -1,4 +1,4 @@
-package eu.marcellofabbri.dailyroadmap;
+package eu.marcellofabbri.dailyroadmap.utils;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;

@@ -10,7 +10,7 @@
     android:orientation="vertical"
     app:layout_constraintHorizontal_weight="1"
 
-    tools:context=".MainActivity">
+    tools:context=".view.MainActivity">
 
     <TextView
         android:id="@+id/no_events"
@@ -26,7 +26,7 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"/>
 
-    <eu.marcellofabbri.dailyroadmap.MainHeader
+    <eu.marcellofabbri.dailyroadmap.view.MainHeader
         android:id="@+id/header"
         android:layout_width="match_parent"
         android:layout_height="0dp"
@@ -160,7 +160,7 @@
         </FrameLayout>
 
 
-    </eu.marcellofabbri.dailyroadmap.MainHeader>
+    </eu.marcellofabbri.dailyroadmap.view.MainHeader>
 
     <LinearLayout
         android:id="@+id/central_container"
@@ -234,7 +234,7 @@
     </LinearLayout>
 
 
-    <eu.marcellofabbri.dailyroadmap.EventPainterContainer
+    <eu.marcellofabbri.dailyroadmap.view.EventPainterContainer
         android:id="@+id/eventPainterContainer"
         android:layout_width="wrap_content"
         android:layout_height="0dp"

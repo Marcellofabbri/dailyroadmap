@@ -1,4 +1,4 @@
-package eu.marcellofabbri.dailyroadmap;
+package eu.marcellofabbri.dailyroadmap.view;
 
 import android.content.Context;
 import android.content.res.Resources;
@@ -10,7 +10,6 @@ import android.graphics.Paint;
 import android.graphics.Point;
 import android.os.Build;
 import android.util.AttributeSet;
-import android.util.TypedValue;
 import android.view.View;
 
 import androidx.annotation.Nullable;
@@ -27,6 +26,9 @@ import java.util.List;
 import java.util.Locale;
 import java.util.TimeZone;
 
+import eu.marcellofabbri.dailyroadmap.utils.CustomColors;
+import eu.marcellofabbri.dailyroadmap.R;
+import eu.marcellofabbri.dailyroadmap.model.Event;
 import eu.marcellofabbri.dailyroadmap.utils.EntityFieldConverter;
 
 @RequiresApi(api = Build.VERSION_CODES.O)

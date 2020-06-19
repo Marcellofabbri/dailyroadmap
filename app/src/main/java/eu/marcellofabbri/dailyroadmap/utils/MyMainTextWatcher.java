@@ -1,6 +1,5 @@
-package eu.marcellofabbri.dailyroadmap;
+package eu.marcellofabbri.dailyroadmap.utils;
 
-import android.content.Context;
 import android.os.Build;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -10,11 +9,13 @@ import androidx.annotation.RequiresApi;
 import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.Observer;
 
-import java.text.ParseException;
 import java.time.OffsetDateTime;
 import java.util.List;
 
+import eu.marcellofabbri.dailyroadmap.model.Event;
 import eu.marcellofabbri.dailyroadmap.utils.EntityFieldConverter;
+import eu.marcellofabbri.dailyroadmap.view.EventAdapter;
+import eu.marcellofabbri.dailyroadmap.viewModel.EventViewModel;
 
 public class MyMainTextWatcher implements TextWatcher {
     private EventViewModel eventViewModel;

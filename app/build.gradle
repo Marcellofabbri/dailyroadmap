@@ -31,14 +31,29 @@ android {
 
 }
 
+
 dependencies {
     def lifecycle_version = "1.1.1"
     def room_version = "2.2.5"
 
+    // Required -- JUnit 4 framework
+    testImplementation 'junit:junit:4.12'
+    // Optional -- Robolectric environment
+    testImplementation 'androidx.test:core:1.2.0'
+    // Optional -- Mockito framework
+    testImplementation 'org.mockito:mockito-core:1.10.19'
+    testImplementation 'junit:junit:4.12'
+    // required if you want to use Mockito for unit tests
+    testImplementation 'org.mockito:mockito-core:2.7.22'
+    // required if you want to use Mockito for Android tests
+    androidTestImplementation 'org.mockito:mockito-android:2.7.22'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
+    androidTestImplementation 'androidx.test:runner:1.2.0'
+    androidTestImplementation 'androidx.test:rules:1.2.0'
     implementation 'com.github.AnyChart:AnyChart-Android:1.1.2'
     implementation 'com.jjoe64:graphview:4.2.2'
     implementation 'com.github.PhilJay:MPAndroidChart:v3.1.0'
-    implementation 'com.google.android.material:material:1.0.0'
+    implementation 'com.google.android.material:material:1.1.0'
     implementation 'com.android.support:recyclerview-v7:28.0.0'
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation 'androidx.appcompat:appcompat:1.1.0'
@@ -52,6 +67,7 @@ dependencies {
     annotationProcessor "androidx.room:room-compiler:$room_version"
     //Lifecycle components
     implementation "android.arch.lifecycle:extensions:$lifecycle_version"
+    //noinspection LifecycleAnnotationProcessorWithJava8
     annotationProcessor "android.arch.lifecycle:compiler:$lifecycle_version"
 
 }

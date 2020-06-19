@@ -1,22 +1,22 @@
-package eu.marcellofabbri.dailyroadmap;
+package eu.marcellofabbri.dailyroadmap.utils;
 
 import android.content.Context;
 import android.os.Build;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.widget.Adapter;
-import android.widget.RelativeLayout;
-import android.widget.TextView;
 
 import androidx.annotation.RequiresApi;
 import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.Observer;
-import androidx.recyclerview.widget.RecyclerView;
 
 import java.time.OffsetDateTime;
 import java.util.List;
 
-import eu.marcellofabbri.dailyroadmap.utils.EntityFieldConverter;
+import eu.marcellofabbri.dailyroadmap.view.EventPainterContainer;
+import eu.marcellofabbri.dailyroadmap.model.Event;
+import eu.marcellofabbri.dailyroadmap.view.EventAdapter;
+import eu.marcellofabbri.dailyroadmap.view.TrackPainter;
+import eu.marcellofabbri.dailyroadmap.viewModel.EventViewModel;
 
 public class MyTrackTextWatcher implements TextWatcher {
     private EventPainterContainer eventPainterContainer;

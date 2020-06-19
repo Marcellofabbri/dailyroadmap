@@ -1,4 +1,6 @@
-package eu.marcellofabbri.dailyroadmap;
+package eu.marcellofabbri.dailyroadmap.utils;
+
+import eu.marcellofabbri.dailyroadmap.R;
 
 public class CustomColors {
     private int orange;

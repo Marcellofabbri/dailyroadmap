@@ -1,4 +1,4 @@
-package eu.marcellofabbri.dailyroadmap;
+package eu.marcellofabbri.dailyroadmap.view;
 
 import android.content.res.ColorStateList;
 import android.graphics.Color;
@@ -6,7 +6,6 @@ import android.os.Build;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.FrameLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -14,19 +13,15 @@ import androidx.annotation.RequiresApi;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.android.material.internal.TextDrawableHelper;
 
-import java.lang.reflect.Field;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 
+import eu.marcellofabbri.dailyroadmap.utils.CustomColors;
+import eu.marcellofabbri.dailyroadmap.R;
+import eu.marcellofabbri.dailyroadmap.utils.ViewAnimator;
+import eu.marcellofabbri.dailyroadmap.model.Event;
 import eu.marcellofabbri.dailyroadmap.utils.EntityFieldConverter;
-import eu.marcellofabbri.dailyroadmap.utils.MapUtil;
-import eu.marcellofabbri.dailyroadmap.utils.TextDrawable;
 
 public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventHolder> {
     private List<Event> events = new ArrayList<>();

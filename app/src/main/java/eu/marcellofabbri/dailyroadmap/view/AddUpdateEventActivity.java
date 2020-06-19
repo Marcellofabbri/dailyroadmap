@@ -1,4 +1,4 @@
-package eu.marcellofabbri.dailyroadmap;
+package eu.marcellofabbri.dailyroadmap.view;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
@@ -15,17 +15,12 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.BaseAdapter;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.Toast;
-
-import com.anychart.core.Base;
 
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
@@ -33,6 +28,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
+import eu.marcellofabbri.dailyroadmap.R;
 import eu.marcellofabbri.dailyroadmap.utils.DatePickerPrompter;
 import eu.marcellofabbri.dailyroadmap.utils.GridViewAdapter;
 import eu.marcellofabbri.dailyroadmap.utils.MyIconsAlertFacilitator;

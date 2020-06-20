@@ -5,8 +5,8 @@
     <color name="colorAccent">#406dce</color>
     <color name="cardViewButtonsText">#243EC5</color>
     <color name="daytimeBackground">#739EFB</color>
-    <color name="daytimeBackgroundDarker">#7C9EE8</color>
-    <color name="card">#FFFFFF</color>
+    <color name="daytimeBackgroundDarker">#3760B8</color>
+    <color name="card">#F8FCFF</color>
     <color name="calendarButton">#673AB7</color>
     <color name="todayButton">#673AB7</color>
     <color name="deleteAllButton">#3A9EB7</color>
@@ -23,7 +23,11 @@
     <color name="blue">#2E42B5</color>
     <color name="red">#DD1515</color>
     <color name="green">#128E1D</color>
-    <color name="amber">#FFA928</color>
+    <color name="amber">#EAAC30</color>
+    <color name="white">#FFFFFF</color>
+    <color name="lightGrey">#FFFAFA</color>
+    <color name="azure">#DADADA</color>
+    <color name="mediumGray">#736F6F</color>
 
     <color name="blackSemi">#A8000000</color>
     <color name="orangeSemi">#B1FF6600</color>

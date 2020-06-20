@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.appcompat.widget.LinearLayoutCompat
+    android:id="@+id/add_update_activity"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
@@ -17,7 +18,7 @@
         android:hint="Your task here"
         android:maxLength="41"
         android:textColor="@android:color/white"
-        android:textColorHint="@android:color/white"
+        android:textColorHint="@color/mediumGray"
         android:inputType="text" />
 
     <RelativeLayout
@@ -48,7 +49,7 @@
             android:clickable="true"
             android:focusable="false"
             android:textColor="@android:color/white"
-            android:textColorHint="@android:color/white"/>
+            android:textColorHint="@color/mediumGray"/>
 
     </RelativeLayout>
 
@@ -80,7 +81,7 @@
             android:clickable="true"
             android:focusable="false"
             android:textColor="@android:color/white"
-            android:textColorHint="@android:color/white"/>
+            android:textColorHint="@color/mediumGray" />
 
     </RelativeLayout>
 
@@ -94,6 +95,7 @@
             android:layout_height="40dp">
 
             <TextView
+                android:id="@+id/assing_an_icon_text_view"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Assign an icon:"

@@ -3,6 +3,7 @@ package eu.marcellofabbri.dailyroadmap.view;
 import android.app.DatePickerDialog;
 import android.content.Context;
 import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.Button;
@@ -14,6 +15,7 @@ import android.widget.TextView;
 
 import androidx.annotation.Nullable;
 import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.core.content.ContextCompat;
 import androidx.lifecycle.MutableLiveData;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -36,6 +38,8 @@ public class MainHeader extends ConstraintLayout {
     private Calendar myCalendar = Calendar.getInstance();
     private SimpleDateFormat slashesFormat = new SimpleDateFormat("dd/MM/yy", Locale.getDefault());
     private SimpleDateFormat weekDayFormat = new SimpleDateFormat("EEEE, dd MMMM yyyy", Locale.getDefault());
+    private int[] defaultColors = new int[]{R.color.white, R.color.daytimeBackgroundDarker};
+    private int selectedColorPosition = 1;
 
     public MainHeader(Context context) {
         super(context);
@@ -69,6 +73,10 @@ public class MainHeader extends ConstraintLayout {
         return currentDate;
     }
 
+    public int[] getDefaultColors() {
+        return defaultColors;
+    }
+
     public void identifyFields() {
         currentDate = findViewById(R.id.header_date);
         dayOfTheWeek = findViewById(R.id.day_of_the_week);
@@ -88,12 +96,14 @@ public class MainHeader extends ConstraintLayout {
     private void bootDayOfTheWeek() {
         String weekDay = weekDayFormat.format(myCalendar.getTime());
         dayOfTheWeek.setText(weekDay);
+        dayOfTheWeek.setTextColor(ContextCompat.getColor(getContext(), defaultColors[selectedColorPosition]));
     }
 
     private void bootHeaderDate() {
         String today = slashesFormat.format(myCalendar.getTime());
         currentDate.setText(today);
         currentDate.setShadowLayer(2, 0, 0, Color.GRAY);
+        currentDate.setTextColor(ContextCompat.getColor(getContext(), defaultColors[selectedColorPosition]));
     }
 
     public void bootRightLeftButtons() {
@@ -103,13 +113,19 @@ public class MainHeader extends ConstraintLayout {
         for (int i = 0; i < 2; i++) {
             final Integer amount;
             Button button;
+            Drawable drawable;
             if (i == 0) {
                 button = rightButton;
                 amount = 1;
+                drawable = button.getCompoundDrawables()[0];
             } else {
                 button = leftButton;
                 amount = -1;
+                drawable = button.getCompoundDrawables()[2];
             }
+
+
+            drawable.setTint(ContextCompat.getColor(getContext(), defaultColors[selectedColorPosition]));
 
             button.setOnClickListener(new View.OnClickListener() {
                 @Override

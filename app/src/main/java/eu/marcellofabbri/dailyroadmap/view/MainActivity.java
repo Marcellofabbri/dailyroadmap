@@ -4,6 +4,7 @@ import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -13,6 +14,7 @@ import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
 import android.text.TextWatcher;
@@ -36,14 +38,13 @@ import eu.marcellofabbri.dailyroadmap.utils.EntityFieldConverter;
 public class MainActivity extends AppCompatActivity {
     public static final int ADD_EVENT_REQUEST_CODE = 1;
     public static final int UPDATE_EVENT_REQUEST_CODE = 2;
+    private int[] backgroundColors = new int[] {R.color.daytimeBackground, R.color.lightGrey};
+    private int selectedBackgroundColorPosition = 1;
     private EventViewModel eventViewModel;
     private Calendar myCalendar = Calendar.getInstance();
     private List<Event> displayedEvents;
     private EntityFieldConverter converter = new EntityFieldConverter();
-
-    public Calendar getMyCalendar() {
-        return myCalendar;
-    }
+    SharedPreferences sharedPreferences;
 
     @SuppressLint("ClickableViewAccessibility")
     @RequiresApi(api = Build.VERSION_CODES.O)
@@ -51,6 +52,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        findViewById(R.id.main_activity).setBackgroundColor(ContextCompat.getColor(this, backgroundColors[selectedBackgroundColorPosition]));
 
         ActionBar actionBar = getSupportActionBar();
         actionBar.setBackgroundDrawable(getDrawable(R.drawable.toolbar_logo_6));
@@ -160,6 +162,7 @@ public class MainActivity extends AppCompatActivity {
                 adapter.setEvents(events);
                 if (events.size() == 0) {
                     noEvents.setText("NO EVENTS\nTO DISPLAY");
+                    noEvents.setTextColor(mainHeader.getDefaultColors()[1]);
                 } else {
                     noEvents.setText("");
                 }

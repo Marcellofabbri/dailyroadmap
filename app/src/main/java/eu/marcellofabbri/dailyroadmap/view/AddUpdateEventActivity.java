@@ -3,6 +3,7 @@ package eu.marcellofabbri.dailyroadmap.view;
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 
 import android.app.AlertDialog;
 import android.content.Intent;
@@ -20,6 +21,7 @@ import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.GridView;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.time.LocalTime;
@@ -51,6 +53,9 @@ public class AddUpdateEventActivity extends AppCompatActivity implements Adapter
     public ImageView ivIcon;
     public String iconCode;
     private int DESCRIPTION_LENGTH = 40;
+    private int[] backgroundColors = new int[] {R.color.daytimeBackground, R.color.lightGrey};
+    private int[] textColors = new int[] {R.color.white, R.color.logoBackgroundHeader};
+    private int selectedBackgroundColorPosition = 1;
 
     private void assignEditTextsToFields() {
         etDescription = findViewById(R.id.edit_text_description);
@@ -62,12 +67,23 @@ public class AddUpdateEventActivity extends AppCompatActivity implements Adapter
         ivIcon = findViewById(R.id.chosen_icon);
     }
 
+    private void assignColorToTexts() {
+        EditText[] editTexts = new EditText[] {etDescription, etStartDate, etFinishDate, etStartTime, etFinishTime};
+        for (EditText editText : editTexts) {
+            editText.setTextColor(ContextCompat.getColor(getApplicationContext(), textColors[selectedBackgroundColorPosition]));
+        }
+        TextView iconTv = findViewById(R.id.assing_an_icon_text_view);
+        iconTv.setTextColor(ContextCompat.getColor(getApplicationContext(), textColors[selectedBackgroundColorPosition]));
+    }
+
     @RequiresApi(api = Build.VERSION_CODES.N)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_event);
         assignEditTextsToFields();
+        assignColorToTexts();
+        findViewById(R.id.add_update_activity).setBackgroundColor(ContextCompat.getColor(this, backgroundColors[selectedBackgroundColorPosition]));
 
         etDescription.addTextChangedListener(createDescriptionTextWatcher());
 

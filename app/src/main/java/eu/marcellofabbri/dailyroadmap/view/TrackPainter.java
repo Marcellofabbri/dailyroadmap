@@ -43,8 +43,9 @@ public class TrackPainter extends View {
     float vMinuteUnit = ((100 * vUnit) / 60);
     float leftMargin = hUnit * 100;
     float upperMargin = hUnit * 56;
-    //float upperMargin = (12.2 * screenHeight) * 0.15 ;
-    int trackDefaultColor = ContextCompat.getColor(getContext(), R.color.trackDefaultColor);
+    int[] trackDefaultColors = new int[] {ContextCompat.getColor(getContext(), R.color.trackDefaultColor), ContextCompat.getColor(getContext(), R.color.azure)};
+    int whatColorPosition = 1;
+    int trackDefaultColor = trackDefaultColors[whatColorPosition];
     CustomColors myColors = new CustomColors();
     Integer[] colors = new Integer[] {
             ContextCompat.getColor(getContext(), myColors.getRed()),
@@ -70,10 +71,6 @@ public class TrackPainter extends View {
 
     public TrackPainter(Context context, @Nullable AttributeSet attrs, int defStyleAttr, List<Event> events) {
         super(context, attrs, defStyleAttr);
-        this.events = events;
-    }
-
-    public void setEvents(List<Event> events) {
         this.events = events;
     }
 
@@ -146,7 +143,7 @@ public class TrackPainter extends View {
     private Paint paintObjectHourNumbers() {
         Paint paintObject = new Paint();
         paintObject.setTextSize(55);
-        paintObject.setColor(Color.WHITE);
+        paintObject.setColor(R.color.daytimeBackgroundDarker);
         return paintObject;
     }
 
@@ -263,7 +260,7 @@ public class TrackPainter extends View {
         String finishTime = converter.extractTime(event.getFinishTime());
         int startTimeIndex = (map.get(startTime)).index;
         int finishTimeIndex = (map.get(finishTime)).index;
-        int colorNumber = color > 5 ? color - 5 : color;
+        int colorNumber = color > 5 ? color - 6 : color;
 
         for (int i = startTimeIndex; i < finishTimeIndex; i++) {
             canvas.drawPoint(points.get(i).x, points.get(i).y, paintObjectTest(colors[colorNumber]));

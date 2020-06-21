@@ -4,6 +4,8 @@ import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.NotificationCompat;
+import androidx.core.app.NotificationManagerCompat;
 import androidx.core.content.ContextCompat;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
@@ -12,6 +14,9 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
+import android.app.Notification;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -45,6 +50,7 @@ public class MainActivity extends AppCompatActivity {
     private List<Event> displayedEvents;
     private EntityFieldConverter converter = new EntityFieldConverter();
     SharedPreferences sharedPreferences;
+    NotificationManagerCompat notificationManagerCompat;
 
     @SuppressLint("ClickableViewAccessibility")
     @RequiresApi(api = Build.VERSION_CODES.O)
@@ -53,6 +59,9 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         findViewById(R.id.main_activity).setBackgroundColor(ContextCompat.getColor(this, backgroundColors[selectedBackgroundColorPosition]));
+
+        notificationManagerCompat = NotificationManagerCompat.from(this);
+
 
         ActionBar actionBar = getSupportActionBar();
         actionBar.setBackgroundDrawable(getDrawable(R.drawable.toolbar_logo_6));
@@ -251,4 +260,17 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    public void sendOnChannel1(View v) {
+        String title = "NOTIFICATION TITLE";
+        String message = "notification message";
+        Notification notification = new NotificationCompat.Builder(this, TheApplication.CHANNEL_1_ID)
+                .setSmallIcon(R.id.chosen_icon)
+                .setContentTitle(title)
+                .setContentText(message)
+                .setPriority(NotificationCompat.PRIORITY_HIGH)
+                .setCategory(NotificationCompat.CATEGORY_MESSAGE)
+                .build();
+
+        notificationManagerCompat.notify(1, notification);
+    }
 }

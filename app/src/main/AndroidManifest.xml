@@ -3,6 +3,7 @@
     package="eu.marcellofabbri.dailyroadmap">
 
     <application
+        android:name=".view.TheApplication"
         android:allowBackup="true"
         android:icon="@mipmap/subwayblue"
         android:label="@string/app_name"

@@ -13,10 +13,13 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.annotation.SuppressLint;
+import android.app.AlarmManager;
 import android.app.AlertDialog;
 import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
+import android.app.PendingIntent;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -49,7 +52,8 @@ public class MainActivity extends AppCompatActivity {
     private Calendar myCalendar = Calendar.getInstance();
     private List<Event> displayedEvents;
     private EntityFieldConverter converter = new EntityFieldConverter();
-    SharedPreferences sharedPreferences;
+    public static final String SHARED_PREFS = "sharedPrefs";
+    public static final int SP_INDEX = 0;
     NotificationManagerCompat notificationManagerCompat;
 
     @SuppressLint("ClickableViewAccessibility")
@@ -59,9 +63,6 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         findViewById(R.id.main_activity).setBackgroundColor(ContextCompat.getColor(this, backgroundColors[selectedBackgroundColorPosition]));
-
-        notificationManagerCompat = NotificationManagerCompat.from(this);
-
 
         ActionBar actionBar = getSupportActionBar();
         actionBar.setBackgroundDrawable(getDrawable(R.drawable.toolbar_logo_6));
@@ -113,49 +114,6 @@ public class MainActivity extends AppCompatActivity {
         final RecyclerView recyclerView = findViewById(R.id.recycler_view);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setHasFixedSize(true);
-        //SWIPE GESTURES TO BE IMPLEMENTED
-
-//        recyclerView.setOnTouchListener(new View.OnTouchListener() {
-//            int downX, upX;
-//            int YESTERDAY = -1;
-//            int TOMORROW = 1;
-//
-//            @Override
-//            public boolean onTouch(View v, MotionEvent event) {
-//
-//                if (event.getAction() == MotionEvent.ACTION_DOWN) {
-//                    downX = (int) event.getX();
-//                    Log.i("event.getX()", " downX " + downX);
-//                    return true;
-//                }
-//
-//                else if (event.getAction() == MotionEvent.ACTION_UP) {
-//                    upX = (int) event.getX();
-//                    Log.i("event.getX()", " upX " + upX);
-//                    if (upX - downX > 350) {
-//
-//                        mainHeader.getMyCalendar().add(Calendar.DAY_OF_MONTH, YESTERDAY);
-//                        String chosenDate = mainHeader.getSlashesFormat().format(myCalendar.getTime());
-//                        mainHeader.getCurrentDate().setText(chosenDate);
-//                        String weekDay = mainHeader.getWeekDayFormat().format(myCalendar.getTime());
-//                        mainHeader.getDayOfTheWeek().setText(weekDay);
-//                    }
-//
-//                    else if (downX - upX > 350) {
-//
-//                        mainHeader.getMyCalendar().add(Calendar.DAY_OF_MONTH, TOMORROW);
-//                        String chosenDate = mainHeader.getSlashesFormat().format(myCalendar.getTime());
-//                        mainHeader.getCurrentDate().setText(chosenDate);
-//                        String weekDay = mainHeader.getWeekDayFormat().format(myCalendar.getTime());
-//                        mainHeader.getDayOfTheWeek().setText(weekDay);
-//                    }
-//                    return true;
-//
-//                }
-//                return false;
-//            }
-//        });
-
 
         final EventAdapter adapter = new EventAdapter();
         recyclerView.setAdapter(adapter);
@@ -177,6 +135,8 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });
+
+
 
         final EventPainterContainer eventPainterContainer = findViewById(R.id.eventPainterContainer);
 
@@ -232,6 +192,16 @@ public class MainActivity extends AppCompatActivity {
 
             eventViewModel.insert(newEvent);
 
+            Intent intent = new Intent(MainActivity.this, ReminderBroadcast.class);
+            PendingIntent pendingIntent = PendingIntent.getService(this, 0, intent, PendingIntent.FLAG_CANCEL_CURRENT);
+            AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
+            long timeInMillis = (newEvent.getStartTime().toEpochSecond())*1000;
+            alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, timeInMillis, pendingIntent);
+
+            System.out.println(myCalendar.getTimeInMillis());
+
+            System.out.println(newEvent.getStartTime().toInstant().toEpochMilli());
+
             Toast.makeText(this, "Event saved", Toast.LENGTH_SHORT).show();
         } else if (requestCode == UPDATE_EVENT_REQUEST_CODE && resultCode == RESULT_OK) {
 
@@ -260,17 +230,40 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    public void sendOnChannel1(View v) {
-        String title = "NOTIFICATION TITLE";
-        String message = "notification message";
-        Notification notification = new NotificationCompat.Builder(this, TheApplication.CHANNEL_1_ID)
-                .setSmallIcon(R.id.chosen_icon)
-                .setContentTitle(title)
-                .setContentText(message)
-                .setPriority(NotificationCompat.PRIORITY_HIGH)
-                .setCategory(NotificationCompat.CATEGORY_MESSAGE)
-                .build();
+    private void setUpEventNotification(Event event) {
+        Intent intent = new Intent(MainActivity.this, ReminderBroadcast.class);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(getApplicationContext(), 1, intent, 0);
+        AlarmManager alarmManager = (AlarmManager) getSystemService(MainActivity.ALARM_SERVICE);
+        assert alarmManager != null;
+        alarmManager.set(AlarmManager.RTC_WAKEUP, event.getStartTime().toInstant().toEpochMilli(), pendingIntent);
+        System.out.println("TIME NOW");
+        System.out.println(alarmManager.getNextAlarmClock());
+    }
 
-        notificationManagerCompat.notify(1, notification);
+    private void recordStartTime(Event event) {
+        SharedPreferences sharedPreferences = getSharedPreferences(SHARED_PREFS, MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        String index = String.valueOf(event.getId());
+        editor.putLong(index, event.getStartTime().toInstant().toEpochMilli());
+        editor.commit();
+    }
+
+    private void retrieveStartTime(Event event) {
+        SharedPreferences sharedPreferences = getSharedPreferences(SHARED_PREFS, MODE_PRIVATE);
+        String index = String.valueOf(event.getId());
+        sharedPreferences.getLong(index, 0);
+    }
+
+    public void createNotifications(List<Long> startTimes) {
+        Intent intent = new Intent(getApplication().getApplicationContext(), ReminderBroadcast.class);
+
+        for (int i = 0; i < startTimes.size(); i++) {
+            PendingIntent pendingIntent = PendingIntent.getBroadcast(getApplication().getApplicationContext(), i, intent, 0);
+        }
+        AlarmManager alarmManager = (AlarmManager) MainActivity.getAlarmService(MainActivity.ALARM_SERVICE);
+        assert alarmManager != null;
+        alarmManager.set(AlarmManager.RTC_WAKEUP, event.getStartTime().toInstant().toEpochMilli(), pendingIntent);
+        System.out.println("TIME NOW");
+        System.out.println(alarmManager.getNextAlarmClock());
     }
 }

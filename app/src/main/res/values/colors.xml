@@ -6,7 +6,7 @@
     <color name="cardViewButtonsText">#243EC5</color>
     <color name="daytimeBackground">#739EFB</color>
     <color name="daytimeBackgroundDarker">#3760B8</color>
-    <color name="card">#F8FCFF</color>
+    <color name="card">#F3F3F3</color>
     <color name="calendarButton">#673AB7</color>
     <color name="todayButton">#673AB7</color>
     <color name="deleteAllButton">#3A9EB7</color>

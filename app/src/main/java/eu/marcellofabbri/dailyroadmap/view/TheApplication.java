@@ -20,12 +20,12 @@ public class TheApplication extends Application {
             NotificationChannel channel1 = new NotificationChannel(CHANNEL_1_ID, "Standard notification", NotificationManager.IMPORTANCE_HIGH);
             channel1.setDescription("Sound and vibration");
 
-            NotificationChannel channel2 = new NotificationChannel(CHANNEL_2_ID, "Channel 2", NotificationManager.IMPORTANCE_LOW);
-            channel2.setDescription("This is channel 2");
+//            NotificationChannel channel2 = new NotificationChannel(CHANNEL_2_ID, "Channel 2", NotificationManager.IMPORTANCE_LOW);
+//            channel2.setDescription("This is channel 2");
 
             NotificationManager manager = getSystemService(NotificationManager.class);
             manager.createNotificationChannel(channel1);
-            manager.createNotificationChannel(channel2);
+//            manager.createNotificationChannel(channel2);
         }
     }
 }

@@ -260,7 +260,7 @@ public class TrackPainter extends View {
         String finishTime = converter.extractTime(event.getFinishTime());
         int startTimeIndex = (map.get(startTime)).index;
         int finishTimeIndex = (map.get(finishTime)).index;
-        int colorNumber = color > 5 ? color - 6 : color;
+        int colorNumber = color - (6 * (int)(color/6));
 
         for (int i = startTimeIndex; i < finishTimeIndex; i++) {
             canvas.drawPoint(points.get(i).x, points.get(i).y, paintObjectTest(colors[colorNumber]));

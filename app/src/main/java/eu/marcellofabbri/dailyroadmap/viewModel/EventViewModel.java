@@ -1,6 +1,10 @@
 package eu.marcellofabbri.dailyroadmap.viewModel;
 
+import android.app.AlarmManager;
 import android.app.Application;
+import android.app.PendingIntent;
+import android.content.Intent;
+import android.content.SharedPreferences;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
@@ -11,6 +15,8 @@ import java.util.List;
 
 import eu.marcellofabbri.dailyroadmap.model.Event;
 import eu.marcellofabbri.dailyroadmap.model.EventRepository;
+import eu.marcellofabbri.dailyroadmap.view.MainActivity;
+import eu.marcellofabbri.dailyroadmap.view.ReminderBroadcast;
 
 public class EventViewModel extends AndroidViewModel {
     private EventRepository eventRepository;
@@ -47,4 +53,5 @@ public class EventViewModel extends AndroidViewModel {
     }
 
     public void deleteTodayEvents(OffsetDateTime startTime) { eventRepository.deleteTodayEvents(startTime);}
+
 }

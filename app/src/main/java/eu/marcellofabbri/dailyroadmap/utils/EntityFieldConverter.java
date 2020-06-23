@@ -66,7 +66,7 @@ public class EntityFieldConverter {
                     (string.substring(8, 10).equals("12") ? Integer.parseInt(string.substring(8, 10)) : Integer.parseInt(string.substring(8, 10)) + 12);
             int minutes = Integer.parseInt(string.substring(11, 13));
 
-            return OffsetDateTime.of(LocalDateTime.of((2000 + year), month, day, hour, minutes, 0), ZoneOffset.ofHours(0));
+            return OffsetDateTime.of(LocalDateTime.of((2000 + year), month, day, hour, minutes, 0), ZoneOffset.ofHours(1));
         } else {
             int day = Integer.parseInt(string.substring(0, 2));
             int month = Integer.parseInt(string.substring(3, 5));
@@ -74,7 +74,7 @@ public class EntityFieldConverter {
             int hour = (string.substring(13).equals("AM")) ? Integer.parseInt(string.substring(8, 9)) : Integer.parseInt(string.substring(8, 9)) + 12;
             int minutes = Integer.parseInt(string.substring(10, 12));
 
-            return OffsetDateTime.of(LocalDateTime.of((2000 + year), month, day, hour, minutes, 0), ZoneOffset.ofHours(0));
+            return OffsetDateTime.of(LocalDateTime.of((2000 + year), month, day, hour, minutes, 0), ZoneOffset.ofHours(1));
         }
     }
 }

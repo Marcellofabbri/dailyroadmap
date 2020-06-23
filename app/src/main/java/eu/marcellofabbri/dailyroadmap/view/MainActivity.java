@@ -32,8 +32,10 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.time.OffsetDateTime;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
+import java.util.function.Consumer;
 
 import eu.marcellofabbri.dailyroadmap.model.Event;
 import eu.marcellofabbri.dailyroadmap.viewModel.EventViewModel;
@@ -52,8 +54,9 @@ public class MainActivity extends AppCompatActivity {
     private Calendar myCalendar = Calendar.getInstance();
     private List<Event> displayedEvents;
     private EntityFieldConverter converter = new EntityFieldConverter();
+    private AlarmManager alarmManager;
     public static final String SHARED_PREFS = "sharedPrefs";
-    public static final int SP_INDEX = 0;
+    private SharedPreferences sharedPreferences;
     NotificationManagerCompat notificationManagerCompat;
 
     @SuppressLint("ClickableViewAccessibility")
@@ -63,6 +66,9 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         findViewById(R.id.main_activity).setBackgroundColor(ContextCompat.getColor(this, backgroundColors[selectedBackgroundColorPosition]));
+
+        alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
+        sharedPreferences = getSharedPreferences(SHARED_PREFS, MODE_PRIVATE);
 
         ActionBar actionBar = getSupportActionBar();
         actionBar.setBackgroundDrawable(getDrawable(R.drawable.toolbar_logo_6));
@@ -136,6 +142,19 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        // SET UP AND MAINTAIN NOTIFICATIONS
+        eventViewModel.getCertainEvents(displayedDate).observe(this, new Observer<List<Event>>() {
+            @Override
+            public void onChanged(List<Event> events) {
+
+                // CREATE ALARMS FOR EACH OF TODAY'S EVENTS
+                for (Event event : events) {
+                    Intent intent = new Intent(MainActivity.this, ReminderBroadcast.class);
+                    PendingIntent pendingIntent = PendingIntent.getBroadcast(MainActivity.this, event.getId(), intent, 0);
+                    alarmManager.set(AlarmManager.RTC_WAKEUP, event.getStartTime().toInstant().toEpochMilli(), pendingIntent);
+                }
+            }
+        });
 
 
         final EventPainterContainer eventPainterContainer = findViewById(R.id.eventPainterContainer);
@@ -193,14 +212,10 @@ public class MainActivity extends AppCompatActivity {
             eventViewModel.insert(newEvent);
 
             Intent intent = new Intent(MainActivity.this, ReminderBroadcast.class);
-            PendingIntent pendingIntent = PendingIntent.getService(this, 0, intent, PendingIntent.FLAG_CANCEL_CURRENT);
-            AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
-            long timeInMillis = (newEvent.getStartTime().toEpochSecond())*1000;
-            alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, timeInMillis, pendingIntent);
-
-            System.out.println(myCalendar.getTimeInMillis());
-
-            System.out.println(newEvent.getStartTime().toInstant().toEpochMilli());
+            PendingIntent pendingIntent = PendingIntent.getService(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+            AlarmManager alarmManager = (AlarmManager) MainActivity.this.getSystemService(ALARM_SERVICE);
+            long timeInMillis = (newEvent.getStartTime().toInstant().toEpochMilli());
+            alarmManager.set(AlarmManager.RTC_WAKEUP, timeInMillis, pendingIntent);
 
             Toast.makeText(this, "Event saved", Toast.LENGTH_SHORT).show();
         } else if (requestCode == UPDATE_EVENT_REQUEST_CODE && resultCode == RESULT_OK) {
@@ -236,8 +251,6 @@ public class MainActivity extends AppCompatActivity {
         AlarmManager alarmManager = (AlarmManager) getSystemService(MainActivity.ALARM_SERVICE);
         assert alarmManager != null;
         alarmManager.set(AlarmManager.RTC_WAKEUP, event.getStartTime().toInstant().toEpochMilli(), pendingIntent);
-        System.out.println("TIME NOW");
-        System.out.println(alarmManager.getNextAlarmClock());
     }
 
     private void recordStartTime(Event event) {
@@ -248,22 +261,25 @@ public class MainActivity extends AppCompatActivity {
         editor.commit();
     }
 
-    private void retrieveStartTime(Event event) {
+    private long retrieveStartTime(Event event) {
         SharedPreferences sharedPreferences = getSharedPreferences(SHARED_PREFS, MODE_PRIVATE);
         String index = String.valueOf(event.getId());
-        sharedPreferences.getLong(index, 0);
+        return sharedPreferences.getLong(index, 0);
     }
 
-    public void createNotifications(List<Long> startTimes) {
-        Intent intent = new Intent(getApplication().getApplicationContext(), ReminderBroadcast.class);
-
-        for (int i = 0; i < startTimes.size(); i++) {
-            PendingIntent pendingIntent = PendingIntent.getBroadcast(getApplication().getApplicationContext(), i, intent, 0);
-        }
-        AlarmManager alarmManager = (AlarmManager) MainActivity.getAlarmService(MainActivity.ALARM_SERVICE);
-        assert alarmManager != null;
-        alarmManager.set(AlarmManager.RTC_WAKEUP, event.getStartTime().toInstant().toEpochMilli(), pendingIntent);
-        System.out.println("TIME NOW");
-        System.out.println(alarmManager.getNextAlarmClock());
+    public void createNotifications(List<Event> events, Context context) {
+        AlarmManager alarmManager = (AlarmManager) context.getSystemService(ALARM_SERVICE);
+        SharedPreferences sharedPreferences = getSharedPreferences(SHARED_PREFS, MODE_PRIVATE);
+        sharedPreferences.getAll().keySet().forEach(key -> {
+            Intent intent = new Intent(context, ReminderBroadcast.class);
+            PendingIntent pendingIntent = PendingIntent.getBroadcast(context, (int) Integer.parseInt(key), intent, 0);
+            alarmManager.set(AlarmManager.RTC_WAKEUP, sharedPreferences.getLong(key, 0), pendingIntent);
+        });
     }
+
+    public void deleteNotification() {
+
+    }
+
+
 }

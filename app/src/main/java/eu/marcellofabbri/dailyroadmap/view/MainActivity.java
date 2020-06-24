@@ -143,18 +143,18 @@ public class MainActivity extends AppCompatActivity {
         });
 
         // SET UP AND MAINTAIN NOTIFICATIONS
-        eventViewModel.getCertainEvents(displayedDate).observe(this, new Observer<List<Event>>() {
-            @Override
-            public void onChanged(List<Event> events) {
-
-                // CREATE ALARMS FOR EACH OF TODAY'S EVENTS
-                for (Event event : events) {
-                    Intent intent = new Intent(MainActivity.this, ReminderBroadcast.class);
-                    PendingIntent pendingIntent = PendingIntent.getBroadcast(MainActivity.this, event.getId(), intent, 0);
-                    alarmManager.set(AlarmManager.RTC_WAKEUP, event.getStartTime().toInstant().toEpochMilli(), pendingIntent);
-                }
-            }
-        });
+//        eventViewModel.getCertainEvents(displayedDate).observe(this, new Observer<List<Event>>() {
+//            @Override
+//            public void onChanged(List<Event> events) {
+//
+//                // CREATE ALARMS FOR EACH OF TODAY'S EVENTS
+//                for (Event event : events) {
+//                    Intent intent = new Intent(MainActivity.this, ReminderBroadcast.class);
+//                    PendingIntent pendingIntent = PendingIntent.getBroadcast(MainActivity.this, event.getId(), intent, 0);
+//                    alarmManager.set(AlarmManager.RTC_WAKEUP, event.getStartTime().toInstant().toEpochMilli(), pendingIntent);
+//                }
+//            }
+//        });
 
 
         final EventPainterContainer eventPainterContainer = findViewById(R.id.eventPainterContainer);
@@ -205,19 +205,19 @@ public class MainActivity extends AppCompatActivity {
             String finishTimeString = data.getStringExtra(AddUpdateEventActivity.EXTRA_FINISHTIME);
             String icon = data.getStringExtra(AddUpdateEventActivity.EXTRA_ICON_RESOURCEID);
             OffsetDateTime finishTime = converter.convertMashedDateToString(finishTimeString);
-            long unixStart = 0;
+            long unixStart = startTime.toEpochSecond();
 
             Event newEvent = new Event(description, startTime, finishTime, unixStart, icon);
 
             eventViewModel.insert(newEvent);
 
-            Intent intent = new Intent(MainActivity.this, ReminderBroadcast.class);
-            PendingIntent pendingIntent = PendingIntent.getService(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
-            AlarmManager alarmManager = (AlarmManager) MainActivity.this.getSystemService(ALARM_SERVICE);
-            long timeInMillis = (newEvent.getStartTime().toInstant().toEpochMilli());
-            alarmManager.set(AlarmManager.RTC_WAKEUP, timeInMillis, pendingIntent);
+            AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
+            Intent intent = new Intent(this, ReminderBroadcast.class);
+            PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 1, intent, 0);
+            alarmManager.setExact(AlarmManager.RTC_WAKEUP, unixStart*1000, pendingIntent);
 
             Toast.makeText(this, "Event saved", Toast.LENGTH_SHORT).show();
+
         } else if (requestCode == UPDATE_EVENT_REQUEST_CODE && resultCode == RESULT_OK) {
 
             int id = data.getIntExtra(AddUpdateEventActivity.EXTRA_ID, -1);

@@ -14,17 +14,10 @@ import eu.marcellofabbri.dailyroadmap.R;
 public class ReminderBroadcast extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
-        String title = "NOTIFICATION TITLE";
-        String message = "notification message";
-        NotificationCompat.Builder builder = new NotificationCompat.Builder(context, TheApplication.CHANNEL_1_ID)
-                .setSmallIcon(R.id.chosen_icon)
-                .setContentTitle(title)
-                .setContentText(message)
-                .setPriority(NotificationCompat.PRIORITY_HIGH)
-                .setCategory(NotificationCompat.CATEGORY_MESSAGE);
-
-        NotificationManagerCompat notificationManager = NotificationManagerCompat.from(context);
-        notificationManager.notify(1, builder.build());
+        NotificationHelper notificationHelper = new NotificationHelper(context);
+        NotificationCompat.Builder notificationBuilder = notificationHelper.getChannel1Notification("TITLE", "BODY");
+        notificationHelper.getManager().notify(1, notificationBuilder.build());
+        System.out.println("ONRECEIVE TRIGGERED");
     }
 }
 

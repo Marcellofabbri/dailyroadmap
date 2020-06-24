@@ -22,7 +22,6 @@ public class ReminderBroadcast extends BroadcastReceiver {
         NotificationHelper notificationHelper = new NotificationHelper(context);
         NotificationCompat.Builder notificationBuilder = notificationHelper.getChannel1Notification(title, body, iconId);
         notificationHelper.getManager().notify(1, notificationBuilder.build());
-        System.out.println("ONRECEIVE TRIGGERED");
     }
 }
 

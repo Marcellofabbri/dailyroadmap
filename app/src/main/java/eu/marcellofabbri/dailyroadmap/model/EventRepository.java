@@ -23,8 +23,6 @@ public class EventRepository {
     //database operations
 
     public void insert(Event event) {
-        System.out.println("INSERTING");
-        System.out.println(event.getStartTime());
         new InsertEventAsyncTask(eventDao).execute(event);
     }
 
@@ -53,6 +51,12 @@ public class EventRepository {
         String startTimeString = new EntityFieldConverter().convertToString(startTime).substring(0, 10);
         new DeleteTodayEventsAsyncTask(eventDao).execute(startTimeString);
     }
+
+    public Event getEventById(int id) {
+        return eventDao.getEventById(id);
+    }
+
+    public LiveData<List<Event>> getEventsOrderedById() { return eventDao.getEventsOrderedById(); }
 
     private static class InsertEventAsyncTask extends AsyncTask<Event, Void, Void> {
         private EventDao eventDao;
@@ -119,4 +123,5 @@ public class EventRepository {
             return null;
         }
     }
+
 }

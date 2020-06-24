@@ -41,7 +41,7 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventHolder>
     @Override
     public void onBindViewHolder(@NonNull final EventHolder holder, int position) {
         Event currentEvent = events.get(position);
-        ColorStateList assignedColor = ColorStateList.valueOf(Color.parseColor(holder.colors[position > 5 ? position - 6 : position]));
+        ColorStateList assignedColor = ColorStateList.valueOf(Color.parseColor(holder.colors[position - (6 * (int)(position/6))]));
         //holder.editButton.setBackgroundTintList(assignedColor);
         holder.editButton.setRippleColor(assignedColor);
         holder.updateButton.setBackgroundTintList(assignedColor);

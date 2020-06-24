@@ -31,4 +31,10 @@ public interface EventDao {
 
     @Query("DELETE FROM Event_table WHERE instr(startTime, :startTime) > 0")
     void deleteTodayEvents(String startTime);
+
+    @Query("SELECT * FROM Event_table WHERE id = :id")
+    Event getEventById(int id);
+
+    @Query("SELECT * FROM Event_table ORDER BY id DESC")
+    LiveData<List<Event>> getEventsOrderedById();
 }

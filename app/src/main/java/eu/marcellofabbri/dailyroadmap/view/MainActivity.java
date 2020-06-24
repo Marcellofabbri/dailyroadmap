@@ -55,9 +55,6 @@ public class MainActivity extends AppCompatActivity {
     private List<Event> displayedEvents;
     private EntityFieldConverter converter = new EntityFieldConverter();
     private AlarmManager alarmManager;
-    public static final String SHARED_PREFS = "sharedPrefs";
-    private SharedPreferences sharedPreferences;
-    NotificationManagerCompat notificationManagerCompat;
 
     @SuppressLint("ClickableViewAccessibility")
     @RequiresApi(api = Build.VERSION_CODES.O)
@@ -68,7 +65,6 @@ public class MainActivity extends AppCompatActivity {
         findViewById(R.id.main_activity).setBackgroundColor(ContextCompat.getColor(this, backgroundColors[selectedBackgroundColorPosition]));
 
         alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
-        sharedPreferences = getSharedPreferences(SHARED_PREFS, MODE_PRIVATE);
 
         ActionBar actionBar = getSupportActionBar();
         actionBar.setBackgroundDrawable(getDrawable(R.drawable.toolbar_logo_6));
@@ -142,21 +138,6 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        // SET UP AND MAINTAIN NOTIFICATIONS
-//        eventViewModel.getCertainEvents(displayedDate).observe(this, new Observer<List<Event>>() {
-//            @Override
-//            public void onChanged(List<Event> events) {
-//
-//                // CREATE ALARMS FOR EACH OF TODAY'S EVENTS
-//                for (Event event : events) {
-//                    Intent intent = new Intent(MainActivity.this, ReminderBroadcast.class);
-//                    PendingIntent pendingIntent = PendingIntent.getBroadcast(MainActivity.this, event.getId(), intent, 0);
-//                    alarmManager.set(AlarmManager.RTC_WAKEUP, event.getStartTime().toInstant().toEpochMilli(), pendingIntent);
-//                }
-//            }
-//        });
-
-
         final EventPainterContainer eventPainterContainer = findViewById(R.id.eventPainterContainer);
 
         eventViewModel.getCertainEvents(displayedDate).observe(MainActivity.this, new Observer<List<Event>>() {
@@ -176,6 +157,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onDeleteButtonClick(Event event) {
                 eventViewModel.delete(event);
+                deleteNotification(event);
             }
 
             @Override
@@ -213,13 +195,15 @@ public class MainActivity extends AppCompatActivity {
             eventViewModel.insert(newEvent);
 
             // CREATE AN ASSOCIATED NOTIFICATION FOR THE EVENT
+
             AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
             Intent intent = new Intent(this, ReminderBroadcast.class);
             intent.putExtra("title", description);
             intent.putExtra("startTime", startTimeString.substring(8));
             intent.putExtra("finishTime", finishTimeString.substring(8));
             intent.putExtra("iconId", Integer.parseInt(icon));
-            PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 1, intent, 0);
+
+            PendingIntent pendingIntent = PendingIntent.getBroadcast(this, (int) newEvent.getStartUnix(), intent, 0);
             alarmManager.setExact(AlarmManager.RTC_WAKEUP, unixStart*1000, pendingIntent);
 
             // CONFIRMATORY TOAST
@@ -252,41 +236,13 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private void setUpEventNotification(Event event) {
-        Intent intent = new Intent(MainActivity.this, ReminderBroadcast.class);
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(getApplicationContext(), 1, intent, 0);
-        AlarmManager alarmManager = (AlarmManager) getSystemService(MainActivity.ALARM_SERVICE);
-        assert alarmManager != null;
-        alarmManager.set(AlarmManager.RTC_WAKEUP, event.getStartTime().toInstant().toEpochMilli(), pendingIntent);
+    private void deleteNotification(Event event) {
+        // CREATE AN ASSOCIATED NOTIFICATION FOR THE EVENT
+        AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
+        Intent intent = new Intent(this, ReminderBroadcast.class);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(this, (int) event.getStartUnix(), intent, 0);
+        pendingIntent.cancel();
+        alarmManager.cancel(pendingIntent);
     }
-
-    private void recordStartTime(Event event) {
-        SharedPreferences sharedPreferences = getSharedPreferences(SHARED_PREFS, MODE_PRIVATE);
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-        String index = String.valueOf(event.getId());
-        editor.putLong(index, event.getStartTime().toInstant().toEpochMilli());
-        editor.commit();
-    }
-
-    private long retrieveStartTime(Event event) {
-        SharedPreferences sharedPreferences = getSharedPreferences(SHARED_PREFS, MODE_PRIVATE);
-        String index = String.valueOf(event.getId());
-        return sharedPreferences.getLong(index, 0);
-    }
-
-    public void createNotifications(List<Event> events, Context context) {
-        AlarmManager alarmManager = (AlarmManager) context.getSystemService(ALARM_SERVICE);
-        SharedPreferences sharedPreferences = getSharedPreferences(SHARED_PREFS, MODE_PRIVATE);
-        sharedPreferences.getAll().keySet().forEach(key -> {
-            Intent intent = new Intent(context, ReminderBroadcast.class);
-            PendingIntent pendingIntent = PendingIntent.getBroadcast(context, (int) Integer.parseInt(key), intent, 0);
-            alarmManager.set(AlarmManager.RTC_WAKEUP, sharedPreferences.getLong(key, 0), pendingIntent);
-        });
-    }
-
-    public void deleteNotification() {
-
-    }
-
 
 }

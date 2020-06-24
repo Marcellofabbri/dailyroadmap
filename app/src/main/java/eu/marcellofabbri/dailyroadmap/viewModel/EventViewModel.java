@@ -54,4 +54,9 @@ public class EventViewModel extends AndroidViewModel {
 
     public void deleteTodayEvents(OffsetDateTime startTime) { eventRepository.deleteTodayEvents(startTime);}
 
+    public Event getEventById(int id) {
+        return eventRepository.getEventById(id);
+    }
+
+    public LiveData<List<Event>> getEventsOrderedById() { return eventRepository.getEventsOrderedById(); }
 }

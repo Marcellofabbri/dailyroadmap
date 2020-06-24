@@ -164,7 +164,7 @@
 
     <LinearLayout
         android:id="@+id/central_container"
-        android:layout_width="200dp"
+        android:layout_width="206dp"
         android:layout_height="wrap_content"
         android:layout_marginBottom="10dp"
         android:orientation="vertical"

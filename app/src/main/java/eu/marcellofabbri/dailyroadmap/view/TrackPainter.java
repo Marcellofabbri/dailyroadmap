@@ -251,7 +251,7 @@ public class TrackPainter extends View {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("hh:mm a");
         String nowString = formatter.format(now);
         MyPoint nowPoint = map.get(nowString);
-        Bitmap pin = BitmapFactory.decodeResource(getResources(),R.drawable.pin_grey);
+        Bitmap pin = BitmapFactory.decodeResource(getResources(),R.drawable.pin5);
         canvas.drawBitmap(pin, nowPoint.x, nowPoint.y - pin.getHeight(), paintObjectNotches());
     }
 

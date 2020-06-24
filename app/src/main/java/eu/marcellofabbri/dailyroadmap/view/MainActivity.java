@@ -169,6 +169,8 @@ public class MainActivity extends AppCompatActivity {
                 intent.putExtra(AddUpdateEventActivity.EXTRA_STARTTIME, converter.extractDate(event.getStartTime()) + converter.extractTime(event.getStartTime()));
                 intent.putExtra(AddUpdateEventActivity.EXTRA_ICON_RESOURCEID, event.getIcon());
                 startActivityForResult(intent, UPDATE_EVENT_REQUEST_CODE);
+
+                updateNotification(event);
             }
         });
 
@@ -236,6 +238,18 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    private void createNotification(Event event) {
+        AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
+        Intent intent = new Intent(this, ReminderBroadcast.class);
+        intent.putExtra("title", event.getDescription());
+        intent.putExtra("startTime", converter.extractTime(event.getStartTime()));
+        intent.putExtra("finishTime", converter.extractTime(event.getFinishTime()));
+        intent.putExtra("iconId", Integer.parseInt(event.getIcon()));
+
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(this, (int) event.getStartUnix(), intent, 0);
+        alarmManager.setExact(AlarmManager.RTC_WAKEUP, event.getStartUnix()*1000, pendingIntent);
+    }
+
     private void deleteNotification(Event event) {
         // CREATE AN ASSOCIATED NOTIFICATION FOR THE EVENT
         AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
@@ -243,6 +257,11 @@ public class MainActivity extends AppCompatActivity {
         PendingIntent pendingIntent = PendingIntent.getBroadcast(this, (int) event.getStartUnix(), intent, 0);
         pendingIntent.cancel();
         alarmManager.cancel(pendingIntent);
+    }
+
+    private void updateNotification(Event event) {
+        deleteNotification(event);
+        createNotification(event);
     }
 
 }

@@ -197,8 +197,9 @@ public class MainActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
         //String start = data.getStringExtra(AddUpdateEventActivity.EXTRA_STARTTIME);
 
-
         if (requestCode == ADD_EVENT_REQUEST_CODE && resultCode == RESULT_OK) {
+
+            // EXTRAPOLATE ALL NECESSARY INFO TO DESCRIBE THE FIELDS OF EVENT
             String description = data.getStringExtra(AddUpdateEventActivity.EXTRA_DESCRIPTION);
             String startTimeString = data.getStringExtra(AddUpdateEventActivity.EXTRA_STARTTIME);
             OffsetDateTime startTime = converter.convertMashedDateToString(startTimeString);
@@ -207,15 +208,21 @@ public class MainActivity extends AppCompatActivity {
             OffsetDateTime finishTime = converter.convertMashedDateToString(finishTimeString);
             long unixStart = startTime.toEpochSecond();
 
+            // CREATE THE EVENT AND INSERT IT IN THE DATABASE
             Event newEvent = new Event(description, startTime, finishTime, unixStart, icon);
-
             eventViewModel.insert(newEvent);
 
+            // CREATE AN ASSOCIATED NOTIFICATION FOR THE EVENT
             AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
             Intent intent = new Intent(this, ReminderBroadcast.class);
+            intent.putExtra("title", description);
+            intent.putExtra("startTime", startTimeString.substring(8));
+            intent.putExtra("finishTime", finishTimeString.substring(8));
+            intent.putExtra("iconId", Integer.parseInt(icon));
             PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 1, intent, 0);
             alarmManager.setExact(AlarmManager.RTC_WAKEUP, unixStart*1000, pendingIntent);
 
+            // CONFIRMATORY TOAST
             Toast.makeText(this, "Event saved", Toast.LENGTH_SHORT).show();
 
         } else if (requestCode == UPDATE_EVENT_REQUEST_CODE && resultCode == RESULT_OK) {

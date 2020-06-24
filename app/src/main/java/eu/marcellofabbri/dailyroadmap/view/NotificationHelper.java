@@ -5,6 +5,7 @@ import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.content.Context;
 import android.content.ContextWrapper;
+import android.graphics.BitmapFactory;
 import android.os.Build;
 
 import androidx.annotation.RequiresApi;
@@ -42,10 +43,12 @@ public class NotificationHelper extends ContextWrapper {
         return manager;
     }
 
-    public NotificationCompat.Builder getChannel1Notification(String title, String body) {
+    public NotificationCompat.Builder getChannel1Notification(String title, String body, int iconId) {
+
         return new NotificationCompat.Builder(getApplicationContext(), CHANNEL1_ID)
                 .setContentTitle(title)
                 .setContentText(body)
-                .setSmallIcon(R.drawable.d0001);
+                .setLargeIcon(BitmapFactory.decodeResource(getResources(), iconId))
+                .setSmallIcon(R.drawable.ic_small_calendar);
     }
 }

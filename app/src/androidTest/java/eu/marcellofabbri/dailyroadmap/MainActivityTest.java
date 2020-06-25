@@ -1,13 +1,9 @@
 package eu.marcellofabbri.dailyroadmap;
 
-import android.support.v4.media.MediaMetadataCompat;
-import android.view.View;
-
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.filters.LargeTest;
 import androidx.test.rule.ActivityTestRule;
-import org.hamcrest.Matcher;
-import org.junit.Before;
+
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -15,11 +11,9 @@ import org.junit.runner.RunWith;
 import java.sql.Date;
 import java.text.SimpleDateFormat;
 import java.time.Instant;
-import java.time.LocalDate;
 import java.time.OffsetDateTime;
-import java.util.Calendar;
 
-import eu.marcellofabbri.dailyroadmap.view.MainActivity;
+import eu.marcellofabbri.dailyroadmap.view.activities.MainActivity;
 
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.action.ViewActions.click;

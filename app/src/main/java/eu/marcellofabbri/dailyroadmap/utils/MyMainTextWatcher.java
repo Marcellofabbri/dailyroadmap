@@ -13,8 +13,7 @@ import java.time.OffsetDateTime;
 import java.util.List;
 
 import eu.marcellofabbri.dailyroadmap.model.Event;
-import eu.marcellofabbri.dailyroadmap.utils.EntityFieldConverter;
-import eu.marcellofabbri.dailyroadmap.view.EventAdapter;
+import eu.marcellofabbri.dailyroadmap.view.activityHelpers.EventAdapter;
 import eu.marcellofabbri.dailyroadmap.viewModel.EventViewModel;
 
 public class MyMainTextWatcher implements TextWatcher {

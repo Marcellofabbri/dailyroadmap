@@ -12,10 +12,10 @@ import androidx.lifecycle.Observer;
 import java.time.OffsetDateTime;
 import java.util.List;
 
-import eu.marcellofabbri.dailyroadmap.view.EventPainterContainer;
+import eu.marcellofabbri.dailyroadmap.view.activityHelpers.EventPainterContainer;
 import eu.marcellofabbri.dailyroadmap.model.Event;
-import eu.marcellofabbri.dailyroadmap.view.EventAdapter;
-import eu.marcellofabbri.dailyroadmap.view.TrackPainter;
+import eu.marcellofabbri.dailyroadmap.view.activityHelpers.EventAdapter;
+import eu.marcellofabbri.dailyroadmap.view.activityHelpers.TrackPainter;
 import eu.marcellofabbri.dailyroadmap.viewModel.EventViewModel;
 
 public class MyTrackTextWatcher implements TextWatcher {

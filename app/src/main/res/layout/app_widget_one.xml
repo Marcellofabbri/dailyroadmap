@@ -1,0 +1,27 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:background="#FFFFFF"
+    android:padding="@dimen/widget_margin">
+
+    <LinearLayout
+        android:id="@+id/central_container"
+        android:layout_width="206dp"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="10dp"
+        android:orientation="vertical">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recycler_view"
+            android:layout_width="210dp"
+            android:layout_height="300dp"
+            android:layout_marginTop="20dp"
+            android:background="@android:color/transparent"
+            android:outlineAmbientShadowColor="@color/daytimeBackground"
+            android:requiresFadingEdge="vertical"
+            tools:listitem="@layout/event_item" />
+
+    </LinearLayout>
+
+</RelativeLayout>

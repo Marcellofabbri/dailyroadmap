@@ -1,15 +1,10 @@
-package eu.marcellofabbri.dailyroadmap.view;
+package eu.marcellofabbri.dailyroadmap.view.notificationHandlers;
 
-import android.app.Notification;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.view.View;
 
 import androidx.core.app.NotificationCompat;
-import androidx.core.app.NotificationManagerCompat;
-
-import eu.marcellofabbri.dailyroadmap.R;
 
 public class ReminderBroadcast extends BroadcastReceiver {
     @Override

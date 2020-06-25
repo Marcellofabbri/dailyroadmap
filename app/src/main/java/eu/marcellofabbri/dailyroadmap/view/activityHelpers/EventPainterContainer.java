@@ -1,10 +1,8 @@
-package eu.marcellofabbri.dailyroadmap.view;
+package eu.marcellofabbri.dailyroadmap.view.activityHelpers;
 
 import android.content.Context;
 import android.util.AttributeSet;
 import android.widget.RelativeLayout;
-
-import eu.marcellofabbri.dailyroadmap.view.TrackPainter;
 
 public class EventPainterContainer extends RelativeLayout {
     public void setTrackPainter(TrackPainter trackPainter) {

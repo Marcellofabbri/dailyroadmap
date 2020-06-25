@@ -151,4 +151,6 @@
         <item>d0071</item>
         <item>d0072</item>
     </string-array>
+    <string name="appwidget_text">EXAMPLE</string>
+    <string name="add_widget">Add widget</string>
 </resources>

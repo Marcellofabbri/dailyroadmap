@@ -1,4 +1,4 @@
-package eu.marcellofabbri.dailyroadmap.view;
+package eu.marcellofabbri.dailyroadmap.view.activities;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
@@ -43,6 +43,7 @@ public class AddUpdateEventActivity extends AppCompatActivity implements Adapter
     public static final String EXTRA_FINISHTIME = "eu.marcellofabbri.dailyroadmap.EXTRA_FINISHTIME";
     public static final String EXTRA_ICON_RESOURCEID = "eu.marcellofabbri.dailyroadmap.EXTRA_ICON_RESOURCEID";
     public static final String DEFAULT_ICON_RESOURCEID = "2131230885";
+    public static final String ORIGINAL_UNIX = "eu.marcellofabbri.dailyroadmap.EXTRA_ORIGINAL_UNIX";
 
     public EditText etDescription;
     public EditText etStartDate;

@@ -1,4 +1,4 @@
-package eu.marcellofabbri.dailyroadmap.view;
+package eu.marcellofabbri.dailyroadmap.view.activityHelpers;
 
 import android.app.DatePickerDialog;
 import android.content.Context;

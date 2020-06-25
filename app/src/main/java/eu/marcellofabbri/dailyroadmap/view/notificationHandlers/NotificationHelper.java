@@ -1,4 +1,4 @@
-package eu.marcellofabbri.dailyroadmap.view;
+package eu.marcellofabbri.dailyroadmap.view.notificationHandlers;
 
 import android.app.Notification;
 import android.app.NotificationChannel;
@@ -14,6 +14,7 @@ import androidx.annotation.RequiresApi;
 import androidx.core.app.NotificationCompat;
 
 import eu.marcellofabbri.dailyroadmap.R;
+import eu.marcellofabbri.dailyroadmap.view.activities.MainActivity;
 
 public class NotificationHelper extends ContextWrapper {
     public static final String CHANNEL1_ID = "CHANNEL1_ID";

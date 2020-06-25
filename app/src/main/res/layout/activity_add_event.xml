@@ -9,7 +9,7 @@
     android:orientation="vertical"
     android:padding="16dp"
     android:background="@color/daytimeBackground"
-    tools:context=".view.AddUpdateEventActivity">
+    tools:context=".view.activities.AddUpdateEventActivity">
 
     <EditText
         android:id="@+id/edit_text_description"

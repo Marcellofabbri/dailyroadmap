@@ -1,11 +1,9 @@
-package eu.marcellofabbri.dailyroadmap.view;
+package eu.marcellofabbri.dailyroadmap.view.activities;
 
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.NotificationCompat;
-import androidx.core.app.NotificationManagerCompat;
 import androidx.core.content.ContextCompat;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
@@ -15,14 +13,9 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.annotation.SuppressLint;
 import android.app.AlarmManager;
 import android.app.AlertDialog;
-import android.app.Notification;
-import android.app.NotificationChannel;
-import android.app.NotificationManager;
 import android.app.PendingIntent;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
 import android.text.TextWatcher;
@@ -32,12 +25,15 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.time.OffsetDateTime;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
-import java.util.function.Consumer;
 
 import eu.marcellofabbri.dailyroadmap.model.Event;
+import eu.marcellofabbri.dailyroadmap.view.activityHelpers.EventAdapter;
+import eu.marcellofabbri.dailyroadmap.view.activityHelpers.EventPainterContainer;
+import eu.marcellofabbri.dailyroadmap.view.activityHelpers.MainHeader;
+import eu.marcellofabbri.dailyroadmap.view.notificationHandlers.ReminderBroadcast;
+import eu.marcellofabbri.dailyroadmap.view.activityHelpers.TrackPainter;
 import eu.marcellofabbri.dailyroadmap.viewModel.EventViewModel;
 import eu.marcellofabbri.dailyroadmap.utils.MyMainTextWatcher;
 import eu.marcellofabbri.dailyroadmap.utils.MyTrackTextWatcher;
@@ -168,9 +164,9 @@ public class MainActivity extends AppCompatActivity {
                 intent.putExtra(AddUpdateEventActivity.EXTRA_FINISHTIME, converter.extractDate(event.getFinishTime()) + converter.extractTime(event.getFinishTime()));
                 intent.putExtra(AddUpdateEventActivity.EXTRA_STARTTIME, converter.extractDate(event.getStartTime()) + converter.extractTime(event.getStartTime()));
                 intent.putExtra(AddUpdateEventActivity.EXTRA_ICON_RESOURCEID, event.getIcon());
+                intent.putExtra(AddUpdateEventActivity.ORIGINAL_UNIX, event.getStartUnix());
                 startActivityForResult(intent, UPDATE_EVENT_REQUEST_CODE);
 
-                updateNotification(event);
             }
         });
 
@@ -198,15 +194,7 @@ public class MainActivity extends AppCompatActivity {
 
             // CREATE AN ASSOCIATED NOTIFICATION FOR THE EVENT
 
-            AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
-            Intent intent = new Intent(this, ReminderBroadcast.class);
-            intent.putExtra("title", description);
-            intent.putExtra("startTime", startTimeString.substring(8));
-            intent.putExtra("finishTime", finishTimeString.substring(8));
-            intent.putExtra("iconId", Integer.parseInt(icon));
-
-            PendingIntent pendingIntent = PendingIntent.getBroadcast(this, (int) newEvent.getStartUnix(), intent, 0);
-            alarmManager.setExact(AlarmManager.RTC_WAKEUP, unixStart*1000, pendingIntent);
+            createNotification(newEvent);
 
             // CONFIRMATORY TOAST
             Toast.makeText(this, "Event saved", Toast.LENGTH_SHORT).show();
@@ -226,10 +214,13 @@ public class MainActivity extends AppCompatActivity {
             String finishTimeString = data.getStringExtra(AddUpdateEventActivity.EXTRA_FINISHTIME);
             OffsetDateTime finishTime = converter.convertMashedDateToString(finishTimeString);
             String icon = data.getStringExtra(AddUpdateEventActivity.EXTRA_ICON_RESOURCEID);
+            long originalUnix = data.getLongExtra(AddUpdateEventActivity.ORIGINAL_UNIX, 0);
 
             Event event = new Event(description, startTime, finishTime, 0, icon);
             event.setId(id);
             eventViewModel.update(event);
+
+            updateNotification(originalUnix, event);
 
             Toast.makeText(this, "Event updated", Toast.LENGTH_LONG).show();
 
@@ -248,20 +239,29 @@ public class MainActivity extends AppCompatActivity {
 
         PendingIntent pendingIntent = PendingIntent.getBroadcast(this, (int) event.getStartUnix(), intent, 0);
         alarmManager.setExact(AlarmManager.RTC_WAKEUP, event.getStartUnix()*1000, pendingIntent);
+
+        System.out.println("request code of what is being added");
+        System.out.println(event.getStartUnix());
     }
 
     private void deleteNotification(Event event) {
-        // CREATE AN ASSOCIATED NOTIFICATION FOR THE EVENT
         AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
         Intent intent = new Intent(this, ReminderBroadcast.class);
         PendingIntent pendingIntent = PendingIntent.getBroadcast(this, (int) event.getStartUnix(), intent, 0);
         pendingIntent.cancel();
         alarmManager.cancel(pendingIntent);
+        System.out.println("request code of what's being cancelled");
+        System.out.println(event.getStartUnix());
     }
 
-    private void updateNotification(Event event) {
-        deleteNotification(event);
-        createNotification(event);
+    private void updateNotification(long oldRequestCode, Event newEvent) {
+        AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
+        Intent intent = new Intent(this, ReminderBroadcast.class);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(this, (int) oldRequestCode, intent, 0);
+        pendingIntent.cancel();
+        alarmManager.cancel(pendingIntent);
+
+        createNotification(newEvent);
     }
 
 }

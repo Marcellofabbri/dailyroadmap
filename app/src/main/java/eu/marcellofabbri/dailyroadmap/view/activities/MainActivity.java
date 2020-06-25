@@ -94,6 +94,16 @@ public class MainActivity extends AppCompatActivity {
                     public void onClick(DialogInterface dialog, int which) {
                         String currentDateString = mainHeader.getCurrentDate().getText().toString();
                         OffsetDateTime currentDate = new EntityFieldConverter().convertDayStringToOffsetDateTime(currentDateString);
+
+                        eventViewModel.getCertainEvents(currentDate).observe(MainActivity.this, new Observer<List<Event>>() {
+                            @Override
+                            public void onChanged(List<Event> events) {
+                                for (Event event : events) {
+                                    deleteNotification(event);
+                                }
+                            }
+                        });
+
                         eventViewModel.deleteTodayEvents(currentDate);
                         dialog.dismiss();
                     }

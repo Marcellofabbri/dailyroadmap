@@ -11,7 +11,8 @@
     <color name="todayButton">#673AB7</color>
     <color name="deleteAllButton">#3A9EB7</color>
     <color name="addButton">#3A9EB7</color>
-    <color name="trackDefaultColor">#EAEAEC</color>
+    <color name="trackDefaultColor0">#DFDFDF</color>
+    <color name="trackDefaultColor1">#BCBCBC</color>
     <color name="semiTrasparent">#E7E7EA</color>
     <color name="bottomCard">#4FD3C7C7</color>
     <color name="bigDate">#5696FD</color>
@@ -25,8 +26,7 @@
     <color name="green">#128E1D</color>
     <color name="amber">#EAAC30</color>
     <color name="white">#FFFFFF</color>
-    <color name="lightGrey">#FFFAFA</color>
-    <color name="azure">#DADADA</color>
+    <color name="lightGrey">#F3F2F2</color>
     <color name="mediumGray">#736F6F</color>
 
     <color name="blackSemi">#A8000000</color>

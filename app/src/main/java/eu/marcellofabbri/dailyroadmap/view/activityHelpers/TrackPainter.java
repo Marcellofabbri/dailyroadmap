@@ -1,5 +1,9 @@
 package eu.marcellofabbri.dailyroadmap.view.activityHelpers;
 
+import android.animation.Animator;
+import android.animation.ArgbEvaluator;
+import android.animation.ObjectAnimator;
+import android.animation.ValueAnimator;
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
@@ -8,9 +12,15 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Point;
+import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.util.AttributeSet;
+import android.util.Xml;
 import android.view.View;
+import android.view.animation.Animation;
+import android.widget.Button;
+import android.widget.FrameLayout;
+import android.widget.ImageView;
 
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
@@ -25,6 +35,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.TimeZone;
+import java.util.Vector;
 
 import eu.marcellofabbri.dailyroadmap.utils.CustomColors;
 import eu.marcellofabbri.dailyroadmap.R;
@@ -43,7 +54,7 @@ public class TrackPainter extends View {
     float vMinuteUnit = ((100 * vUnit) / 60);
     float leftMargin = hUnit * 100;
     float upperMargin = hUnit * 56;
-    int[] trackDefaultColors = new int[] {ContextCompat.getColor(getContext(), R.color.trackDefaultColor), ContextCompat.getColor(getContext(), R.color.azure)};
+    int[] trackDefaultColors = new int[] {ContextCompat.getColor(getContext(), R.color.trackDefaultColor0), ContextCompat.getColor(getContext(), R.color.trackDefaultColor1)};
     int whatColorPosition = 1;
     int trackDefaultColor = trackDefaultColors[whatColorPosition];
     CustomColors myColors = new CustomColors();
@@ -251,7 +262,7 @@ public class TrackPainter extends View {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("hh:mm a");
         String nowString = formatter.format(now);
         MyPoint nowPoint = map.get(nowString);
-        Bitmap pin = BitmapFactory.decodeResource(getResources(),R.drawable.pin5);
+        Bitmap pin = BitmapFactory.decodeResource(getResources(),R.drawable.gbg_pin);
         canvas.drawBitmap(pin, nowPoint.x, nowPoint.y - pin.getHeight(), paintObjectNotches());
     }
 

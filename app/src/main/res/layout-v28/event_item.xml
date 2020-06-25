@@ -101,7 +101,7 @@
                         android:elevation="0dp"
                         android:outlineAmbientShadowColor="@android:color/white"
                         android:outlineSpotShadowColor="@android:color/white"
-                        app:backgroundTint="@android:color/white"
+                        app:backgroundTint="@color/card"
                         app:fabCustomSize="30dp" />
 
                 </FrameLayout>

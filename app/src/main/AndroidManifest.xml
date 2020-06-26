@@ -9,15 +9,6 @@
         android:roundIcon="@mipmap/subwayblue_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <receiver android:name=".view.appWidgets.MyAppWidgetProvider">
-            <intent-filter>
-                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
-            </intent-filter>
-
-            <meta-data
-                android:name="android.appwidget.provider"
-                android:resource="@xml/app_widget_one_info" />
-        </receiver>
 
         <activity
             android:name=".view.activities.AddUpdateEventActivity"
@@ -37,6 +28,7 @@
         <receiver
             android:name=".view.notificationHandlers.ReminderBroadcast"
             android:enabled="true" />
+
     </application>
 
 </manifest>

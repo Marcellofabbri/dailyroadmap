@@ -105,8 +105,8 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventHolder>
         private FloatingActionButton updateButton;
         private FloatingActionButton deleteButton;
         private CustomColors myColors = new CustomColors();
-        String[] colors = new String[] { "#DD1515", "#FFA928", "#2E42B5", "#128E1D", "#FF6600", "#000000"};
-        String[] fadedColors = new String[] { "#A8DD1515", "#A8FFD128", "#A82E42B5", "#A8128E1D", "#B1FF6600", "#A8000000"};
+        String[] colors = new String[] { "#DD1515", "#2E42B5", "#FFA928", "#128E1D", "#FF6600", "#000000"};
+        String[] fadedColors = new String[] { "#A8DD1515", "#A82E42B5", "#A8FFD128", "#A8128E1D", "#B1FF6600", "#A8000000"};
 
         @RequiresApi(api = Build.VERSION_CODES.P)
         public EventHolder(@NonNull View itemView) {

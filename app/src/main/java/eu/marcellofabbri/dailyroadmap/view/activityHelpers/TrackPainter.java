@@ -60,8 +60,8 @@ public class TrackPainter extends View {
     CustomColors myColors = new CustomColors();
     Integer[] colors = new Integer[] {
             ContextCompat.getColor(getContext(), myColors.getRed()),
-            ContextCompat.getColor(getContext(), myColors.getAmber()),
             ContextCompat.getColor(getContext(), myColors.getBlue()),
+            ContextCompat.getColor(getContext(), myColors.getAmber()),
             ContextCompat.getColor(getContext(), myColors.getGreen()),
             ContextCompat.getColor(getContext(), myColors.getOrange()),
             ContextCompat.getColor(getContext(), myColors.getBlack())
@@ -134,10 +134,26 @@ public class TrackPainter extends View {
         return paintObject;
     }
 
+    protected Paint paintObjectLinesBackground() {
+        Paint paintObject = new Paint();
+        paintObject.setStrokeWidth(51);
+        paintObject.setColor(Color.BLACK);
+        paintObject.setTextSize(60);
+        return paintObject;
+    }
+
     protected Paint paintObjectLines12() {
         Paint paintObject = new Paint();
         paintObject.setStrokeWidth(39);
         paintObject.setColor(trackDefaultColor);
+        paintObject.setTextSize(60);
+        return paintObject;
+    }
+
+    protected Paint paintObjectLines12Background() {
+        Paint paintObject = new Paint();
+        paintObject.setStrokeWidth(45);
+        paintObject.setColor(Color.BLACK);
         paintObject.setTextSize(60);
         return paintObject;
     }
@@ -188,6 +204,12 @@ public class TrackPainter extends View {
 
     private void drawBlueprintTrack(Canvas canvas) {
         for (int i = 0; i < 1380; i++) {
+            canvas.drawPoint(points.get(i).x, points.get(i).y, paintObjectLinesBackground());
+        }
+        for (int i = 1380; i < 1440; i++) {
+            canvas.drawPoint(points.get(i).x, points.get(i).y, paintObjectLines12Background());
+        }
+        for (int i = 0; i < 1380; i++) {
             canvas.drawPoint(points.get(i).x, points.get(i).y, paintObjectLines());
         }
         for (int i = 1380; i < 1440; i++) {
@@ -219,7 +241,7 @@ public class TrackPainter extends View {
             String hourString = hour < 10 ? "  " + hour : String.valueOf(hour);
             canvas.drawText(hourString, points.get(i).x - 60*vUnit, points.get(i).y + 10*hUnit, paintObjectHourNumbers());
         }
-        canvas.drawText("0am", points.get(0).x - 80*vUnit, points.get(0).y + 10*hUnit, paintObjectHourNumbers());
+        canvas.drawText("00", points.get(0).x - 80*vUnit, points.get(0).y + 10*hUnit, paintObjectHourNumbers());
 //        canvas.drawCircle(points.get(1439).x, points.get(1439).y, 19*hUnit, paintObjectNotches());
     }
 

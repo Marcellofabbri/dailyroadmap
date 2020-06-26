@@ -1,14 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.appcompat.widget.LinearLayoutCompat
-    android:id="@+id/add_update_activity"
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.appcompat.widget.LinearLayoutCompat xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/add_update_activity"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/daytimeBackground"
     android:orientation="vertical"
     android:padding="16dp"
-    android:background="@color/daytimeBackground"
     tools:context=".view.activities.AddUpdateEventActivity">
 
     <EditText
@@ -16,10 +15,10 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="Your task here"
+        android:inputType="text"
         android:maxLength="41"
         android:textColor="@android:color/white"
-        android:textColorHint="@color/mediumGray"
-        android:inputType="text" />
+        android:textColorHint="@color/mediumGray" />
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -29,27 +28,26 @@
             android:id="@+id/edit_text_startDate"
             android:layout_width="150sp"
             android:layout_height="wrap_content"
-            android:hint="Start date"
             android:layout_alignParentLeft="true"
             android:clickable="true"
             android:focusable="false"
+            android:hint="Start date"
             android:inputType="date"
             android:textColor="@android:color/white"
-            android:textColorHint="@android:color/white"
-            />
+            android:textColorHint="@android:color/white" />
 
         <EditText
             android:id="@+id/edit_text_startTime"
             android:layout_width="150dp"
             android:layout_height="wrap_content"
-            android:gravity="end"
-            android:hint="Start time"
-            android:inputType="time"
             android:layout_alignParentRight="true"
             android:clickable="true"
             android:focusable="false"
+            android:gravity="end"
+            android:hint="Start time"
+            android:inputType="time"
             android:textColor="@android:color/white"
-            android:textColorHint="@color/mediumGray"/>
+            android:textColorHint="@color/mediumGray" />
 
     </RelativeLayout>
 
@@ -61,25 +59,24 @@
             android:id="@+id/edit_text_finishDate"
             android:layout_width="150sp"
             android:layout_height="wrap_content"
-            android:hint="Finish date"
-            android:inputType="none"
             android:layout_alignParentLeft="true"
             android:clickable="false"
             android:focusable="false"
+            android:hint="Finish date"
+            android:inputType="none"
             android:textColor="@android:color/white"
-            android:textColorHint="@android:color/white"
-            />
+            android:textColorHint="@android:color/white" />
 
         <EditText
             android:id="@+id/edit_text_finishTime"
             android:layout_width="150dp"
             android:layout_height="wrap_content"
-            android:gravity="end"
-            android:hint="Finish time"
-            android:inputType="time"
             android:layout_alignParentRight="true"
             android:clickable="true"
             android:focusable="false"
+            android:gravity="end"
+            android:hint="Finish time"
+            android:inputType="time"
             android:textColor="@android:color/white"
             android:textColorHint="@color/mediumGray" />
 
@@ -98,10 +95,10 @@
                 android:id="@+id/assing_an_icon_text_view"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Assign an icon:"
-                android:textSize="19dp"
                 android:layout_gravity="center_vertical"
-                android:textColor="@android:color/white" />
+                android:text="Assign an icon:"
+                android:textColor="@android:color/white"
+                android:textSize="19dp" />
 
         </FrameLayout>
 
@@ -115,14 +112,50 @@
                 android:layout_width="28dp"
                 android:layout_height="30dp"
                 android:layout_gravity="center"
-                android:elevation="1dp"
-                android:background="@drawable/d0063" />
+                android:background="@drawable/d0063"
+                android:elevation="1dp" />
 
         </FrameLayout>
 
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/assign_notice_text_view"
+                android:layout_width="wrap_content"
+                android:layout_height="40dp"
+                android:textAlignment="center"
+                android:text="Notification's notice"
+                android:textColor="@android:color/white"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                android:textSize="19sp"/>
+
+            <NumberPicker
+                android:layout_width="50dp"
+                android:layout_height="40dp"
+                app:layout_constraintTop_toBottomOf="@id/assign_notice_text_view"
+                app:layout_constraintRight_toLeftOf="@id/minutes_earlier_text_view"
+                android:solidColor="@color/logoBackgroundHeader"
+                android:theme="@style/Theme.AppCompat" />
+
+            <TextView
+                android:id="@+id/minutes_earlier_text_view"
+                android:layout_width="wrap_content"
+                android:layout_height="20dp"
+                android:layout_marginTop="11dp"
+                android:layout_gravity="center_vertical"
+                android:text="minutes earlier"
+                android:textColor="@android:color/white"
+                app:layout_constraintTop_toBottomOf="@id/assign_notice_text_view"
+                app:layout_constraintRight_toRightOf="parent"
+                android:textSize="13sp"/>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+
     </LinearLayout>
-
-
 
 
 </androidx.appcompat.widget.LinearLayoutCompat>

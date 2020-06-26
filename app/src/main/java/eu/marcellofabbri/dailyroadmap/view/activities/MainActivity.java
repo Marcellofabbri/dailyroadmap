@@ -198,6 +198,7 @@ public class MainActivity extends AppCompatActivity {
             String icon = data.getStringExtra(AddUpdateEventActivity.EXTRA_ICON_RESOURCEID);
             OffsetDateTime finishTime = converter.convertMashedDateToString(finishTimeString);
             long unixStart = startTime.toEpochSecond();
+            int notice = Integer.parseInt(data.getStringExtra(AddUpdateEventActivity.EXTRA_NOTICE));
 
             // CREATE THE EVENT AND INSERT IT IN THE DATABASE
             Event newEvent = new Event(description, startTime, finishTime, unixStart, icon);
@@ -205,7 +206,7 @@ public class MainActivity extends AppCompatActivity {
 
             // CREATE AN ASSOCIATED NOTIFICATION FOR THE EVENT
 
-            createNotification(newEvent);
+            createNotification(newEvent, notice);
 
             // CONFIRMATORY TOAST
             Toast.makeText(this, "Event saved", Toast.LENGTH_SHORT).show();
@@ -226,12 +227,13 @@ public class MainActivity extends AppCompatActivity {
             OffsetDateTime finishTime = converter.convertMashedDateToString(finishTimeString);
             String icon = data.getStringExtra(AddUpdateEventActivity.EXTRA_ICON_RESOURCEID);
             long originalUnix = data.getLongExtra(AddUpdateEventActivity.ORIGINAL_UNIX, 0);
+            int notice = Integer.parseInt(data.getStringExtra(AddUpdateEventActivity.EXTRA_NOTICE));
 
             Event event = new Event(description, startTime, finishTime, 0, icon);
             event.setId(id);
             eventViewModel.update(event);
 
-            updateNotification(originalUnix, event);
+            updateNotification(originalUnix, event, notice);
 
             Toast.makeText(this, "Event updated", Toast.LENGTH_LONG).show();
 
@@ -240,19 +242,18 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private void createNotification(Event event) {
+    private void createNotification(Event event, int notice) {
         AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
         Intent intent = new Intent(this, ReminderBroadcast.class);
         intent.putExtra("title", event.getDescription());
         intent.putExtra("startTime", converter.extractTime(event.getStartTime()));
         intent.putExtra("finishTime", converter.extractTime(event.getFinishTime()));
         intent.putExtra("iconId", Integer.parseInt(event.getIcon()));
+        long triggerAtMillis = event.getStartUnix()*1000;
+        long noticeInMillis = notice*60*1000;
 
         PendingIntent pendingIntent = PendingIntent.getBroadcast(this, (int) event.getStartUnix(), intent, 0);
-        alarmManager.setExact(AlarmManager.RTC_WAKEUP, event.getStartUnix()*1000, pendingIntent);
-
-        System.out.println("request code of what is being added");
-        System.out.println(event.getStartUnix());
+        alarmManager.setExact(AlarmManager.RTC_WAKEUP, triggerAtMillis - noticeInMillis, pendingIntent);
     }
 
     private void deleteNotification(Event event) {
@@ -261,18 +262,16 @@ public class MainActivity extends AppCompatActivity {
         PendingIntent pendingIntent = PendingIntent.getBroadcast(this, (int) event.getStartUnix(), intent, 0);
         pendingIntent.cancel();
         alarmManager.cancel(pendingIntent);
-        System.out.println("request code of what's being cancelled");
-        System.out.println(event.getStartUnix());
     }
 
-    private void updateNotification(long oldRequestCode, Event newEvent) {
+    private void updateNotification(long oldRequestCode, Event newEvent, int notice) {
         AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
         Intent intent = new Intent(this, ReminderBroadcast.class);
         PendingIntent pendingIntent = PendingIntent.getBroadcast(this, (int) oldRequestCode, intent, 0);
         pendingIntent.cancel();
         alarmManager.cancel(pendingIntent);
 
-        createNotification(newEvent);
+        createNotification(newEvent, notice);
     }
 
 }

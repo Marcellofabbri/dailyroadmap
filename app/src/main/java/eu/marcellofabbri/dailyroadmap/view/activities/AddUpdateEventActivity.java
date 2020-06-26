@@ -21,8 +21,11 @@ import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.GridView;
 import android.widget.ImageView;
+import android.widget.NumberPicker;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import org.w3c.dom.Text;
 
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
@@ -44,6 +47,7 @@ public class AddUpdateEventActivity extends AppCompatActivity implements Adapter
     public static final String EXTRA_ICON_RESOURCEID = "eu.marcellofabbri.dailyroadmap.EXTRA_ICON_RESOURCEID";
     public static final String DEFAULT_ICON_RESOURCEID = "2131230885";
     public static final String ORIGINAL_UNIX = "eu.marcellofabbri.dailyroadmap.EXTRA_ORIGINAL_UNIX";
+    public static final String EXTRA_NOTICE = "eu.marcellofabbri.dailyroadmap.EXTRA_NOTICE";
 
     public EditText etDescription;
     public EditText etStartDate;
@@ -51,8 +55,12 @@ public class AddUpdateEventActivity extends AppCompatActivity implements Adapter
     public EditText etStartTime;
     public EditText etFinishTime;
     public FrameLayout frameIcon;
+    public TextView iconTv;
+    public TextView notificationNotice;
+    public TextView minutesEarlier;
     public ImageView ivIcon;
     public String iconCode;
+    public NumberPicker numberPicker;
     private int DESCRIPTION_LENGTH = 40;
     private int[] backgroundColors = new int[] {R.color.daytimeBackground, R.color.lightGrey};
     private int[] textColors = new int[] {R.color.white, R.color.logoBackgroundHeader};
@@ -66,15 +74,23 @@ public class AddUpdateEventActivity extends AppCompatActivity implements Adapter
         etFinishTime = findViewById(R.id.edit_text_finishTime);
         frameIcon = findViewById(R.id.frame_icon);
         ivIcon = findViewById(R.id.chosen_icon);
+        iconTv = findViewById(R.id.assing_an_icon_text_view);
+        numberPicker = findViewById(R.id.notice_numberpicker);
+        notificationNotice = findViewById(R.id.assign_notice_text_view);
+        minutesEarlier = findViewById(R.id.minutes_earlier_text_view);
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.Q)
     private void assignColorToTexts() {
         EditText[] editTexts = new EditText[] {etDescription, etStartDate, etFinishDate, etStartTime, etFinishTime};
         for (EditText editText : editTexts) {
             editText.setTextColor(ContextCompat.getColor(getApplicationContext(), textColors[selectedBackgroundColorPosition]));
         }
-        TextView iconTv = findViewById(R.id.assing_an_icon_text_view);
-        iconTv.setTextColor(ContextCompat.getColor(getApplicationContext(), textColors[selectedBackgroundColorPosition]));
+        TextView[] textViews = new TextView[] {iconTv, notificationNotice, minutesEarlier};
+        for (TextView textView : textViews) {
+            textView.setTextColor(ContextCompat.getColor(getApplicationContext(), textColors[selectedBackgroundColorPosition]));
+        }
+        //numberPicker.setTextColor(ContextCompat.getColor(getApplicationContext(), textColors[selectedBackgroundColorPosition]));
     }
 
     @RequiresApi(api = Build.VERSION_CODES.N)
@@ -87,6 +103,9 @@ public class AddUpdateEventActivity extends AppCompatActivity implements Adapter
         findViewById(R.id.add_update_activity).setBackgroundColor(ContextCompat.getColor(this, backgroundColors[selectedBackgroundColorPosition]));
 
         etDescription.addTextChangedListener(createDescriptionTextWatcher());
+
+        numberPicker.setMaxValue(60);
+        numberPicker.setMinValue(0);
 
         etFinishDate.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -154,6 +173,7 @@ public class AddUpdateEventActivity extends AppCompatActivity implements Adapter
         LocalTime start = startTime.length() == 16 ? LocalTime.parse(startTime.substring(8), dtfLong) : LocalTime.parse(startTime.substring(8), dtfShort);
         String finishTime = etFinishDate.getText().toString() + etFinishTime.getText().toString();
         LocalTime finish = finishTime.length() == 16 ? LocalTime.parse(finishTime.substring(8), dtfLong).minusMinutes(1) : LocalTime.parse(finishTime.substring(8), dtfShort).minusMinutes(1);
+        String notice = String.valueOf(numberPicker.getValue());
 
         if (startTime.trim().isEmpty() || finishTime.trim().isEmpty() || description.trim().isEmpty()) {
             Toast.makeText(this, "Insert a valid description or input times", Toast.LENGTH_SHORT).show();
@@ -171,6 +191,7 @@ public class AddUpdateEventActivity extends AppCompatActivity implements Adapter
         data.putExtra(EXTRA_STARTTIME, startTime);
         data.putExtra(EXTRA_FINISHTIME, finishTime);
         data.putExtra(EXTRA_ICON_RESOURCEID, iconCode);
+        data.putExtra(EXTRA_NOTICE, notice);
 
 
         int id = getIntent().getIntExtra(EXTRA_ID, -1);

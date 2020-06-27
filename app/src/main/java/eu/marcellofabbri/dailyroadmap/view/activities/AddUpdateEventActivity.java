@@ -77,7 +77,6 @@ public class AddUpdateEventActivity extends AppCompatActivity implements Adapter
         iconTv = findViewById(R.id.assing_an_icon_text_view);
         numberPicker = findViewById(R.id.notice_numberpicker);
         notificationNotice = findViewById(R.id.assign_notice_text_view);
-        minutesEarlier = findViewById(R.id.minutes_earlier_text_view);
     }
 
     @RequiresApi(api = Build.VERSION_CODES.Q)
@@ -86,7 +85,7 @@ public class AddUpdateEventActivity extends AppCompatActivity implements Adapter
         for (EditText editText : editTexts) {
             editText.setTextColor(ContextCompat.getColor(getApplicationContext(), textColors[selectedBackgroundColorPosition]));
         }
-        TextView[] textViews = new TextView[] {iconTv, notificationNotice, minutesEarlier};
+        TextView[] textViews = new TextView[] {iconTv, notificationNotice};
         for (TextView textView : textViews) {
             textView.setTextColor(ContextCompat.getColor(getApplicationContext(), textColors[selectedBackgroundColorPosition]));
         }

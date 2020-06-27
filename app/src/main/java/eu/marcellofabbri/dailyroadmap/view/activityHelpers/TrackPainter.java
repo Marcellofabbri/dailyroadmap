@@ -56,6 +56,7 @@ public class TrackPainter extends View {
     float leftMargin = hUnit * 100;
     float upperMargin = hUnit * 56;
     int[] trackDefaultColors = new int[]{ContextCompat.getColor(getContext(), R.color.trackDefaultColor0), ContextCompat.getColor(getContext(), R.color.trackDefaultColor1)};
+    int backgroundTrackDefaultColor = ContextCompat.getColor(getContext(), R.color.backgroundDefaultColor1);
     int whatColorPosition = 1;
     int trackDefaultColor = trackDefaultColors[whatColorPosition];
     CustomColors myColors = new CustomColors();
@@ -144,7 +145,7 @@ public class TrackPainter extends View {
     protected Paint paintObjectLinesBackground() {
         Paint paintObject = new Paint();
         paintObject.setStrokeWidth(61);
-        paintObject.setColor(Color.GRAY);
+        paintObject.setColor(backgroundTrackDefaultColor);
         paintObject.setStrokeCap(Paint.Cap.ROUND);
         paintObject.setTextSize(60);
         return paintObject;
@@ -161,7 +162,7 @@ public class TrackPainter extends View {
     protected Paint paintObjectLines12Background() {
         Paint paintObject = new Paint();
         paintObject.setStrokeWidth(55);
-        paintObject.setColor(Color.DKGRAY);
+        paintObject.setColor(backgroundTrackDefaultColor);
         paintObject.setStrokeCap(Paint.Cap.ROUND);
         paintObject.setTextSize(60);
         return paintObject;
@@ -199,7 +200,7 @@ public class TrackPainter extends View {
 
     private Paint paintObjectNotchesBackground() {
         Paint paintObject = new Paint();
-        paintObject.setStrokeWidth(30);
+        paintObject.setStrokeWidth(32);
         paintObject.setColor(Color.DKGRAY);
         return paintObject;
     }
@@ -207,9 +208,10 @@ public class TrackPainter extends View {
     public void drawStuff(Canvas canvas) {
         createPoints(canvas);
         timesToPointsMapper();
+        if (isToday) { drawNotches(canvas, paintObjectNotchesBackground(), getIndexOfCurrentPoint()); }
         drawBlueprintTrack(canvas);
         writeHourNumbers(canvas);
-        drawNotches(canvas);
+        drawNotches(canvas, paintObjectNotches(), 1439);
         if (events != null) {
             for (int i = 0; i < events.size(); i++) {
                 drawEvent(events.get(i), canvas, i);
@@ -271,29 +273,39 @@ public class TrackPainter extends View {
             String hourString = hour < 10 ? "  " + hour : String.valueOf(hour);
             canvas.drawText(hourString, points.get(i).x - 60 * vUnit, points.get(i).y + 10 * hUnit, paintObjectHourNumbers());
         }
-        canvas.drawText("00", points.get(0).x - 80 * vUnit, points.get(0).y + 10 * hUnit, paintObjectHourNumbers());
+        canvas.drawText("00", points.get(0).x - 60 * vUnit, points.get(0).y + 10 * hUnit, paintObjectHourNumbers());
 //        canvas.drawCircle(points.get(1439).x, points.get(1439).y, 19*hUnit, paintObjectNotches());
     }
 
-    private void drawNotches(Canvas canvas) {
-        canvas.drawLine(points.get(60).x, points.get(60).y, points.get(60).x - 15 * hUnit, points.get(60).y - 15 * hUnit, paintObjectNotches());
+    private int getIndexOfCurrentPoint() {
+        OffsetDateTime now = OffsetDateTime.now();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("hh:mm a");
+        String nowString = formatter.format(now);
+        MyPoint nowPoint = map.get(nowString);
+        int nowPointIndex = nowPoint.index;
+        return nowPointIndex;
+    }
+
+    private void drawNotches(Canvas canvas, Paint paint, int nowPointIndex) {
+
+        if (nowPointIndex >= 60) { canvas.drawLine(points.get(60).x, points.get(60).y, points.get(60).x - 15 * hUnit, points.get(60).y - 15 * hUnit, paint); }
         for (int i = 120; i < 360; i += 60) {
-            canvas.drawLine(points.get(i).x, points.get(i).y, points.get(i).x, points.get(i).y - 24 * hUnit, paintObjectNotches());
+            if (i <= nowPointIndex) { canvas.drawLine(points.get(i).x, points.get(i).y, points.get(i).x, points.get(i).y - 24 * hUnit, paint); }
         }
-        canvas.drawLine(points.get(360).x, points.get(360).y, points.get(360).x + 15 * hUnit, points.get(360).y - 15 * hUnit, paintObjectNotches());
+        if (nowPointIndex >= 360) { canvas.drawLine(points.get(360).x, points.get(360).y, points.get(360).x + 15 * hUnit, points.get(360).y - 15 * hUnit, paint); }
         for (int i = 420; i < 780; i += 60) {
-            canvas.drawLine(points.get(i).x, points.get(i).y, points.get(i).x + 24 * hUnit, points.get(i).y, paintObjectNotches());
+            if (i <= nowPointIndex) { canvas.drawLine(points.get(i).x, points.get(i).y, points.get(i).x + 24 * hUnit, points.get(i).y, paint); }
         }
-        canvas.drawLine(points.get(780).x, points.get(780).y, points.get(780).x + 15 * hUnit, points.get(780).y + 15 * hUnit, paintObjectNotches());
+        if (nowPointIndex >= 780) { canvas.drawLine(points.get(780).x, points.get(780).y, points.get(780).x + 15 * hUnit, points.get(780).y + 15 * hUnit, paint); }
         for (int i = 840; i < 1080; i += 60) {
-            canvas.drawLine(points.get(i).x, points.get(i).y, points.get(i).x, points.get(i).y + 24 * hUnit, paintObjectNotches());
+            if (i <= nowPointIndex) { canvas.drawLine(points.get(i).x, points.get(i).y, points.get(i).x, points.get(i).y + 24 * hUnit, paint); }
         }
-        canvas.drawLine(points.get(1080).x, points.get(1080).y, points.get(1080).x - 15 * hUnit, points.get(1080).y + 15 * hUnit, paintObjectNotches());
+        if (nowPointIndex >= 1080) { canvas.drawLine(points.get(1080).x, points.get(1080).y, points.get(1080).x - 15 * hUnit, points.get(1080).y + 15 * hUnit, paint); }
         for (int i = 1140; i < 1440; i += 60) {
-            canvas.drawLine(points.get(i).x, points.get(i).y, points.get(i).x - 24 * vUnit, points.get(i).y, paintObjectNotches());
+            if (i <= nowPointIndex) { canvas.drawLine(points.get(i).x, points.get(i).y, points.get(i).x - 24 * vUnit, points.get(i).y, paint); }
         }
-        canvas.drawCircle(points.get(0).x, points.get(0).y, 19 * hUnit, paintObjectNotches());
-        canvas.drawCircle(points.get(1439).x, points.get(1439).y, 19 * hUnit, paintObjectNotches());
+        if (nowPointIndex >= 0) { canvas.drawCircle(points.get(0).x, points.get(0).y, 19 * hUnit, paint); }
+        if (nowPointIndex >= 1439) { canvas.drawCircle(points.get(1439).x, points.get(1439).y, 19 * hUnit, paint); }
     }
 
     @RequiresApi(api = Build.VERSION_CODES.O)

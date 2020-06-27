@@ -5,6 +5,7 @@
     <color name="colorAccent">#406dce</color>
     <color name="cardViewButtonsText">#243EC5</color>
     <color name="daytimeBackground">#739EFB</color>
+    <color name="daytimeBackgroundLighter">#62C6FF</color>
     <color name="daytimeBackgroundDarker">#3760B8</color>
     <color name="card">#F3F3F3</color>
     <color name="calendarButton">#673AB7</color>
@@ -13,6 +14,7 @@
     <color name="addButton">#3A9EB7</color>
     <color name="trackDefaultColor0">#DFDFDF</color>
     <color name="trackDefaultColor1">#BCBCBC</color>
+    <color name="backgroundDefaultColor1">#6C6C7C</color>
     <color name="semiTrasparent">#E7E7EA</color>
     <color name="bottomCard">#4FD3C7C7</color>
     <color name="bigDate">#5696FD</color>

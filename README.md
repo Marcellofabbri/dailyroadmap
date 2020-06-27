@@ -1,4 +1,4 @@
-# Daily Road Map v. 1.0.0
+# Daily Road Map v. 1.2.2
 <p align="center">
   <img width="900" height="129" src="https://github.com/Marcellofabbri/dailyroadmap/blob/master/app/src/main/res/screenshots/toolbar_logo_6.png">
 </p>
@@ -7,7 +7,7 @@ A daily task visualizer for Android. Written in Java.
 The app is meant to help users have a clear uncluttered visual representation of their daily plan in the form of a subway map fashion, which gives them an idea of what the day is meant to progress like and where they are at in their plan.
 
 
-![main page](https://github.com/Marcellofabbri/dailyroadmap/blob/master/app/src/main/res/screenshots/main_full.png) ![empty main](https://github.com/Marcellofabbri/dailyroadmap/blob/master/app/src/main/res/screenshots/main_empty.png) ![add screen](https://github.com/Marcellofabbri/dailyroadmap/blob/master/app/src/main/res/screenshots/add.png) ![time dialog](https://github.com/Marcellofabbri/dailyroadmap/blob/master/app/src/main/res/screenshots/time_dialog.png)
+![main page](https://github.com/Marcellofabbri/dailyroadmap/blob/master/app/src/main/res/screenshots/new_main_activity.png) ![empty main](https://github.com/Marcellofabbri/dailyroadmap/blob/master/app/src/main/res/screenshots/new_empty.png) ![add screen](https://github.com/Marcellofabbri/dailyroadmap/blob/master/app/src/main/res/screenshots/new_add_activity.png) ![time dialog](https://github.com/Marcellofabbri/dailyroadmap/blob/master/app/src/main/res/screenshots/new_icons.png)
 
 ### Requirements
 Running the app on a laptop normally requires [Android Studio](https://developer.android.com/studio), through which it can be installed and run on an emulator. It might be possible to run it with different IDEs as long as [Java Development Kit](https://www.oracle.com/java/technologies/javase-downloads.html) is installed.
@@ -59,7 +59,7 @@ dependencies {
 - A **RecyclerView** class holds a list of the SQLite database entries according to the date.
 - The **Adapter** is what makes the ```RecyclerView``` work. Each database line is wrapped in a ```Holder``` subclass of Adapter.
 
-### Features (v.1.0.0)
+### Features (v.1.2.2)
 #### Date
 Show's today's date according to the device's current date and time. It's clickable and yields a calendar dialog that lets the user go to the main page of the selected date. To each side there's a button that lets the user go to the previous or following day.
 #### Today's button
@@ -73,11 +73,14 @@ Brings the user to another activity where they can write a task.
 - The user can pick start time of the task, which by default will be set to the current time.
 - The user can pick the finish time of the task. To make this [edittext](https://developer.android.com/reference/android/widget/EditText) easier to work with, when the start time is set the finish time immediately mirrors the start time, so that a user, when clicking opening the dialog to pick a finish time, will find themselves at the start time rather than at the current time. E.g. when in the morning planning a task for the evening, the user will pick 8:00 pm, and when picking the finish time the dialog will be at 8:00 pm by default, instead of being at the current time, which might be 9:42 am. It's more intuitive for a user, since the finish time must be after the start time. A [toast](https://developer.android.com/reference/android/widget/Toast) pops up when saving the task if the finish time was set earlier than the start time.
 - The user can pick an icon to attach to their task. If none is chosen the default "note" icon is assigned.
+- The user can pick how many minutes in advance to fire the notification of the event by selecting a number between 0 and 60 on a [numberpicker](https://developer.android.com/reference/android/widget/NumberPicker).
 #### List of tasks
 The tasks appear as [cardview](https://developer.android.com/jetpack/androidx/releases/cardview)s in the middle of the main page. Each displays the name of the task, the start and finish times, and a button with the chosen icon. When clicked is shows two extra buttons for editing the task and deleting the task.
 #### Main delete button
 The delete button shows a trash bin with the word "ALL" on it. It opens a dialog that asks the user to confirm or deny the intention to delete all of the tasks for that day.
 #### Track
-The actual track is made up of 1440 points (instances of a custom made class that extends from [Point](https://developer.android.com/reference/android/graphics/Point)). A custom made class paints points that look like a line. Notches and hour numbers are added similarly. Each even is drawn in the same way but only coloring the points that map to those moments in time. Each event is colored to match it's relative task's color. Different shapes of the track might be implemented in future releases.
+The actual track is made up of 1440 points (instances of a custom made class that extends from [Point](https://developer.android.com/reference/android/graphics/Point)). A custom made class paints points that look like a line. Notches and hour numbers are added similarly. Each even is drawn in the same way but only coloring the points that map to those moments in time. Each event is colored to match it's relative task's color. An outer darker layer surrounds the track up to the point corresponding to the present instant (when viewing today's page). Different shapes of the track might be implemented in future releases.
 #### Pin
-The pin points to where on the track the current moment in time is.
+The pin points to where on the track the current moment in time is. It becomes hidden when visiting another day's page.
+#### Notifications
+When an event is created a notification is set to fire at the event start time, or with an amount of minutes in advance if so specified by the user when creating the event. A **NotificationHelper** class is responsible for creating the notification channel (required for Android Oreo and above) and the **ReminderBroadcast** class handles the intent for the notification. Each event results in a PendingEvent with a request code that equals the event's start time in unix (milliseconds), so that it can be managed when updating or deleting the event (and the associated notification). The notification has a title, the start time and finish time, and the icon of the event.

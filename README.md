@@ -7,7 +7,7 @@ A daily task visualizer for Android. Written in Java.
 The app is meant to help users have a clear uncluttered visual representation of their daily plan in the form of a subway map fashion, which gives them an idea of what the day is meant to progress like and where they are at in their plan.
 
 
-![main page](https://github.com/Marcellofabbri/dailyroadmap/blob/master/app/src/main/res/screenshots/new_main_activity.png) ![empty main](https://github.com/Marcellofabbri/dailyroadmap/blob/master/app/src/main/res/screenshots/new_empty.png) ![add screen](https://github.com/Marcellofabbri/dailyroadmap/blob/master/app/src/main/res/screenshots/new_add_activity.png) ![time dialog](https://github.com/Marcellofabbri/dailyroadmap/blob/master/app/src/main/res/screenshots/new_icons.png)
+![screenshots](https://github.com/Marcellofabbri/dailyroadmap/blob/master/app/src/main/res/screenshots/four_screenshots.png)
 
 ### Requirements
 Running the app on a laptop normally requires [Android Studio](https://developer.android.com/studio), through which it can be installed and run on an emulator. It might be possible to run it with different IDEs as long as [Java Development Kit](https://www.oracle.com/java/technologies/javase-downloads.html) is installed.

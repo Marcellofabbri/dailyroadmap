@@ -19,6 +19,7 @@ import android.util.Xml;
 import android.view.View;
 import android.view.animation.Animation;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 
@@ -50,15 +51,15 @@ public class TrackPainter extends View {
     float screenWidth = Resources.getSystem().getDisplayMetrics().widthPixels;
     float hUnit = (screenWidth / (700));
     float hMinuteUnit = ((100 * hUnit) / 60);
-    float vUnit = ((screenHeight * (float)0.878 * (float)0.85) / 900);
+    float vUnit = ((screenHeight * (float) 0.878 * (float) 0.85) / 900);
     float vMinuteUnit = ((100 * vUnit) / 60);
     float leftMargin = hUnit * 100;
     float upperMargin = hUnit * 56;
-    int[] trackDefaultColors = new int[] {ContextCompat.getColor(getContext(), R.color.trackDefaultColor0), ContextCompat.getColor(getContext(), R.color.trackDefaultColor1)};
+    int[] trackDefaultColors = new int[]{ContextCompat.getColor(getContext(), R.color.trackDefaultColor0), ContextCompat.getColor(getContext(), R.color.trackDefaultColor1)};
     int whatColorPosition = 1;
     int trackDefaultColor = trackDefaultColors[whatColorPosition];
     CustomColors myColors = new CustomColors();
-    Integer[] colors = new Integer[] {
+    Integer[] colors = new Integer[]{
             ContextCompat.getColor(getContext(), myColors.getRed()),
             ContextCompat.getColor(getContext(), myColors.getBlue()),
             ContextCompat.getColor(getContext(), myColors.getAmber()),
@@ -69,10 +70,12 @@ public class TrackPainter extends View {
     ArrayList<MyPoint> points = new ArrayList<MyPoint>();
     HashMap<String, MyPoint> map;
     List<Event> events;
+    boolean isToday = true;
 
-    public TrackPainter(Context context, List<Event> events) {
+    public TrackPainter(Context context, List<Event> events, boolean isToday) {
         super(context);
         this.events = events;
+        this.isToday = isToday;
     }
 
     public TrackPainter(Context context, @Nullable AttributeSet attrs, List<Event> events) {
@@ -85,6 +88,10 @@ public class TrackPainter extends View {
         this.events = events;
     }
 
+    public void setToday(boolean bool) {
+        isToday = bool;
+    }
+
     @Override
     public void onDraw(Canvas canvas) {
         super.onDraw(canvas);
@@ -95,32 +102,32 @@ public class TrackPainter extends View {
 
         // from 00 to 01 (indexes from 0 to 59)
         for (int i = 0; i < 60; i++) {
-            MyPoint point = new MyPoint(leftMargin, (upperMargin + 100 * vUnit - i*vMinuteUnit), i);
+            MyPoint point = new MyPoint(leftMargin, (upperMargin + 100 * vUnit - i * vMinuteUnit), i);
             points.add(point);
         }
         // from 01 to 06 (indexes from 60 to 359)
         for (int i = 0; i < 300; i++) {
-            MyPoint point = new MyPoint(leftMargin + i*hMinuteUnit, upperMargin, i+60);
+            MyPoint point = new MyPoint(leftMargin + i * hMinuteUnit, upperMargin, i + 60);
             points.add(point);
         }
         // from 06 to 13 (indexes from 360 to 779)
         for (int i = 0; i < 420; i++) {
-            MyPoint point = new MyPoint(leftMargin + 500*hUnit, upperMargin + i*vMinuteUnit, i+360);
+            MyPoint point = new MyPoint(leftMargin + 500 * hUnit, upperMargin + i * vMinuteUnit, i + 360);
             points.add(point);
         }
         // from 13 to 18 (indexes from 780 to 1079)
         for (int i = 0; i < 300; i++) {
-            MyPoint point = new MyPoint(leftMargin + 500*hUnit - i*hMinuteUnit, upperMargin + 700*vUnit, i+780);
+            MyPoint point = new MyPoint(leftMargin + 500 * hUnit - i * hMinuteUnit, upperMargin + 700 * vUnit, i + 780);
             points.add(point);
         }
         // from 18 to 23 (indexes from 1080 to 1379)
         for (int i = 0; i < 300; i++) {
-            MyPoint point = new MyPoint(leftMargin, upperMargin + 700*vUnit - i*vMinuteUnit, i+1080);
+            MyPoint point = new MyPoint(leftMargin, upperMargin + 700 * vUnit - i * vMinuteUnit, i + 1080);
             points.add(point);
         }
         // from 23 to 24 (indexes from 1380 to 1440)
         for (int i = 0; i < 60; i++) {
-            MyPoint point = new MyPoint(leftMargin + (i*hUnit)/2, upperMargin + 200*vUnit - i*vMinuteUnit, i+1380);
+            MyPoint point = new MyPoint(leftMargin + (i * hUnit) / 2, upperMargin + 200 * vUnit - i * vMinuteUnit, i + 1380);
             points.add(point);
         }
     }
@@ -136,8 +143,9 @@ public class TrackPainter extends View {
 
     protected Paint paintObjectLinesBackground() {
         Paint paintObject = new Paint();
-        paintObject.setStrokeWidth(51);
-        paintObject.setColor(Color.BLACK);
+        paintObject.setStrokeWidth(61);
+        paintObject.setColor(Color.GRAY);
+        paintObject.setStrokeCap(Paint.Cap.ROUND);
         paintObject.setTextSize(60);
         return paintObject;
     }
@@ -152,8 +160,9 @@ public class TrackPainter extends View {
 
     protected Paint paintObjectLines12Background() {
         Paint paintObject = new Paint();
-        paintObject.setStrokeWidth(45);
-        paintObject.setColor(Color.BLACK);
+        paintObject.setStrokeWidth(55);
+        paintObject.setColor(Color.DKGRAY);
+        paintObject.setStrokeCap(Paint.Cap.ROUND);
         paintObject.setTextSize(60);
         return paintObject;
     }
@@ -188,6 +197,13 @@ public class TrackPainter extends View {
         return paintObject;
     }
 
+    private Paint paintObjectNotchesBackground() {
+        Paint paintObject = new Paint();
+        paintObject.setStrokeWidth(30);
+        paintObject.setColor(Color.DKGRAY);
+        return paintObject;
+    }
+
     public void drawStuff(Canvas canvas) {
         createPoints(canvas);
         timesToPointsMapper();
@@ -199,16 +215,30 @@ public class TrackPainter extends View {
                 drawEvent(events.get(i), canvas, i);
             }
         }
-        drawPin(canvas);
+        if (isToday) { drawPin(canvas); }
     }
 
     private void drawBlueprintTrack(Canvas canvas) {
-        for (int i = 0; i < 1380; i++) {
-            canvas.drawPoint(points.get(i).x, points.get(i).y, paintObjectLinesBackground());
+        OffsetDateTime now = OffsetDateTime.now();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("hh:mm a");
+        String nowString = formatter.format(now);
+        MyPoint nowPoint = map.get(nowString);
+        int nowPointIndex = nowPoint.index;
+
+        //DRAW BACKGROUND CURRENT-TIME TRACK (IF DAY IS TODAY)
+        if (isToday) {
+            if (nowPointIndex < 1380) {
+                for (int i = 0; i < nowPointIndex; i++) {
+                    canvas.drawPoint(points.get(i).x, points.get(i).y, paintObjectLinesBackground());
+                }
+            } else {
+                for (int i = 1380; i < nowPointIndex; i++) {
+                    canvas.drawPoint(points.get(i).x, points.get(i).y, paintObjectLines12Background());
+                }
+            }
         }
-        for (int i = 1380; i < 1440; i++) {
-            canvas.drawPoint(points.get(i).x, points.get(i).y, paintObjectLines12Background());
-        }
+
+        //DRAW NORMAL BLUEPRINT TRACK OVER IT
         for (int i = 0; i < 1380; i++) {
             canvas.drawPoint(points.get(i).x, points.get(i).y, paintObjectLines());
         }
@@ -218,52 +248,52 @@ public class TrackPainter extends View {
     }
 
     private void writeHourNumbers(Canvas canvas) {
-        canvas.drawText("1", points.get(60).x - 35*hUnit, points.get(60).y - 25*hUnit, paintObjectHourNumbers());
-        for (int i = 120; i < 360; i+=60) {
-            String hourString = String.valueOf(i/60);
-            canvas.drawText(hourString, points.get(i).x - 8*hUnit, points.get(i).y - 30*hUnit, paintObjectHourNumbers());
+        canvas.drawText("1", points.get(60).x - 35 * hUnit, points.get(60).y - 25 * hUnit, paintObjectHourNumbers());
+        for (int i = 120; i < 360; i += 60) {
+            String hourString = String.valueOf(i / 60);
+            canvas.drawText(hourString, points.get(i).x - 8 * hUnit, points.get(i).y - 30 * hUnit, paintObjectHourNumbers());
         }
-        canvas.drawText("6", points.get(360).x + 14*hUnit, points.get(360).y - 20*hUnit, paintObjectHourNumbers());
-        for (int i = 420; i < 780; i+=60) {
-            int hour = i/60;
+        canvas.drawText("6", points.get(360).x + 14 * hUnit, points.get(360).y - 20 * hUnit, paintObjectHourNumbers());
+        for (int i = 420; i < 780; i += 60) {
+            int hour = i / 60;
             String hourString = String.valueOf(hour);
-            canvas.drawText(hourString, points.get(i).x + 30*hUnit, points.get(i).y + 10*vUnit, paintObjectHourNumbers());
+            canvas.drawText(hourString, points.get(i).x + 30 * hUnit, points.get(i).y + 10 * vUnit, paintObjectHourNumbers());
         }
-        canvas.drawText("1", points.get(780).x + 16*hUnit, points.get(780).y + 45*hUnit, paintObjectHourNumbers());
-        for (int i = 840; i < 1080; i+=60) {
-            int hour = i/60 - 12;
+        canvas.drawText("1", points.get(780).x + 16 * hUnit, points.get(780).y + 45 * hUnit, paintObjectHourNumbers());
+        for (int i = 840; i < 1080; i += 60) {
+            int hour = i / 60 - 12;
             String hourString = String.valueOf(hour);
-            canvas.drawText(hourString, points.get(i).x - 8*hUnit, points.get(i).y + 55*hUnit, paintObjectHourNumbers());
+            canvas.drawText(hourString, points.get(i).x - 8 * hUnit, points.get(i).y + 55 * hUnit, paintObjectHourNumbers());
         }
-        canvas.drawText("6", points.get(1080).x - 30*hUnit, points.get(1080).y + 45*hUnit, paintObjectHourNumbers());
-        for (int i = 1140; i < 1440; i+=60) {
-            int hour = i/60 - 12;
+        canvas.drawText("6", points.get(1080).x - 30 * hUnit, points.get(1080).y + 45 * hUnit, paintObjectHourNumbers());
+        for (int i = 1140; i < 1440; i += 60) {
+            int hour = i / 60 - 12;
             String hourString = hour < 10 ? "  " + hour : String.valueOf(hour);
-            canvas.drawText(hourString, points.get(i).x - 60*vUnit, points.get(i).y + 10*hUnit, paintObjectHourNumbers());
+            canvas.drawText(hourString, points.get(i).x - 60 * vUnit, points.get(i).y + 10 * hUnit, paintObjectHourNumbers());
         }
-        canvas.drawText("00", points.get(0).x - 80*vUnit, points.get(0).y + 10*hUnit, paintObjectHourNumbers());
+        canvas.drawText("00", points.get(0).x - 80 * vUnit, points.get(0).y + 10 * hUnit, paintObjectHourNumbers());
 //        canvas.drawCircle(points.get(1439).x, points.get(1439).y, 19*hUnit, paintObjectNotches());
     }
 
     private void drawNotches(Canvas canvas) {
-        canvas.drawLine(points.get(60).x, points.get(60).y, points.get(60).x - 15*hUnit, points.get(60).y - 15*hUnit, paintObjectNotches());
-        for (int i = 120; i < 360; i+=60) {
-            canvas.drawLine(points.get(i).x, points.get(i).y, points.get(i).x, points.get(i).y - 24*hUnit, paintObjectNotches());
+        canvas.drawLine(points.get(60).x, points.get(60).y, points.get(60).x - 15 * hUnit, points.get(60).y - 15 * hUnit, paintObjectNotches());
+        for (int i = 120; i < 360; i += 60) {
+            canvas.drawLine(points.get(i).x, points.get(i).y, points.get(i).x, points.get(i).y - 24 * hUnit, paintObjectNotches());
         }
-        canvas.drawLine(points.get(360).x, points.get(360).y, points.get(360).x +15*hUnit, points.get(360).y - 15*hUnit, paintObjectNotches());
-        for (int i = 420; i < 780; i+=60) {
-            canvas.drawLine(points.get(i).x, points.get(i).y, points.get(i).x + 24*hUnit, points.get(i).y, paintObjectNotches());
+        canvas.drawLine(points.get(360).x, points.get(360).y, points.get(360).x + 15 * hUnit, points.get(360).y - 15 * hUnit, paintObjectNotches());
+        for (int i = 420; i < 780; i += 60) {
+            canvas.drawLine(points.get(i).x, points.get(i).y, points.get(i).x + 24 * hUnit, points.get(i).y, paintObjectNotches());
         }
-        canvas.drawLine(points.get(780).x, points.get(780).y, points.get(780).x +15*hUnit, points.get(780).y + 15*hUnit, paintObjectNotches());
-        for (int i = 840; i < 1080; i+=60) {
-            canvas.drawLine(points.get(i).x, points.get(i).y, points.get(i).x, points.get(i).y + 24*hUnit, paintObjectNotches());
+        canvas.drawLine(points.get(780).x, points.get(780).y, points.get(780).x + 15 * hUnit, points.get(780).y + 15 * hUnit, paintObjectNotches());
+        for (int i = 840; i < 1080; i += 60) {
+            canvas.drawLine(points.get(i).x, points.get(i).y, points.get(i).x, points.get(i).y + 24 * hUnit, paintObjectNotches());
         }
-        canvas.drawLine(points.get(1080).x, points.get(1080).y, points.get(1080).x - 15*hUnit, points.get(1080).y + 15*hUnit, paintObjectNotches());
-        for (int i = 1140; i < 1440; i+=60) {
-            canvas.drawLine(points.get(i).x, points.get(i).y, points.get(i).x - 24*vUnit, points.get(i).y, paintObjectNotches());
+        canvas.drawLine(points.get(1080).x, points.get(1080).y, points.get(1080).x - 15 * hUnit, points.get(1080).y + 15 * hUnit, paintObjectNotches());
+        for (int i = 1140; i < 1440; i += 60) {
+            canvas.drawLine(points.get(i).x, points.get(i).y, points.get(i).x - 24 * vUnit, points.get(i).y, paintObjectNotches());
         }
-        canvas.drawCircle(points.get(0).x, points.get(0).y, 19*hUnit, paintObjectNotches());
-        canvas.drawCircle(points.get(1439).x, points.get(1439).y, 19*hUnit, paintObjectNotches());
+        canvas.drawCircle(points.get(0).x, points.get(0).y, 19 * hUnit, paintObjectNotches());
+        canvas.drawCircle(points.get(1439).x, points.get(1439).y, 19 * hUnit, paintObjectNotches());
     }
 
     @RequiresApi(api = Build.VERSION_CODES.O)
@@ -273,7 +303,7 @@ public class TrackPainter extends View {
         SimpleDateFormat sdf = new SimpleDateFormat(myFormat, Locale.getDefault());
         sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
         for (int i = 0; i < 1440; i++) {
-            String timePoint = sdf.format(new Date(60000*i));
+            String timePoint = sdf.format(new Date(60000 * i));
             myMap.put(timePoint, points.get(i));
         }
         map = myMap;
@@ -284,8 +314,8 @@ public class TrackPainter extends View {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("hh:mm a");
         String nowString = formatter.format(now);
         MyPoint nowPoint = map.get(nowString);
-        Bitmap pin = BitmapFactory.decodeResource(getResources(),R.drawable.gbg_pin);
-        canvas.drawBitmap(pin, nowPoint.x, nowPoint.y - pin.getHeight(), paintObjectNotches());
+        Bitmap pin = BitmapFactory.decodeResource(getResources(), R.drawable.red_yellow_pin);
+        canvas.drawBitmap(pin, nowPoint.x - (pin.getWidth() / 2), nowPoint.y - (pin.getHeight() / 2), paintObjectNotches());
     }
 
     private void drawEvent(Event event, Canvas canvas, int color) {
@@ -293,7 +323,7 @@ public class TrackPainter extends View {
         String finishTime = converter.extractTime(event.getFinishTime());
         int startTimeIndex = (map.get(startTime)).index;
         int finishTimeIndex = (map.get(finishTime)).index;
-        int colorNumber = color - (6 * (int)(color/6));
+        int colorNumber = color - (6 * (int) (color / 6));
 
         for (int i = startTimeIndex; i < finishTimeIndex; i++) {
             canvas.drawPoint(points.get(i).x, points.get(i).y, paintObjectTest(colors[colorNumber]));

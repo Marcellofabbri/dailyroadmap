@@ -9,6 +9,7 @@ import androidx.annotation.RequiresApi;
 import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.Observer;
 
+import java.time.LocalDate;
 import java.time.OffsetDateTime;
 import java.util.List;
 
@@ -53,7 +54,8 @@ public class MyTrackTextWatcher implements TextWatcher {
             @Override
             public void onChanged(List<Event> events) {
                 eventPainterContainer.removeAllViews();
-                eventPainterContainer.addView(new TrackPainter(context, events));
+                boolean isToday = newDateTime.toLocalDate().equals(LocalDate.now());
+                eventPainterContainer.addView(new TrackPainter(context, events, isToday));
             }
         });
     }

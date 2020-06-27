@@ -25,6 +25,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.time.LocalDate;
 import java.time.OffsetDateTime;
 import java.util.Calendar;
 import java.util.List;
@@ -151,7 +152,12 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onChanged(List<Event> events) {
                 eventPainterContainer.removeAllViews();
-                eventPainterContainer.addView(new TrackPainter(MainActivity.this, events));
+                boolean isToday = displayedDate.toLocalDate().equals(LocalDate.now());
+                TrackPainter trackPainter = new TrackPainter(MainActivity.this, events, isToday);
+                System.out.println(displayedDate.toLocalDate());
+                System.out.println(LocalDate.now());
+                System.out.println(displayedDate.toLocalDate().equals(LocalDate.now()));
+                eventPainterContainer.addView(trackPainter);
             }
         });
 

@@ -46,7 +46,8 @@ public class AddUpdateEventActivity extends AppCompatActivity implements Adapter
     public static final String EXTRA_FINISHTIME = "eu.marcellofabbri.dailyroadmap.EXTRA_FINISHTIME";
     public static final String EXTRA_ICON_RESOURCEID = "eu.marcellofabbri.dailyroadmap.EXTRA_ICON_RESOURCEID";
     public static final String DEFAULT_ICON_RESOURCEID = "2131230885";
-    public static final String ORIGINAL_UNIX = "eu.marcellofabbri.dailyroadmap.EXTRA_ORIGINAL_UNIX";
+    public static final String EXTRA_ORIGINAL_UNIX = "eu.marcellofabbri.dailyroadmap.EXTRA_ORIGINAL_UNIX";
+    public String extraUnix = EXTRA_ORIGINAL_UNIX;
     public static final String EXTRA_NOTICE = "eu.marcellofabbri.dailyroadmap.EXTRA_NOTICE";
 
     public EditText etDescription;
@@ -130,6 +131,8 @@ public class AddUpdateEventActivity extends AppCompatActivity implements Adapter
             etFinishTime.setText(intent.getStringExtra(EXTRA_FINISHTIME).substring(8));
             iconCode = intent.getStringExtra(EXTRA_ICON_RESOURCEID);
             ivIcon.setBackgroundResource(Integer.parseInt(iconCode));
+            extraUnix = intent.getStringExtra(EXTRA_ORIGINAL_UNIX);
+
         } else {
             setTitle("Add task");
             etStartDate.setText(intent.getStringExtra(EXTRA_STARTTIME).substring(0, 8));
@@ -191,7 +194,7 @@ public class AddUpdateEventActivity extends AppCompatActivity implements Adapter
         data.putExtra(EXTRA_FINISHTIME, finishTime);
         data.putExtra(EXTRA_ICON_RESOURCEID, iconCode);
         data.putExtra(EXTRA_NOTICE, notice);
-
+        data.putExtra(EXTRA_ORIGINAL_UNIX, extraUnix);
 
         int id = getIntent().getIntExtra(EXTRA_ID, -1);
         if (id != -1) {

@@ -25,6 +25,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.sql.Date;
 import java.time.LocalDate;
 import java.time.OffsetDateTime;
 import java.util.Calendar;
@@ -175,13 +176,14 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onUpdateButtonClick(Event event) {
+                //deleteNotification(event);
                 Intent intent = new Intent(MainActivity.this, AddUpdateEventActivity.class);
                 intent.putExtra(AddUpdateEventActivity.EXTRA_ID, event.getId());
                 intent.putExtra(AddUpdateEventActivity.EXTRA_DESCRIPTION, event.getDescription());
                 intent.putExtra(AddUpdateEventActivity.EXTRA_FINISHTIME, converter.extractDate(event.getFinishTime()) + converter.extractTime(event.getFinishTime()));
                 intent.putExtra(AddUpdateEventActivity.EXTRA_STARTTIME, converter.extractDate(event.getStartTime()) + converter.extractTime(event.getStartTime()));
                 intent.putExtra(AddUpdateEventActivity.EXTRA_ICON_RESOURCEID, event.getIcon());
-                intent.putExtra(AddUpdateEventActivity.ORIGINAL_UNIX, event.getStartUnix());
+                intent.putExtra(AddUpdateEventActivity.EXTRA_ORIGINAL_UNIX, String.valueOf(event.getStartUnix()));
                 startActivityForResult(intent, UPDATE_EVENT_REQUEST_CODE);
 
             }
@@ -232,14 +234,18 @@ public class MainActivity extends AppCompatActivity {
             String finishTimeString = data.getStringExtra(AddUpdateEventActivity.EXTRA_FINISHTIME);
             OffsetDateTime finishTime = converter.convertMashedDateToString(finishTimeString);
             String icon = data.getStringExtra(AddUpdateEventActivity.EXTRA_ICON_RESOURCEID);
-            long originalUnix = data.getLongExtra(AddUpdateEventActivity.ORIGINAL_UNIX, 0);
-            int notice = Integer.parseInt(data.getStringExtra(AddUpdateEventActivity.EXTRA_NOTICE));
+            String stringOriginalUnix = data.getStringExtra(AddUpdateEventActivity.EXTRA_ORIGINAL_UNIX);
+            long originalUnix = Long.parseLong(stringOriginalUnix);
+            long unixStart = startTime.toEpochSecond();
+            String stringNotice = data.getStringExtra(AddUpdateEventActivity.EXTRA_NOTICE);
+            int notice = Integer.parseInt(stringNotice);
 
-            Event event = new Event(description, startTime, finishTime, 0, icon);
+            Event event = new Event(description, startTime, finishTime, unixStart, icon);
             event.setId(id);
             eventViewModel.update(event);
 
             updateNotification(originalUnix, event, notice);
+            //createNotification(event, notice);
 
             Toast.makeText(this, "Event updated", Toast.LENGTH_LONG).show();
 

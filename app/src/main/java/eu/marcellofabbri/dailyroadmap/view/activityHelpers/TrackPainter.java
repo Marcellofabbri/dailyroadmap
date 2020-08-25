@@ -161,7 +161,7 @@ public class TrackPainter extends View {
 
     protected Paint paintObjectLines12Background() {
         Paint paintObject = new Paint();
-        paintObject.setStrokeWidth(55);
+        paintObject.setStrokeWidth(65);
         paintObject.setColor(backgroundTrackDefaultColor);
         paintObject.setStrokeCap(Paint.Cap.ROUND);
         paintObject.setTextSize(60);
@@ -234,6 +234,9 @@ public class TrackPainter extends View {
                     canvas.drawPoint(points.get(i).x, points.get(i).y, paintObjectLinesBackground());
                 }
             } else {
+                for (int i = 0; i < 1380; i++) {
+                    canvas.drawPoint(points.get(i).x, points.get(i).y, paintObjectLinesBackground());
+                }
                 for (int i = 1380; i < nowPointIndex; i++) {
                     canvas.drawPoint(points.get(i).x, points.get(i).y, paintObjectLines12Background());
                 }

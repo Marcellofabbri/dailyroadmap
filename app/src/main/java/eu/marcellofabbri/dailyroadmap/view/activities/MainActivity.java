@@ -22,18 +22,24 @@ import android.os.Bundle;
 import android.text.TextWatcher;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.anychart.scales.DateTime;
+
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 import eu.marcellofabbri.dailyroadmap.model.Event;
+import eu.marcellofabbri.dailyroadmap.utils.CurrentHour;
 import eu.marcellofabbri.dailyroadmap.view.activityHelpers.EventAdapter;
 import eu.marcellofabbri.dailyroadmap.view.activityHelpers.EventPainterContainer;
 import eu.marcellofabbri.dailyroadmap.view.activityHelpers.MainHeader;
@@ -149,8 +155,17 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        //int hourOfDay = new CurrentHour(myCalendar).hourOfDay();
+        int hourOfDay = 23;
         final EventPainterContainer eventPainterContainer = findViewById(R.id.eventPainterContainer);
-        final ScrollView scrollview = findViewById(R.id.scrollpaint);
+        final ScrollView scrollview = (ScrollView) findViewById(R.id.scrollpaint);
+        ViewTreeObserver vto = scrollview.getViewTreeObserver();
+        vto.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+            public void onGlobalLayout() {
+                scrollview.scrollTo(0, 3800*hourOfDay/24);
+            }
+        });
+
 
         eventViewModel.getCertainEvents(displayedDate).observe(MainActivity.this, new Observer<List<Event>>() {
             @Override
@@ -159,8 +174,12 @@ public class MainActivity extends AppCompatActivity {
                 boolean isToday = displayedDate.toLocalDate().equals(LocalDate.now());
                 VerticalTrackPainter verticalTrackPainter = new VerticalTrackPainter(MainActivity.this, events, isToday);
                 eventPainterContainer.addView(verticalTrackPainter);
+
+
             }
         });
+
+
 
         TextWatcher dateTextWatcher = new MyMainTextWatcher(eventViewModel, adapter, MainActivity.this, noEvents);
         mainHeader.getCurrentDate().addTextChangedListener(dateTextWatcher);

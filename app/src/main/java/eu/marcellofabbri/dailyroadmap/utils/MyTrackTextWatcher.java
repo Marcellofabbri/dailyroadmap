@@ -16,7 +16,7 @@ import java.util.List;
 import eu.marcellofabbri.dailyroadmap.view.activityHelpers.EventPainterContainer;
 import eu.marcellofabbri.dailyroadmap.model.Event;
 import eu.marcellofabbri.dailyroadmap.view.activityHelpers.EventAdapter;
-import eu.marcellofabbri.dailyroadmap.view.activityHelpers.TrackPainter;
+import eu.marcellofabbri.dailyroadmap.view.activityHelpers.VerticalTrackPainter;
 import eu.marcellofabbri.dailyroadmap.viewModel.EventViewModel;
 
 public class MyTrackTextWatcher implements TextWatcher {
@@ -55,7 +55,7 @@ public class MyTrackTextWatcher implements TextWatcher {
             public void onChanged(List<Event> events) {
                 eventPainterContainer.removeAllViews();
                 boolean isToday = newDateTime.toLocalDate().equals(LocalDate.now());
-                eventPainterContainer.addView(new TrackPainter(context, events, isToday));
+                eventPainterContainer.addView(new VerticalTrackPainter(context, events, isToday));
             }
         });
     }

@@ -1,5 +1,6 @@
 package eu.marcellofabbri.dailyroadmap.view.activities;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.ActionBar;
@@ -20,9 +21,13 @@ import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.text.TextWatcher;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
+import android.widget.AdapterView;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ScrollView;
@@ -155,8 +160,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        //int hourOfDay = new CurrentHour(myCalendar).hourOfDay();
-        int hourOfDay = 23;
+        int hourOfDay = new CurrentHour(myCalendar).hourOfDay();
         final EventPainterContainer eventPainterContainer = findViewById(R.id.eventPainterContainer);
         final ScrollView scrollview = (ScrollView) findViewById(R.id.scrollpaint);
         ViewTreeObserver vto = scrollview.getViewTreeObserver();
@@ -300,6 +304,26 @@ public class MainActivity extends AppCompatActivity {
         alarmManager.cancel(pendingIntent);
 
         createNotification(newEvent, notice);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater menuInflater = getMenuInflater();
+        menuInflater.inflate(R.menu.main_menu, menu);
+        return true;
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        switch(item.getItemId()) {
+            case R.id.rectangular:
+                return true;
+            case R.id.vertical:
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
 
 }

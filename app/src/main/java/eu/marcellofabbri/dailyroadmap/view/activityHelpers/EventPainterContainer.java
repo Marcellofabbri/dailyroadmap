@@ -6,12 +6,6 @@ import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 
 public class EventPainterContainer extends RelativeLayout {
-    public void setVerticalTrackPainter(VerticalTrackPainter verticalTrackPainter) {
-        this.verticalTrackPainter = verticalTrackPainter;
-    }
-
-    private VerticalTrackPainter verticalTrackPainter;
-
     public EventPainterContainer(Context context) {
         super(context);
     }

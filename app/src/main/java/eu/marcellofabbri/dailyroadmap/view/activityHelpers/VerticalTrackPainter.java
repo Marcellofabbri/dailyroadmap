@@ -275,7 +275,7 @@ public class VerticalTrackPainter extends View {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("hh:mm a");
         String nowString = formatter.format(now);
         MyPoint nowPoint = map.get(nowString);
-        Bitmap pin = BitmapFactory.decodeResource(getResources(), R.drawable.pin_brown_yellow);
+        Bitmap pin = BitmapFactory.decodeResource(getResources(), R.drawable.red_horizontal_pin);
         canvas.drawBitmap(pin, nowPoint.x - (pin.getWidth() / 2), nowPoint.y - (pin.getHeight() / 2), paintObjectNotches());
     }
 

@@ -5,8 +5,10 @@ import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.content.ContextCompat;
 import androidx.core.widget.NestedScrollView;
+import androidx.lifecycle.LiveData;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -18,6 +20,7 @@ import android.app.AlertDialog;
 import android.app.PendingIntent;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
 import android.text.TextWatcher;
@@ -30,6 +33,8 @@ import android.view.ViewTreeObserver;
 import android.widget.AdapterView;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -48,6 +53,7 @@ import eu.marcellofabbri.dailyroadmap.utils.CurrentHour;
 import eu.marcellofabbri.dailyroadmap.view.activityHelpers.EventAdapter;
 import eu.marcellofabbri.dailyroadmap.view.activityHelpers.EventPainterContainer;
 import eu.marcellofabbri.dailyroadmap.view.activityHelpers.MainHeader;
+import eu.marcellofabbri.dailyroadmap.view.activityHelpers.TrackPainter;
 import eu.marcellofabbri.dailyroadmap.view.notificationHandlers.ReminderBroadcast;
 import eu.marcellofabbri.dailyroadmap.view.activityHelpers.VerticalTrackPainter;
 import eu.marcellofabbri.dailyroadmap.viewModel.EventViewModel;
@@ -67,22 +73,38 @@ public class MainActivity extends AppCompatActivity {
     private List<Event> displayedEvents;
     private EntityFieldConverter converter = new EntityFieldConverter();
     private AlarmManager alarmManager;
+    private String PREFERENCES = "PREFERENCES";
+    private String currentView;
+    private String RECTANGULAR = "rectangular";
+    private String VERTICAL = "vertical";
+    private EventPainterContainer eventPainterContainer;
+    private MainHeader mainHeader;
+    private OffsetDateTime displayedDate;
+    private MyTrackTextWatcher myTrackTextWatcher;
+    private MyMainTextWatcher dateTextWatcher;
+    private EventAdapter adapter;
+    private LinearLayout centralContainer;
+    private ScrollView scrollview;
 
     @SuppressLint("ClickableViewAccessibility")
     @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        loadViewPreferences();
+        System.out.println(currentView);
         setContentView(R.layout.activity_main);
         findViewById(R.id.main_activity).setBackgroundColor(ContextCompat.getColor(this, backgroundColors[selectedBackgroundColorPosition]));
-
+        centralContainer = findViewById(R.id.central_container);
+        scrollview = findViewById(R.id.scrollpaint);
         alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
 
+        addMargin(centralContainer);
         ActionBar actionBar = getSupportActionBar();
         actionBar.setBackgroundDrawable(getDrawable(R.drawable.toolbar_logo_6));
         actionBar.setTitle("");
 
-        final MainHeader mainHeader = findViewById(R.id.header);
+        mainHeader = findViewById(R.id.header);
         mainHeader.identifyFields();
         mainHeader.bootElements();
         mainHeader.bootDateClick();
@@ -139,14 +161,14 @@ public class MainActivity extends AppCompatActivity {
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setHasFixedSize(true);
 
-        final EventAdapter adapter = new EventAdapter();
+        adapter = new EventAdapter();
         recyclerView.setAdapter(adapter);
 
         eventViewModel = ViewModelProviders.of(this).get(EventViewModel.class);
-        final String displayedDateString = mainHeader.getCurrentDate().getText().toString();
-        final OffsetDateTime displayedDate = converter.convertDayStringToOffsetDateTime(displayedDateString);
+
         TextView noEvents = findViewById(R.id.no_events);
 
+        retrieveDisplayedDate();
         eventViewModel.getCertainEvents(displayedDate).observe(this, new Observer<List<Event>>() {
             @Override
             public void onChanged(List<Event> events) {
@@ -161,8 +183,7 @@ public class MainActivity extends AppCompatActivity {
         });
 
         int hourOfDay = new CurrentHour(myCalendar).hourOfDay();
-        final EventPainterContainer eventPainterContainer = findViewById(R.id.eventPainterContainer);
-        final ScrollView scrollview = (ScrollView) findViewById(R.id.scrollpaint);
+        eventPainterContainer = pickEventPainterContainer();
         ViewTreeObserver vto = scrollview.getViewTreeObserver();
         vto.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
             public void onGlobalLayout() {
@@ -170,24 +191,11 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        observeAndPaint(displayedDate);
 
-        eventViewModel.getCertainEvents(displayedDate).observe(MainActivity.this, new Observer<List<Event>>() {
-            @Override
-            public void onChanged(List<Event> events) {
-                eventPainterContainer.removeAllViews();
-                boolean isToday = displayedDate.toLocalDate().equals(LocalDate.now());
-                VerticalTrackPainter verticalTrackPainter = new VerticalTrackPainter(MainActivity.this, events, isToday);
-                eventPainterContainer.addView(verticalTrackPainter);
-
-
-            }
-        });
-
-
-
-        TextWatcher dateTextWatcher = new MyMainTextWatcher(eventViewModel, adapter, MainActivity.this, noEvents);
+        dateTextWatcher = new MyMainTextWatcher(eventViewModel, adapter, MainActivity.this, noEvents);
         mainHeader.getCurrentDate().addTextChangedListener(dateTextWatcher);
-        TextWatcher myTrackTextWatcher = new MyTrackTextWatcher(eventPainterContainer, this, this, adapter, eventViewModel);
+        myTrackTextWatcher = new MyTrackTextWatcher(eventPainterContainer, this, this, adapter, eventViewModel, currentView);
         mainHeader.getCurrentDate().addTextChangedListener(myTrackTextWatcher);
 
         adapter.setOnButtonClickListener(new EventAdapter.OnButtonClickListener() {
@@ -212,6 +220,8 @@ public class MainActivity extends AppCompatActivity {
         });
 
     }
+
+
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
@@ -318,12 +328,80 @@ public class MainActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         switch(item.getItemId()) {
             case R.id.rectangular:
+                saveViewPreferences("rectangular");
+                observeAndPaint(displayedDate);
+                finish();
+                startActivity(getIntent());
                 return true;
             case R.id.vertical:
+                saveViewPreferences("vertical");
+                observeAndPaint(displayedDate);
+                finish();
+                startActivity(getIntent());
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
     }
 
+    public void saveViewPreferences(String string) {
+        SharedPreferences sharedPreferences = getSharedPreferences(PREFERENCES, MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putString("view", string);
+        editor.commit();
+    }
+
+    public String getViewPreferences() {
+        SharedPreferences sharedPreferences = getSharedPreferences(PREFERENCES, MODE_PRIVATE);
+        String viewValue = sharedPreferences.getString("view", "rectangular");
+        return viewValue;
+    }
+
+    public void loadViewPreferences() {
+        currentView = getViewPreferences();
+    }
+
+    private void addTrack(EventPainterContainer eventPainterContainer, List<Event> events, boolean isToday) {
+        eventPainterContainer.removeAllViews();
+        if (currentView.equals(RECTANGULAR)) {
+            TrackPainter trackPainter = new TrackPainter(MainActivity.this, events, isToday);
+            eventPainterContainer.addView(trackPainter);
+        } else if (currentView.equals(VERTICAL)) {
+            VerticalTrackPainter verticalTrackPainter = new VerticalTrackPainter(MainActivity.this, events, isToday);
+            eventPainterContainer.addView(verticalTrackPainter);
+        }
+
+    }
+
+    protected void observeAndPaint(OffsetDateTime displayedDate) {
+        eventViewModel.getCertainEvents(displayedDate).observe(MainActivity.this, new Observer<List<Event>>() {
+            @Override
+            public void onChanged(List<Event> events) {
+                eventPainterContainer.removeAllViews();
+                loadViewPreferences();
+                boolean isToday = displayedDate.toLocalDate().equals(LocalDate.now());
+                addTrack(pickEventPainterContainer(), events, isToday);
+            }
+        });
+    }
+
+    private void retrieveDisplayedDate() {
+        String displayedDateString = mainHeader.getCurrentDate().getText().toString();
+        displayedDate = converter.convertDayStringToOffsetDateTime(displayedDateString);
+    }
+
+    private EventPainterContainer pickEventPainterContainer() {
+        return currentView.equals(RECTANGULAR) ? findViewById(R.id.eventPainterContainerRectangular) : findViewById(R.id.eventPainterContainerVertical);
+
+    }
+
+    private void addMargin(LinearLayout ll) {
+        if (currentView.equals(VERTICAL)) {
+            ConstraintLayout.LayoutParams layoutParams = new ConstraintLayout.LayoutParams(
+                    ConstraintLayout.LayoutParams.MATCH_PARENT,
+                    ConstraintLayout.LayoutParams.MATCH_PARENT);
+            layoutParams.setMargins(500, 500, 0, 0);
+            ll.setLayoutParams(layoutParams);
+        }
+    }
 }

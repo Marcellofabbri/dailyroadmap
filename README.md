@@ -1,7 +1,7 @@
 # Daily Road Map v. 1.2.2
 [GOOGLE PLAY - Official Release](https://play.google.com/store/apps/details?id=eu.marcellofabbri.dailyroadmap)
 <p align="center">
-  <img width="900" height="129" src="https://github.com/Marcellofabbri/dailyroadmap/blob/master/app/src/main/res/screenshots/toolbar_logo_6.png">
+  <img width="900" height="129" src="https://github.com/Marcellofabbri/dailyroadmap/blob/master/app/src/main/res/drawable-v24/toolbar_logo_6.png">
 </p>
 
 A daily task visualizer for Android. Written in Java.

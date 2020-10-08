@@ -21,6 +21,7 @@ import android.app.PendingIntent;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.res.Resources;
 import android.os.Build;
 import android.os.Bundle;
 import android.text.TextWatcher;
@@ -33,6 +34,7 @@ import android.view.ViewTreeObserver;
 import android.widget.AdapterView;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.ScrollView;
@@ -52,6 +54,7 @@ import eu.marcellofabbri.dailyroadmap.model.Event;
 import eu.marcellofabbri.dailyroadmap.utils.CurrentHour;
 import eu.marcellofabbri.dailyroadmap.view.activityHelpers.EventAdapter;
 import eu.marcellofabbri.dailyroadmap.view.activityHelpers.EventPainterContainer;
+import eu.marcellofabbri.dailyroadmap.view.activityHelpers.FibonacciTrackPainter;
 import eu.marcellofabbri.dailyroadmap.view.activityHelpers.MainHeader;
 import eu.marcellofabbri.dailyroadmap.view.activityHelpers.TrackPainter;
 import eu.marcellofabbri.dailyroadmap.view.notificationHandlers.ReminderBroadcast;
@@ -77,6 +80,7 @@ public class MainActivity extends AppCompatActivity {
     private String currentView;
     private String RECTANGULAR = "rectangular";
     private String VERTICAL = "vertical";
+    private String FIBONACCI = "fibonacci";
     private EventPainterContainer eventPainterContainer;
     private MainHeader mainHeader;
     private OffsetDateTime displayedDate;
@@ -85,6 +89,9 @@ public class MainActivity extends AppCompatActivity {
     private EventAdapter adapter;
     private LinearLayout centralContainer;
     private ScrollView scrollview;
+    private TextView noEvents;
+    float screenWidth = Resources.getSystem().getDisplayMetrics().widthPixels;
+    float screenHeight = Resources.getSystem().getDisplayMetrics().heightPixels;
 
     @SuppressLint("ClickableViewAccessibility")
     @RequiresApi(api = Build.VERSION_CODES.O)
@@ -97,11 +104,13 @@ public class MainActivity extends AppCompatActivity {
         findViewById(R.id.main_activity).setBackgroundColor(ContextCompat.getColor(this, backgroundColors[selectedBackgroundColorPosition]));
         centralContainer = findViewById(R.id.central_container);
         scrollview = findViewById(R.id.scrollpaint);
+        scrollview.setFadingEdgeLength(100);
+        noEvents = findViewById(R.id.no_events);
         alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
 
         addMargin(centralContainer);
         ActionBar actionBar = getSupportActionBar();
-        actionBar.setBackgroundDrawable(getDrawable(R.drawable.toolbar_logo_6));
+        actionBar.setBackgroundDrawable(getDrawable(R.drawable.toolbar_logo_7));
         actionBar.setTitle("");
 
         mainHeader = findViewById(R.id.header);
@@ -120,6 +129,14 @@ public class MainActivity extends AppCompatActivity {
         });
 
         ImageButton deleteTodayEventsImageButton = findViewById(R.id.image_trash);
+        if (currentView.equals(VERTICAL)) {
+            LinearLayout centralContainerLarger = findViewById(R.id.central_container_larger);
+            ConstraintLayout mainActivityLayout = findViewById(R.id.main_activity);
+            mainActivityLayout.removeView(centralContainer);
+            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+            centralContainer.setLayoutParams(params);
+            centralContainerLarger.addView(centralContainer);
+        }
         deleteTodayEventsImageButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -339,6 +356,12 @@ public class MainActivity extends AppCompatActivity {
                 finish();
                 startActivity(getIntent());
                 return true;
+            case R.id.fibonacci:
+                saveViewPreferences("fibonacci");
+                observeAndPaint(displayedDate);
+                finish();
+                startActivity(getIntent());
+                return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
@@ -369,6 +392,9 @@ public class MainActivity extends AppCompatActivity {
         } else if (currentView.equals(VERTICAL)) {
             VerticalTrackPainter verticalTrackPainter = new VerticalTrackPainter(MainActivity.this, events, isToday);
             eventPainterContainer.addView(verticalTrackPainter);
+        } else {
+            FibonacciTrackPainter fibonacciTrackPainter = new FibonacciTrackPainter(MainActivity.this, events, isToday);
+            eventPainterContainer.addView(fibonacciTrackPainter);
         }
 
     }
@@ -397,10 +423,13 @@ public class MainActivity extends AppCompatActivity {
 
     private void addMargin(LinearLayout ll) {
         if (currentView.equals(VERTICAL)) {
+            float screenWidth = Resources.getSystem().getDisplayMetrics().widthPixels;
+            float screenHeight = Resources.getSystem().getDisplayMetrics().heightPixels;
             ConstraintLayout.LayoutParams layoutParams = new ConstraintLayout.LayoutParams(
                     ConstraintLayout.LayoutParams.MATCH_PARENT,
                     ConstraintLayout.LayoutParams.MATCH_PARENT);
-            layoutParams.setMargins(500, 500, 0, 0);
+
+            layoutParams.setMargins((int) (screenWidth*0.3), (int) (screenHeight*0.2), 0, 0);
             ll.setLayoutParams(layoutParams);
         }
     }

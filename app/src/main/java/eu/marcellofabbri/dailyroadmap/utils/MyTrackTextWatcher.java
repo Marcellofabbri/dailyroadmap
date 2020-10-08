@@ -68,11 +68,7 @@ public class MyTrackTextWatcher implements TextWatcher {
                 boolean isToday = newDateTime.toLocalDate().equals(LocalDate.now());
                 if (currentView.equals("rectangular")) {
                     eventPainterContainer.addView(new TrackPainter(context, events, isToday));
-                    System.out.println("FROM MYTRACKTEXTWATCHER");
-                    System.out.println(currentView);
                 } else if (currentView.equals("vertical")) {
-                    System.out.println("FROM MYTRACKTEXTWATCHER");
-                    System.out.println(currentView);
                     eventPainterContainer.addView(new VerticalTrackPainter(context, events, isToday));
                 }
             }

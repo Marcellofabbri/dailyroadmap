@@ -3,17 +3,21 @@
 
     <item
         android:id="@+id/view"
-        android:title="View">
+        android:title="VIEW">
 
         <menu>
 
             <item
                 android:id="@+id/rectangular"
-                android:title="rectangular" />
+                android:title="Rectangular" />
 
             <item
-                android:id="@+id/vertical"
-                android:title="vertical" />
+            android:id="@+id/vertical"
+            android:title="Vertical" />
+
+            <item
+                android:id="@+id/fibonacci"
+                android:title="Fibonacci" />
 
         </menu>
 

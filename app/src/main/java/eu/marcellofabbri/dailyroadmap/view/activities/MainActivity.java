@@ -6,6 +6,7 @@ import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.constraintlayout.widget.ConstraintSet;
 import androidx.core.content.ContextCompat;
 import androidx.core.widget.NestedScrollView;
 import androidx.lifecycle.LiveData;
@@ -393,7 +394,10 @@ public class MainActivity extends AppCompatActivity {
             VerticalTrackPainter verticalTrackPainter = new VerticalTrackPainter(MainActivity.this, events, isToday);
             eventPainterContainer.addView(verticalTrackPainter);
         } else {
-            FibonacciTrackPainter fibonacciTrackPainter = new FibonacciTrackPainter(MainActivity.this, events, isToday);
+            ConstraintLayout.LayoutParams params = (ConstraintLayout.LayoutParams) centralContainer.getLayoutParams();
+            params.topToBottom = 0;
+            centralContainer.setLayoutParams(params);
+            FibonacciTrackPainter fibonacciTrackPainter = new FibonacciTrackPainter(MainActivity.this, events, isToday, myCalendar);
             eventPainterContainer.addView(fibonacciTrackPainter);
         }
 
@@ -417,7 +421,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private EventPainterContainer pickEventPainterContainer() {
-        return currentView.equals(RECTANGULAR) ? findViewById(R.id.eventPainterContainerRectangular) : findViewById(R.id.eventPainterContainerVertical);
+        return currentView.equals(RECTANGULAR) ? findViewById(R.id.eventPainterContainerRectangular) : currentView.equals(FIBONACCI) ? findViewById(R.id.eventPainterContainerFibonacci) : findViewById(R.id.eventPainterContainerVertical);
 
     }
 

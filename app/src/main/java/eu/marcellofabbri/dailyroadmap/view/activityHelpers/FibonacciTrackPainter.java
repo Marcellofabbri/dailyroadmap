@@ -9,6 +9,7 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Point;
+import android.graphics.RectF;
 import android.os.Build;
 import android.util.AttributeSet;
 import android.view.View;
@@ -21,6 +22,7 @@ import java.text.SimpleDateFormat;
 import java.time.OffsetDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -32,17 +34,13 @@ import eu.marcellofabbri.dailyroadmap.model.Event;
 import eu.marcellofabbri.dailyroadmap.utils.CustomColors;
 import eu.marcellofabbri.dailyroadmap.utils.EntityFieldConverter;
 
+@RequiresApi(api = Build.VERSION_CODES.O)
 public class FibonacciTrackPainter extends View {
 
   EntityFieldConverter converter = new EntityFieldConverter();
-  float screenHeight = Resources.getSystem().getDisplayMetrics().heightPixels;
-  float screenWidth = Resources.getSystem().getDisplayMetrics().widthPixels;
-  float hUnit = (screenWidth / (700));
-  float hMinuteUnit = ((100 * hUnit) / 60);
-  float vUnit = ((screenHeight * (float) 0.878 * (float) 0.85) / 900);
-  float vMinuteUnit = ((100 * vUnit) / 60);
-  float leftMargin = hUnit * 100;
-  float upperMargin = hUnit * 56;
+  float height = (float) (Resources.getSystem().getDisplayMetrics().heightPixels);
+  float width = Resources.getSystem().getDisplayMetrics().widthPixels;
+  float ratio = height/width;
   int[] trackDefaultColors = new int[]{ContextCompat.getColor(getContext(), R.color.trackDefaultColor0), ContextCompat.getColor(getContext(), R.color.trackDefaultColor1)};
   int backgroundTrackDefaultColor = ContextCompat.getColor(getContext(), R.color.backgroundDefaultColor1);
   int whatColorPosition = 1;
@@ -56,15 +54,20 @@ public class FibonacciTrackPainter extends View {
           ContextCompat.getColor(getContext(), myColors.getOrange()),
           ContextCompat.getColor(getContext(), myColors.getBlack())
   };
-  ArrayList<MyPoint> points = new ArrayList<MyPoint>();
-  HashMap<String, MyPoint> map;
+
   List<Event> events;
   boolean isToday = true;
+  Calendar myCalendar;
+  List<Event> morningEvents = new ArrayList<>();
+  List<Event> afternoonEvents = new ArrayList<>();
+  List<Event> middayEvents = new ArrayList<>();
 
-  public FibonacciTrackPainter(Context context, List<Event> events, boolean isToday) {
+  public FibonacciTrackPainter(Context context, List<Event> events, boolean isToday, Calendar myCalendar) {
     super(context);
     this.events = events;
     this.isToday = isToday;
+    this.myCalendar = myCalendar;
+    sortEvents();
   }
 
   public FibonacciTrackPainter(Context context, @Nullable AttributeSet attrs, List<Event> events) {
@@ -77,225 +80,87 @@ public class FibonacciTrackPainter extends View {
     this.events = events;
   }
 
-  public void setToday(boolean bool) {
-    isToday = bool;
-  }
-
-  @Override
-  protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-    int width = (int) (leftMargin*2);
-    int height = (int) (100*vUnit*26);
-    setMeasuredDimension(width, height);
-  }
-
-
   @RequiresApi(api = Build.VERSION_CODES.O)
   @Override
   public void onDraw(Canvas canvas) {
     super.onDraw(canvas);
-    drawStuff(canvas);
-  }
+    canvas.drawArc(createOval(0.120), -90F, 360F, true, paintObject(Color.LTGRAY));
+    canvas.drawArc(createOval(0.220), -90F, 360F, true, paintObject(Color.WHITE));
+    canvas.drawArc(createOval(0.240), -90F, 360F, true, paintObject(Color.LTGRAY));
 
-  private void createPoints(Canvas canvas) {
-    for (int i = 0; i < 1440; i++) {
-      MyPoint point = new MyPoint(leftMargin, upperMargin + i * vMinuteUnit, i);
-      points.add(point);
+    //canvas.drawArc(createOval(0.240), 90F, 30F, true, paintObject(Color.RED));
+    if (morningEvents.size() > 0) {
+      drawMorningEvent(canvas, morningEvents.get(0));
     }
+
+
+    canvas.drawArc(createOval(0.360), -90F, 360F, true, paintObject(Color.WHITE));
+
+
   }
 
-
-  protected Paint paintObjectLines() {
-    Paint paintObject = new Paint();
-    paintObject.setStrokeWidth(45);
-    paintObject.setColor(trackDefaultColor);
-    paintObject.setTextSize(60);
-    return paintObject;
+  private Paint paintObject(int color) {
+    Paint paint = new Paint();
+    paint.setColor(color);
+    return paint;
   }
 
-  protected Paint paintObjectLinesBackground() {
-    Paint paintObject = new Paint();
-    paintObject.setStrokeWidth(61);
-    paintObject.setColor(backgroundTrackDefaultColor);
-    paintObject.setStrokeCap(Paint.Cap.ROUND);
-    paintObject.setTextSize(60);
-    return paintObject;
+  private RectF createOval(double coefficient) {
+    float margin = (float) coefficient;
+    float verticalBias = height * 0.05F;
+    RectF oval = new RectF(
+            (width * margin),
+            (height * margin / ratio) - verticalBias,
+            (width - width*margin),
+            ((height - height*margin) / ratio) - verticalBias
+    );
+    return oval;
   }
 
-  protected Paint paintObjectLines12() {
-    Paint paintObject = new Paint();
-    paintObject.setStrokeWidth(39);
-    paintObject.setColor(trackDefaultColor);
-    paintObject.setTextSize(60);
-    return paintObject;
-  }
-
-  protected Paint paintObjectLines12Background() {
-    Paint paintObject = new Paint();
-    paintObject.setStrokeWidth(65);
-    paintObject.setColor(backgroundTrackDefaultColor);
-    paintObject.setStrokeCap(Paint.Cap.ROUND);
-    paintObject.setTextSize(60);
-    return paintObject;
-  }
-
-  private Paint paintObjectTest(Integer i) {
-    Paint paintObject = new Paint();
-    paintObject.setStrokeWidth(52);
-    paintObject.setStrokeCap(Paint.Cap.ROUND);
-    paintObject.setColor(i);
-    paintObject.setTextSize(60);
-    return paintObject;
-  }
-
-  @SuppressLint("ResourceAsColor")
-  private Paint paintObjectHourNumbers() {
-    Paint paintObject = new Paint();
-    paintObject.setTextSize(55);
-    paintObject.setColor(R.color.daytimeBackgroundDarker);
-    return paintObject;
-  }
-
-  private Paint paintObjectCircles() {
-    Paint paintObject = new Paint();
-    paintObject.setColor(Color.WHITE);
-    paintObject.setStyle(Paint.Style.FILL);
-    return paintObject;
-  }
-
-  private Paint paintObjectNotches() {
-    Paint paintObject = new Paint();
-    paintObject.setStrokeWidth(25);
-    paintObject.setColor(trackDefaultColor);
-    return paintObject;
-  }
-
-  private Paint paintObjectNotchesBackground() {
-    Paint paintObject = new Paint();
-    paintObject.setStrokeWidth(32);
-    paintObject.setColor(Color.DKGRAY);
-    return paintObject;
+  private void drawMorningEvent(Canvas canvas, Event event) {
+    long start = event.getStartTime().toEpochSecond()*1000;
+    long finish = event.getFinishTime().toEpochSecond()*1000;
+    long startDegree = (start - getDayBeginning())/120000;
+    float startAngle = -90F + startDegree;
+    long finishDegree = finish - start;
+    float sweepAngle = finishDegree/120000;
+    canvas.drawArc(createOval(0.240), startAngle, sweepAngle, true, paintObject(Color.RED));
   }
 
   @RequiresApi(api = Build.VERSION_CODES.O)
-  public void drawStuff(Canvas canvas) {
-    createPoints(canvas);
-    timesToPointsMapper();
-    if (isToday) { drawNotches(canvas, paintObjectNotchesBackground(), getIndexOfCurrentPoint()); }
-    drawBlueprintTrack(canvas);
-    writeHourNumbers(canvas);
-    drawNotches(canvas, paintObjectNotches(), 1439);
-    if (events != null) {
-      for (int i = 0; i < events.size(); i++) {
-        drawEvent(events.get(i), canvas, i);
-      }
-    }
-    if (isToday) { drawPin(canvas); }
-  }
-
-  @RequiresApi(api = Build.VERSION_CODES.O)
-  private void drawBlueprintTrack(Canvas canvas) {
-    OffsetDateTime now = OffsetDateTime.now();
-    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("hh:mm a");
-    String nowString = formatter.format(now);
-    MyPoint nowPoint = map.get(nowString);
-    int nowPointIndex = nowPoint.index;
-
-    //DRAW BACKGROUND CURRENT-TIME TRACK (IF DAY IS TODAY)
-    if (isToday) {
-      if (nowPointIndex < 1380) {
-        for (int i = 0; i < nowPointIndex; i++) {
-          canvas.drawPoint(points.get(i).x, points.get(i).y, paintObjectLinesBackground());
-        }
+  private void sortEvents() {
+    for (Event event : events) {
+      int startHour = event.getStartTime().getHour();
+      int finishHour = event.getFinishTime().getHour();
+      if (startHour < 12 && finishHour < 12) {
+        morningEvents.add(event);
+      } else if (startHour < 12 && finishHour >= 12) {
+        middayEvents.add(event);
       } else {
-        for (int i = 0; i < 1380; i++) {
-          canvas.drawPoint(points.get(i).x, points.get(i).y, paintObjectLinesBackground());
-        }
-        for (int i = 1380; i < nowPointIndex; i++) {
-          canvas.drawPoint(points.get(i).x, points.get(i).y, paintObjectLinesBackground());
-        }
+        afternoonEvents.add(event);
       }
     }
-
-    //DRAW NORMAL BLUEPRINT TRACK OVER IT
-    for (int i = 0; i < 1440; i++) {
-      canvas.drawPoint(points.get(i).x, points.get(i).y, paintObjectLines());
-    }
   }
 
-  private void writeHourNumbers(Canvas canvas) {
-    for (int i = 0; i < 1440; i += 60) {
-      int hour = i / 60;
-      String hourString = String.valueOf(hour);
-      canvas.drawText(hourString, points.get(i).x + 30 * hUnit, points.get(i).y + 10 * vUnit, paintObjectHourNumbers());
-    }
+  private long getDayBeginning() {
+    Calendar today = myCalendar;
+    today.set(Calendar.HOUR_OF_DAY, 0);
+    today.set(Calendar.MINUTE, 0);
+    today.set(Calendar.SECOND, 0);
+    long millis = today.getTime().getTime();
+    System.out.println(millis);
+    return millis;
   }
 
-  @RequiresApi(api = Build.VERSION_CODES.O)
-  private int getIndexOfCurrentPoint() {
-    OffsetDateTime now = OffsetDateTime.now();
-    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("hh:mm a");
-    String nowString = formatter.format(now);
-    MyPoint nowPoint = map.get(nowString);
-    int nowPointIndex = nowPoint.index;
-    return nowPointIndex;
-  }
+//  @RequiresApi(api = Build.VERSION_CODES.O)
+//  public void drawStuff(Canvas canvas) {
+//    if (events != null) {
+//      for (int i = 0; i < events.size(); i++) {
+//        drawEvent(events.get(i), canvas, i);
+//      }
+//    }
+//    if (isToday) { drawPin(canvas); }
+//  }
 
-  private void drawNotches(Canvas canvas, Paint paint, int nowPointIndex) {
-    for (int i = 60; i < 1440; i += 60) {
-      if (i <= nowPointIndex) { canvas.drawLine(points.get(i).x, points.get(i).y, points.get(i).x + 24 * hUnit, points.get(i).y, paint); }
-    }
-    if (nowPointIndex >= 0) { canvas.drawCircle(points.get(0).x, points.get(0).y, 19 * hUnit, paint); }
-    if (nowPointIndex >= 1439) { canvas.drawCircle(points.get(1439).x, points.get(1439).y, 19 * hUnit, paint); }
-  }
-
-  @RequiresApi(api = Build.VERSION_CODES.O)
-  protected void timesToPointsMapper() {
-    HashMap<String, MyPoint> myMap = new HashMap<String, MyPoint>();
-    String myFormat = "hh:mm a";
-    SimpleDateFormat sdf = new SimpleDateFormat(myFormat, Locale.getDefault());
-    sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
-    for (int i = 0; i < 1440; i++) {
-      String timePoint = sdf.format(new Date(60000 * i));
-      myMap.put(timePoint, points.get(i));
-    }
-    map = myMap;
-  }
-
-  private void drawPin(Canvas canvas) {
-    OffsetDateTime now = OffsetDateTime.now();
-    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("hh:mm a");
-    String nowString = formatter.format(now);
-    MyPoint nowPoint = map.get(nowString);
-    Bitmap pin = BitmapFactory.decodeResource(getResources(), R.drawable.inclined_kyte_halo_horizontal);
-    canvas.drawBitmap(pin, nowPoint.x - (pin.getWidth() / 2), nowPoint.y - (pin.getHeight() / 2), paintObjectNotches());
-  }
-
-  @RequiresApi(api = Build.VERSION_CODES.O)
-  private void drawEvent(Event event, Canvas canvas, int color) {
-    String startTime = converter.extractTime(event.getStartTime());
-    String finishTime = converter.extractTime(event.getFinishTime());
-    int startTimeIndex = (map.get(startTime)).index;
-    int finishTimeIndex = (map.get(finishTime)).index;
-    int colorNumber = color - (6 * (int) (color / 6));
-
-    for (int i = startTimeIndex; i < finishTimeIndex; i++) {
-      canvas.drawPoint(points.get(i).x, points.get(i).y, paintObjectTest(colors[colorNumber]));
-      canvas.drawCircle(points.get(startTimeIndex).x, points.get(startTimeIndex).y, 10, paintObjectCircles());
-      canvas.drawCircle(points.get(finishTimeIndex).x, points.get(finishTimeIndex).y, 10, paintObjectCircles());
-    }
-  }
-
-
-  public static class MyPoint extends Point {
-    private float x;
-    private float y;
-    private int index;
-
-    MyPoint(float x, float y, int index) {
-      this.x = x;
-      this.y = y;
-      this.index = index;
-    }
-  }
 
 }

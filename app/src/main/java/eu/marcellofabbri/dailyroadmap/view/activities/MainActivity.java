@@ -42,6 +42,7 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.anychart.core.utils.Margin;
 import com.anychart.scales.DateTime;
 
 import java.time.LocalDate;
@@ -90,7 +91,9 @@ public class MainActivity extends AppCompatActivity {
     private EventAdapter adapter;
     private LinearLayout centralContainer;
     private ScrollView scrollview;
+    ImageButton deleteTodayEventsImageButton;
     private TextView noEvents;
+    private View topMarginRecyclerView;
     float screenWidth = Resources.getSystem().getDisplayMetrics().widthPixels;
     float screenHeight = Resources.getSystem().getDisplayMetrics().heightPixels;
 
@@ -108,6 +111,7 @@ public class MainActivity extends AppCompatActivity {
         scrollview.setFadingEdgeLength(100);
         noEvents = findViewById(R.id.no_events);
         alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
+        topMarginRecyclerView = findViewById(R.id.topMargin_recyclerView);
 
         addMargin(centralContainer);
         ActionBar actionBar = getSupportActionBar();
@@ -129,7 +133,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        ImageButton deleteTodayEventsImageButton = findViewById(R.id.image_trash);
+        deleteTodayEventsImageButton = findViewById(R.id.image_trash);
         if (currentView.equals(VERTICAL)) {
             LinearLayout centralContainerLarger = findViewById(R.id.central_container_larger);
             ConstraintLayout mainActivityLayout = findViewById(R.id.main_activity);
@@ -395,8 +399,14 @@ public class MainActivity extends AppCompatActivity {
             eventPainterContainer.addView(verticalTrackPainter);
         } else {
             ConstraintLayout.LayoutParams params = (ConstraintLayout.LayoutParams) centralContainer.getLayoutParams();
-            params.topToBottom = 0;
+            params.topToBottom = R.id.eventPainterContainerFibonacci;
             centralContainer.setLayoutParams(params);
+            RecyclerView recyclerView = findViewById(R.id.recycler_view);
+            ViewGroup.LayoutParams rParams = recyclerView.getLayoutParams();
+            rParams.height = 550;
+            ViewGroup.LayoutParams marginParams = topMarginRecyclerView.getLayoutParams();
+            marginParams.height = 0;
+            topMarginRecyclerView.setLayoutParams(marginParams);
             FibonacciTrackPainter fibonacciTrackPainter = new FibonacciTrackPainter(MainActivity.this, events, isToday, myCalendar);
             eventPainterContainer.addView(fibonacciTrackPainter);
         }
@@ -422,7 +432,6 @@ public class MainActivity extends AppCompatActivity {
 
     private EventPainterContainer pickEventPainterContainer() {
         return currentView.equals(RECTANGULAR) ? findViewById(R.id.eventPainterContainerRectangular) : currentView.equals(FIBONACCI) ? findViewById(R.id.eventPainterContainerFibonacci) : findViewById(R.id.eventPainterContainerVertical);
-
     }
 
     private void addMargin(LinearLayout ll) {

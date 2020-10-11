@@ -175,6 +175,14 @@
 
     </LinearLayout>
 
+    <RelativeLayout
+        android:id="@+id/alternativeDeleteButton"
+        app:layout_constraintTop_toTopOf="@+id/central_container"
+        app:layout_constraintLeft_toLeftOf="parent"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_marginTop="30dp"/>
+
     <LinearLayout
         android:id="@+id/central_container"
         android:layout_width="206dp"
@@ -188,8 +196,12 @@
         app:layout_constraintTop_toBottomOf="@+id/header"
         android:elevation="1dp">
 
+        <View
+            android:id="@+id/topMargin_recyclerView"
+            android:layout_width="match_parent"
+            android:layout_height="20dp"/>
+
         <androidx.recyclerview.widget.RecyclerView
-            android:layout_marginTop="20dp"
             android:id="@+id/recycler_view"
             android:layout_width="210dp"
             android:layout_height="300dp"

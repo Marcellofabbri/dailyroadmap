@@ -12,11 +12,13 @@ import androidx.lifecycle.Observer;
 
 import java.time.LocalDate;
 import java.time.OffsetDateTime;
+import java.util.Calendar;
 import java.util.List;
 
 import eu.marcellofabbri.dailyroadmap.view.activityHelpers.EventPainterContainer;
 import eu.marcellofabbri.dailyroadmap.model.Event;
 import eu.marcellofabbri.dailyroadmap.view.activityHelpers.EventAdapter;
+import eu.marcellofabbri.dailyroadmap.view.activityHelpers.FibonacciTrackPainter;
 import eu.marcellofabbri.dailyroadmap.view.activityHelpers.TrackPainter;
 import eu.marcellofabbri.dailyroadmap.view.activityHelpers.VerticalTrackPainter;
 import eu.marcellofabbri.dailyroadmap.viewModel.EventViewModel;
@@ -70,6 +72,8 @@ public class MyTrackTextWatcher implements TextWatcher {
                     eventPainterContainer.addView(new TrackPainter(context, events, isToday));
                 } else if (currentView.equals("vertical")) {
                     eventPainterContainer.addView(new VerticalTrackPainter(context, events, isToday));
+                } else if (currentView.equals("fibonacci")) {
+                    eventPainterContainer.addView(new FibonacciTrackPainter(context, events, isToday, Calendar.getInstance()));
                 }
             }
         });

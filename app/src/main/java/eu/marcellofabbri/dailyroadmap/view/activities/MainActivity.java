@@ -1,10 +1,15 @@
 package eu.marcellofabbri.dailyroadmap.view.activities;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.constraintlayout.widget.ConstraintSet;
 import androidx.core.content.ContextCompat;
+import androidx.core.widget.NestedScrollView;
+import androidx.lifecycle.LiveData;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -16,27 +21,46 @@ import android.app.AlertDialog;
 import android.app.PendingIntent;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.content.res.Resources;
 import android.os.Build;
 import android.os.Bundle;
 import android.text.TextWatcher;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
+import android.widget.AdapterView;
+import android.widget.FrameLayout;
 import android.widget.ImageButton;
-import android.widget.ListView;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
+import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import java.sql.Date;
+import com.anychart.core.utils.Margin;
+import com.anychart.scales.DateTime;
+
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 import eu.marcellofabbri.dailyroadmap.model.Event;
+import eu.marcellofabbri.dailyroadmap.utils.CurrentHour;
 import eu.marcellofabbri.dailyroadmap.view.activityHelpers.EventAdapter;
 import eu.marcellofabbri.dailyroadmap.view.activityHelpers.EventPainterContainer;
+import eu.marcellofabbri.dailyroadmap.view.activityHelpers.FibonacciTrackPainter;
 import eu.marcellofabbri.dailyroadmap.view.activityHelpers.MainHeader;
-import eu.marcellofabbri.dailyroadmap.view.notificationHandlers.ReminderBroadcast;
 import eu.marcellofabbri.dailyroadmap.view.activityHelpers.TrackPainter;
+import eu.marcellofabbri.dailyroadmap.view.notificationHandlers.ReminderBroadcast;
+import eu.marcellofabbri.dailyroadmap.view.activityHelpers.VerticalTrackPainter;
 import eu.marcellofabbri.dailyroadmap.viewModel.EventViewModel;
 import eu.marcellofabbri.dailyroadmap.utils.MyMainTextWatcher;
 import eu.marcellofabbri.dailyroadmap.utils.MyTrackTextWatcher;
@@ -54,22 +78,41 @@ public class MainActivity extends AppCompatActivity {
     private List<Event> displayedEvents;
     private EntityFieldConverter converter = new EntityFieldConverter();
     private AlarmManager alarmManager;
+    private String PREFERENCES = "PREFERENCES";
+    private String currentView;
+    private String RECTANGULAR = "rectangular";
+    private String FIBONACCI = "fibonacci";
+    private EventPainterContainer eventPainterContainer;
+    private MainHeader mainHeader;
+    private OffsetDateTime displayedDate;
+    private MyTrackTextWatcher myTrackTextWatcher;
+    private MyMainTextWatcher dateTextWatcher;
+    private EventAdapter adapter;
+    private LinearLayout centralContainer;
+    ImageButton deleteTodayEventsImageButton;
+    private TextView noEvents;
+    private TextView noEventsToDisplay;
+    private View topMarginRecyclerView;
+    float screenWidth = Resources.getSystem().getDisplayMetrics().widthPixels;
+    float screenHeight = Resources.getSystem().getDisplayMetrics().heightPixels;
 
     @SuppressLint("ClickableViewAccessibility")
     @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        loadViewPreferences();
         setContentView(R.layout.activity_main);
         findViewById(R.id.main_activity).setBackgroundColor(ContextCompat.getColor(this, backgroundColors[selectedBackgroundColorPosition]));
-
+        centralContainer = findViewById(R.id.central_container);
+        noEvents = findViewById(R.id.no_events);
         alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
 
         ActionBar actionBar = getSupportActionBar();
-        actionBar.setBackgroundDrawable(getDrawable(R.drawable.toolbar_logo_6));
+        actionBar.setBackgroundDrawable(getDrawable(R.drawable.toolbar_logo_7));
         actionBar.setTitle("");
 
-        final MainHeader mainHeader = findViewById(R.id.header);
+        mainHeader = findViewById(R.id.header);
         mainHeader.identifyFields();
         mainHeader.bootElements();
         mainHeader.bootDateClick();
@@ -84,7 +127,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        ImageButton deleteTodayEventsImageButton = findViewById(R.id.image_trash);
+        deleteTodayEventsImageButton = findViewById(R.id.image_trash);
         deleteTodayEventsImageButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -126,45 +169,37 @@ public class MainActivity extends AppCompatActivity {
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setHasFixedSize(true);
 
-        final EventAdapter adapter = new EventAdapter();
+        adapter = new EventAdapter();
         recyclerView.setAdapter(adapter);
 
         eventViewModel = ViewModelProviders.of(this).get(EventViewModel.class);
-        final String displayedDateString = mainHeader.getCurrentDate().getText().toString();
-        final OffsetDateTime displayedDate = converter.convertDayStringToOffsetDateTime(displayedDateString);
+
         TextView noEvents = findViewById(R.id.no_events);
 
+        retrieveDisplayedDate();
         eventViewModel.getCertainEvents(displayedDate).observe(this, new Observer<List<Event>>() {
             @Override
             public void onChanged(List<Event> events) {
                 adapter.setEvents(events);
                 if (events.size() == 0) {
-                    noEvents.setText("NO EVENTS\nTO DISPLAY");
-                    noEvents.setTextColor(mainHeader.getDefaultColors()[1]);
+                    if (currentView.equals("rectangular")) {
+                        noEvents.setText("NO EVENTS\nTO DISPLAY");
+                        noEvents.setTextColor(mainHeader.getDefaultColors()[1]);
+                    }
                 } else {
                     noEvents.setText("");
                 }
             }
         });
 
-        final EventPainterContainer eventPainterContainer = findViewById(R.id.eventPainterContainer);
+        int hourOfDay = new CurrentHour(myCalendar).hourOfDay();
+        eventPainterContainer = pickEventPainterContainer();
 
-        eventViewModel.getCertainEvents(displayedDate).observe(MainActivity.this, new Observer<List<Event>>() {
-            @Override
-            public void onChanged(List<Event> events) {
-                eventPainterContainer.removeAllViews();
-                boolean isToday = displayedDate.toLocalDate().equals(LocalDate.now());
-                TrackPainter trackPainter = new TrackPainter(MainActivity.this, events, isToday);
-                System.out.println(displayedDate.toLocalDate());
-                System.out.println(LocalDate.now());
-                System.out.println(displayedDate.toLocalDate().equals(LocalDate.now()));
-                eventPainterContainer.addView(trackPainter);
-            }
-        });
+        observeAndPaint(displayedDate);
 
-        TextWatcher dateTextWatcher = new MyMainTextWatcher(eventViewModel, adapter, MainActivity.this, noEvents);
+        dateTextWatcher = new MyMainTextWatcher(eventViewModel, adapter, MainActivity.this, noEvents);
         mainHeader.getCurrentDate().addTextChangedListener(dateTextWatcher);
-        TextWatcher myTrackTextWatcher = new MyTrackTextWatcher(eventPainterContainer, this, this, adapter, eventViewModel);
+        myTrackTextWatcher = new MyTrackTextWatcher(eventPainterContainer, this, this, adapter, eventViewModel, currentView);
         mainHeader.getCurrentDate().addTextChangedListener(myTrackTextWatcher);
 
         adapter.setOnButtonClickListener(new EventAdapter.OnButtonClickListener() {
@@ -176,7 +211,6 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onUpdateButtonClick(Event event) {
-                //deleteNotification(event);
                 Intent intent = new Intent(MainActivity.this, AddUpdateEventActivity.class);
                 intent.putExtra(AddUpdateEventActivity.EXTRA_ID, event.getId());
                 intent.putExtra(AddUpdateEventActivity.EXTRA_DESCRIPTION, event.getDescription());
@@ -191,10 +225,11 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        //String start = data.getStringExtra(AddUpdateEventActivity.EXTRA_STARTTIME);
 
         if (requestCode == ADD_EVENT_REQUEST_CODE && resultCode == RESULT_OK) {
 
@@ -245,7 +280,6 @@ public class MainActivity extends AppCompatActivity {
             eventViewModel.update(event);
 
             updateNotification(originalUnix, event, notice);
-            //createNotification(event, notice);
 
             Toast.makeText(this, "Event updated", Toast.LENGTH_LONG).show();
 
@@ -286,4 +320,87 @@ public class MainActivity extends AppCompatActivity {
         createNotification(newEvent, notice);
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater menuInflater = getMenuInflater();
+        menuInflater.inflate(R.menu.main_menu, menu);
+        return true;
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        switch(item.getItemId()) {
+            case R.id.rectangular:
+                saveViewPreferences("rectangular");
+                observeAndPaint(displayedDate);
+                finish();
+                startActivity(getIntent());
+                return true;
+            case R.id.fibonacci:
+                saveViewPreferences("fibonacci");
+                observeAndPaint(displayedDate);
+                finish();
+                startActivity(getIntent());
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
+    public void saveViewPreferences(String string) {
+        SharedPreferences sharedPreferences = getSharedPreferences(PREFERENCES, MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putString("view", string);
+        editor.commit();
+    }
+
+    public String getViewPreferences() {
+        SharedPreferences sharedPreferences = getSharedPreferences(PREFERENCES, MODE_PRIVATE);
+        String viewValue = sharedPreferences.getString("view", "rectangular");
+        return viewValue;
+    }
+
+    public void loadViewPreferences() {
+        currentView = getViewPreferences();
+    }
+
+    private void addTrack(EventPainterContainer eventPainterContainer, List<Event> events, boolean isToday) {
+        eventPainterContainer.removeAllViews();
+        if (currentView.equals(RECTANGULAR)) {
+            TrackPainter trackPainter = new TrackPainter(MainActivity.this, events, isToday);
+            eventPainterContainer.addView(trackPainter);
+        } else {
+            noEvents.setText("");
+            ConstraintLayout.LayoutParams params = (ConstraintLayout.LayoutParams) centralContainer.getLayoutParams();
+            params.topToBottom = R.id.eventPainterContainerFibonacci;
+            centralContainer.setLayoutParams(params);
+            RecyclerView recyclerView = findViewById(R.id.recycler_view);
+            ViewGroup.LayoutParams rParams = recyclerView.getLayoutParams();
+            rParams.height = 550;
+            FibonacciTrackPainter fibonacciTrackPainter = new FibonacciTrackPainter(MainActivity.this, events, isToday, myCalendar);
+            eventPainterContainer.addView(fibonacciTrackPainter);
+        }
+    }
+
+    protected void observeAndPaint(OffsetDateTime displayedDate) {
+        eventViewModel.getCertainEvents(displayedDate).observe(MainActivity.this, new Observer<List<Event>>() {
+            @Override
+            public void onChanged(List<Event> events) {
+                eventPainterContainer.removeAllViews();
+                loadViewPreferences();
+                boolean isToday = displayedDate.toLocalDate().equals(LocalDate.now());
+                addTrack(pickEventPainterContainer(), events, isToday);
+            }
+        });
+    }
+
+    private void retrieveDisplayedDate() {
+        String displayedDateString = mainHeader.getCurrentDate().getText().toString();
+        displayedDate = converter.convertDayStringToOffsetDateTime(displayedDateString);
+    }
+
+    private EventPainterContainer pickEventPainterContainer() {
+        return currentView.equals(RECTANGULAR) ? findViewById(R.id.eventPainterContainerRectangular) : findViewById(R.id.eventPainterContainerFibonacci);
+    }
 }

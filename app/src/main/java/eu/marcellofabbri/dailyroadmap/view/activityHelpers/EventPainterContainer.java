@@ -3,14 +3,9 @@ package eu.marcellofabbri.dailyroadmap.view.activityHelpers;
 import android.content.Context;
 import android.util.AttributeSet;
 import android.widget.RelativeLayout;
+import android.widget.ScrollView;
 
 public class EventPainterContainer extends RelativeLayout {
-    public void setTrackPainter(TrackPainter trackPainter) {
-        this.trackPainter = trackPainter;
-    }
-
-    private TrackPainter trackPainter;
-
     public EventPainterContainer(Context context) {
         super(context);
     }

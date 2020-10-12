@@ -12,10 +12,6 @@
                 android:title="Rectangular" />
 
             <item
-            android:id="@+id/vertical"
-            android:title="Vertical" />
-
-            <item
                 android:id="@+id/fibonacci"
                 android:title="Fibonacci" />
 

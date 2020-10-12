@@ -81,7 +81,6 @@ public class MainActivity extends AppCompatActivity {
     private String PREFERENCES = "PREFERENCES";
     private String currentView;
     private String RECTANGULAR = "rectangular";
-    private String VERTICAL = "vertical";
     private String FIBONACCI = "fibonacci";
     private EventPainterContainer eventPainterContainer;
     private MainHeader mainHeader;
@@ -90,9 +89,9 @@ public class MainActivity extends AppCompatActivity {
     private MyMainTextWatcher dateTextWatcher;
     private EventAdapter adapter;
     private LinearLayout centralContainer;
-    private ScrollView scrollview;
     ImageButton deleteTodayEventsImageButton;
     private TextView noEvents;
+    private TextView noEventsToDisplay;
     private View topMarginRecyclerView;
     float screenWidth = Resources.getSystem().getDisplayMetrics().widthPixels;
     float screenHeight = Resources.getSystem().getDisplayMetrics().heightPixels;
@@ -103,17 +102,12 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         loadViewPreferences();
-        System.out.println(currentView);
         setContentView(R.layout.activity_main);
         findViewById(R.id.main_activity).setBackgroundColor(ContextCompat.getColor(this, backgroundColors[selectedBackgroundColorPosition]));
         centralContainer = findViewById(R.id.central_container);
-        scrollview = findViewById(R.id.scrollpaint);
-        scrollview.setFadingEdgeLength(100);
         noEvents = findViewById(R.id.no_events);
         alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
-        topMarginRecyclerView = findViewById(R.id.topMargin_recyclerView);
 
-        addMargin(centralContainer);
         ActionBar actionBar = getSupportActionBar();
         actionBar.setBackgroundDrawable(getDrawable(R.drawable.toolbar_logo_7));
         actionBar.setTitle("");
@@ -134,14 +128,6 @@ public class MainActivity extends AppCompatActivity {
         });
 
         deleteTodayEventsImageButton = findViewById(R.id.image_trash);
-        if (currentView.equals(VERTICAL)) {
-            LinearLayout centralContainerLarger = findViewById(R.id.central_container_larger);
-            ConstraintLayout mainActivityLayout = findViewById(R.id.main_activity);
-            mainActivityLayout.removeView(centralContainer);
-            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
-            centralContainer.setLayoutParams(params);
-            centralContainerLarger.addView(centralContainer);
-        }
         deleteTodayEventsImageButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -196,8 +182,10 @@ public class MainActivity extends AppCompatActivity {
             public void onChanged(List<Event> events) {
                 adapter.setEvents(events);
                 if (events.size() == 0) {
-                    noEvents.setText("NO EVENTS\nTO DISPLAY");
-                    noEvents.setTextColor(mainHeader.getDefaultColors()[1]);
+                    if (currentView.equals("rectangular")) {
+                        noEvents.setText("NO EVENTS\nTO DISPLAY");
+                        noEvents.setTextColor(mainHeader.getDefaultColors()[1]);
+                    }
                 } else {
                     noEvents.setText("");
                 }
@@ -206,12 +194,6 @@ public class MainActivity extends AppCompatActivity {
 
         int hourOfDay = new CurrentHour(myCalendar).hourOfDay();
         eventPainterContainer = pickEventPainterContainer();
-        ViewTreeObserver vto = scrollview.getViewTreeObserver();
-        vto.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
-            public void onGlobalLayout() {
-                scrollview.scrollTo(0, 3800*hourOfDay/24);
-            }
-        });
 
         observeAndPaint(displayedDate);
 
@@ -355,12 +337,6 @@ public class MainActivity extends AppCompatActivity {
                 finish();
                 startActivity(getIntent());
                 return true;
-            case R.id.vertical:
-                saveViewPreferences("vertical");
-                observeAndPaint(displayedDate);
-                finish();
-                startActivity(getIntent());
-                return true;
             case R.id.fibonacci:
                 saveViewPreferences("fibonacci");
                 observeAndPaint(displayedDate);
@@ -394,23 +370,17 @@ public class MainActivity extends AppCompatActivity {
         if (currentView.equals(RECTANGULAR)) {
             TrackPainter trackPainter = new TrackPainter(MainActivity.this, events, isToday);
             eventPainterContainer.addView(trackPainter);
-        } else if (currentView.equals(VERTICAL)) {
-            VerticalTrackPainter verticalTrackPainter = new VerticalTrackPainter(MainActivity.this, events, isToday);
-            eventPainterContainer.addView(verticalTrackPainter);
         } else {
+            noEvents.setText("");
             ConstraintLayout.LayoutParams params = (ConstraintLayout.LayoutParams) centralContainer.getLayoutParams();
             params.topToBottom = R.id.eventPainterContainerFibonacci;
             centralContainer.setLayoutParams(params);
             RecyclerView recyclerView = findViewById(R.id.recycler_view);
             ViewGroup.LayoutParams rParams = recyclerView.getLayoutParams();
             rParams.height = 550;
-            ViewGroup.LayoutParams marginParams = topMarginRecyclerView.getLayoutParams();
-            marginParams.height = 0;
-            topMarginRecyclerView.setLayoutParams(marginParams);
             FibonacciTrackPainter fibonacciTrackPainter = new FibonacciTrackPainter(MainActivity.this, events, isToday, myCalendar);
             eventPainterContainer.addView(fibonacciTrackPainter);
         }
-
     }
 
     protected void observeAndPaint(OffsetDateTime displayedDate) {
@@ -431,19 +401,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private EventPainterContainer pickEventPainterContainer() {
-        return currentView.equals(RECTANGULAR) ? findViewById(R.id.eventPainterContainerRectangular) : currentView.equals(FIBONACCI) ? findViewById(R.id.eventPainterContainerFibonacci) : findViewById(R.id.eventPainterContainerVertical);
-    }
-
-    private void addMargin(LinearLayout ll) {
-        if (currentView.equals(VERTICAL)) {
-            float screenWidth = Resources.getSystem().getDisplayMetrics().widthPixels;
-            float screenHeight = Resources.getSystem().getDisplayMetrics().heightPixels;
-            ConstraintLayout.LayoutParams layoutParams = new ConstraintLayout.LayoutParams(
-                    ConstraintLayout.LayoutParams.MATCH_PARENT,
-                    ConstraintLayout.LayoutParams.MATCH_PARENT);
-
-            layoutParams.setMargins((int) (screenWidth*0.3), (int) (screenHeight*0.2), 0, 0);
-            ll.setLayoutParams(layoutParams);
-        }
+        return currentView.equals(RECTANGULAR) ? findViewById(R.id.eventPainterContainerRectangular) : findViewById(R.id.eventPainterContainerFibonacci);
     }
 }

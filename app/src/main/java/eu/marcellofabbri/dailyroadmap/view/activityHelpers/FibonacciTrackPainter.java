@@ -192,7 +192,7 @@ public class FibonacciTrackPainter extends View {
     Date now = new Date();
     int needleLength = getNeedleLength(now);
 
-    Paint needlePaint = paintObject(Color.DKGRAY);
+    Paint needlePaint = paintObject(getContext().getColor(R.color.daytimeBackgroundDarker));
     double needleAngle = getNeedleAngle(now);
     double convertedAngleForAndroid = needleAngle - 90;
     double angleRadians = (Math.PI / 180.0) * convertedAngleForAndroid;
@@ -229,13 +229,18 @@ public class FibonacciTrackPainter extends View {
   private void drawNumbers(Canvas canvas) {
     float startX = width/2 - width*0.01F;
     float startY = (height/ratio)/2 - (height*0.043F);
-    double length = (width / 2) - (0.380 * width);
+    double length = (width / 2) - (0.140 * width);
     for (int i = 1; i <= 12; i++) {
       float angleRadians = (float) (Math.PI / 180.0) * (30*i - 90);
       double x = startX + Math.cos(angleRadians) * (float) length;
       double y = startY + Math.sin(angleRadians) * (float) length;
       float doubleDigitBias = i > 9 ? (width*0.01F) : 0;
-      canvas.drawText(String.valueOf(i), (float) x - doubleDigitBias, (float) y, paintObject(Color.DKGRAY));
+
+//      Paint paint = paintObject(Color.WHITE);
+//      paint.setStrokeWidth(50);
+//      canvas.drawPoint((float) x + width*0.012F, (float) y - height*0.007F, paint);
+
+      canvas.drawText(String.valueOf(i), (float) x - doubleDigitBias, (float) y, paintObject(Color.BLACK));
     }
   }
 

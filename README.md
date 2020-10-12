@@ -1,5 +1,7 @@
-# Daily Road Map v. 1.2.2
-[GOOGLE PLAY - Official Release](https://play.google.com/store/apps/details?id=eu.marcellofabbri.dailyroadmap)
+# Daily Road Map v. 1.4.0
+<a href="https://play.google.com/store/apps/details?id=eu.marcellofabbri.dailyroadmap">
+  <img src="https://play.google.com/intl/en_gb/badges/static/images/badges/en_badge_web_generic.png">
+</a>
 <p align="center">
   <img width="900" height="129" src="https://github.com/Marcellofabbri/dailyroadmap/blob/master/app/src/main/res/screenshots/toolbar_logo_6.png">
 </p>
@@ -8,7 +10,7 @@ A daily task visualizer for Android. Written in Java.
 The app is meant to help users have a clear uncluttered visual representation of their daily plan in the form of a subway map fashion, which gives them an idea of what the day is meant to progress like and where they are at in their plan.
 
 
-![screenshots](https://github.com/Marcellofabbri/dailyroadmap/blob/master/app/src/main/res/screenshots/four_screenshots.png)
+![screenshots](https://github.com/Marcellofabbri/dailyroadmap/blob/master/app/src/main/assets/screenshots/four_screenshots.png)
 
 ### Requirements
 Running the app on a laptop normally requires [Android Studio](https://developer.android.com/studio), through which it can be installed and run on an emulator. It might be possible to run it with different IDEs as long as [Java Development Kit](https://www.oracle.com/java/technologies/javase-downloads.html) is installed.
@@ -85,3 +87,5 @@ The actual track is made up of 1440 points (instances of a custom made class tha
 The pin points to where on the track the current moment in time is. It becomes hidden when visiting another day's page.
 #### Notifications
 When an event is created a notification is set to fire at the event start time, or with an amount of minutes in advance if so specified by the user when creating the event. A **NotificationHelper** class is responsible for creating the notification channel (required for Android Oreo and above) and the **ReminderBroadcast** class handles the intent for the notification. Each event results in a PendingEvent with a request code that equals the event's start time in unix (milliseconds), so that it can be managed when updating or deleting the event (and the associated notification). The notification has a title, the start time and finish time, and the icon of the event.
+#### View type
+The menu in the top right corner gives access to options regarding the track representation. Clicking on either option will refresh the activity and present the track in the desired way: either rectangular or "Fibonacci" style (i.e. a simplified version of the Fibonacci sequence's cartesian rendering made up of two concentric circles). The chosen option persists in the app even after closing and rebooting, since it's stored as a variable with [SharedPreferences](https://developer.android.com/reference/android/content/SharedPreferences).

@@ -4,7 +4,7 @@
 </a>
 
 <p align="center">
-  <img width="900" height="129" src="https://github.com/Marcellofabbri/dailyroadmap/blob/master/app/src/main/assets/screenshots/toolbar_logo_7.png">
+  <img width="1000" height="129" src="https://github.com/Marcellofabbri/dailyroadmap/blob/master/app/src/main/assets/screenshots/toolbar_logo_7.png">
 </p>
 
 A daily task visualizer for Android. Written in Java.

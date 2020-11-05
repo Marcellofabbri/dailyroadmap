@@ -21,6 +21,7 @@ import androidx.core.content.ContextCompat;
 import java.lang.reflect.Array;
 import java.text.SimpleDateFormat;
 import java.time.Instant;
+import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 import java.time.ZoneId;
 import java.time.ZoneOffset;
@@ -62,6 +63,7 @@ public class FibonacciTrackPainter extends View {
   List<Event> events;
   boolean isToday = true;
   Calendar myCalendar;
+  ZoneOffset zoneOffset = getOffset();
   List<Event> morningEvents = new ArrayList<>();
   List<Event> afternoonEvents = new ArrayList<>();
   List<Event> middayEvents = new ArrayList<>();
@@ -147,8 +149,8 @@ public class FibonacciTrackPainter extends View {
   }
 
   private void drawNonMiddayEvent(Canvas canvas, Event event, long midnight, double arcCoefficient, int color) {
-    long start = event.getStartTime().toEpochSecond()*1000;
-    long finish = event.getFinishTime().toEpochSecond()*1000;
+    long start = event.getStartTime().toLocalDateTime().toEpochSecond(zoneOffset)*1000;
+    long finish = event.getFinishTime().toLocalDateTime().toEpochSecond(zoneOffset)*1000;
     long startDegree = (start - midnight)/120000;
     float startAngle = -90F + startDegree;
     long finishDegree = finish - start;
@@ -286,6 +288,12 @@ public class FibonacciTrackPainter extends View {
       millis = today.getTime().getTime();
     }
     return millis;
+  }
+
+  public ZoneOffset getOffset() {
+    final ZoneId zone = ZoneOffset.systemDefault();
+    ZoneOffset zoneOffSet = zone.getRules().getOffset(LocalDateTime.now());
+    return zoneOffSet;
   }
 
 //  @RequiresApi(api = Build.VERSION_CODES.O)

@@ -48,6 +48,7 @@ import com.anychart.scales.DateTime;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
+import java.time.ZoneOffset;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -83,6 +84,7 @@ public class MainActivity extends AppCompatActivity {
     private String RECTANGULAR = "rectangular";
     private String FIBONACCI = "fibonacci";
     private EventPainterContainer eventPainterContainer;
+    private ZoneOffset zoneOffset = OffsetDateTime.now().getOffset();
     private MainHeader mainHeader;
     private OffsetDateTime displayedDate;
     private MyTrackTextWatcher myTrackTextWatcher;
@@ -295,7 +297,7 @@ public class MainActivity extends AppCompatActivity {
         intent.putExtra("startTime", converter.extractTime(event.getStartTime()));
         intent.putExtra("finishTime", converter.extractTime(event.getFinishTime()));
         intent.putExtra("iconId", Integer.parseInt(event.getIcon()));
-        long triggerAtMillis = event.getStartUnix()*1000;
+        long triggerAtMillis = event.getStartTime().toLocalDateTime().toEpochSecond(zoneOffset)*1000;
         long noticeInMillis = notice*60*1000;
 
         PendingIntent pendingIntent = PendingIntent.getBroadcast(this, (int) event.getStartUnix(), intent, 0);

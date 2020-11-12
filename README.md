@@ -1,4 +1,4 @@
-# Daily Road Map v. 1.4.0 
+# Daily Road Map v. 1.4.1 
 <a href="https://play.google.com/store/apps/details?id=eu.marcellofabbri.dailyroadmap">
   <img  height="60" src="https://play.google.com/intl/en_gb/badges/static/images/badges/en_badge_web_generic.png">
 </a>
